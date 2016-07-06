@@ -1,0 +1,36 @@
+= form_tag profile_admin_path, method: 'get' do
+  .row 
+    .col-md-8
+      = text_field_tag :user_search, params[:user_search], class: "form-control" 
+    .col-md-4
+      = submit_tag "Search Users", class: "form-control btn btn-sm btn-primary", name: nil
+
+hr
+= form_tag profile_admin_path, method: 'get' do
+  .row 
+    .col-md-8
+      = text_field_tag :group_search, params[:group_search], class: "form-control" 
+    .col-md-4
+      = submit_tag "Search Groups", class: "form-control btn btn-sm btn-primary", name: nil
+
+br
+- if @users.count > 0
+  .table-responsive
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th Email
+          th Is Active?
+          th Is Admin?
+      tbody
+        - @users.each do |user|
+          tr
+            td
+              = link_to "#{user.name}", user_path(user)
+            td
+              = "#{user.email}"
+            td
+              = "#{user.active.to_s.camelcase}"
+            td
+              = "#{user.admin.to_s.camelcase}"

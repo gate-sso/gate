@@ -1,0 +1,13 @@
+- if user_signed_in?
+  |  Signed in as 
+  = current_user.name
+  | . Not you? 
+  = link_to "Sign out", users_sign_out_path,:method => :delete
+- else
+  = link_to  user_omniauth_authorize_path(:google_oauth2) do
+    .social-login-buttons
+      a.btn.btn-link-1.btn-link-1-google-plus href="#{url_for  user_omniauth_authorize_path(:google_oauth2)}" 
+        i.fa.fa-google-plus
+          | &nbsp Login with Google
+
+

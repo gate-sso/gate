@@ -1,0 +1,25 @@
+== Welcome to Gate
+
+Gate is Single Sign on server supporting Google MFA. Gate can authenticate with following modules which are created for Gate
+
+- pam-http allows you to authenticate with Gate over HTTP, thus allowing users to login
+- nss_http allows you to discover groups, hosts and password.
+
+Given this with pam_mkdir you can implement single sign on solution for anything.
+
+
+For now gate provides VPN profile and MFA
+
+* checkout source code
+
+* bundle install
+
+* bundle exec rake db:migrate
+
+* bundle exec rails s
+
+== Pending Tasks
+* Add admin page for administrators
+* Add nss_http group and password lookups
+* Add pam_mkdir to user home page and pam module
+
