@@ -20,6 +20,7 @@ test:
   <<: *default
   database: db/test.sqlite3
 
+# This is sample gate username and password for production, since we use sqlite for development
 production:
   adapter: mysql2 # or mysql
   database: gate_prod
