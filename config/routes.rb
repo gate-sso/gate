@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   match 'profile/authenticate', to: 'profile#authenticate', via: :get, format: :text
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
+  get 'profile/list' => 'profile#list', as: 'profile_list'
 #  match 'profile/admin/user/:id', to: 'profile#admin_user', via: :get, as: 'profile_admin_user'
 
   get 'profile/:id' => 'profile#user', as: 'user'
@@ -23,7 +24,6 @@ Rails.application.routes.draw do
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
   
-  get 'profile/list' => 'profile#list', as: 'profile_list'
 
   #Group Functions
   post 'profile/:id/group' => 'group#add_group', as: 'add_group'
