@@ -70,6 +70,7 @@ class ProfileController < ApplicationController
 
   def user_edit
 
+
   end
 
   def public_key_update
@@ -89,9 +90,12 @@ class ProfileController < ApplicationController
   def user
     @group = Group.all
     @user = User.where(id: params[:id]).first
+    
     if ( current_user.admin? || current_user.id == @user.id)
       render_404 if @user.blank?
       if @user.present?
+        #hack add blank text to public_key
+        @user.public_key = "Add public key" if @user.public_key.blank?
         respond_to do |format|
           format.html
         end
