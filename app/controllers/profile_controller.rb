@@ -31,6 +31,14 @@ class ProfileController < ApplicationController
     end
   end
 
+  def list
+    @users = []
+    @user_search = params[:user_search]
+    if @user_search.present?
+      @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+    end
+  end
+
   def admin
     @users = []
     @groups = []
@@ -38,7 +46,7 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-        redirect_to profile_list_path if @users.count > 0
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]

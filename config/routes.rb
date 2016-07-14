@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
   
-  match 'profile/list', to: 'profile#list', via: :get, as: 'profile_list', format: :html
+  get 'profile/list' => 'profile#list', as: 'profile_list'
 
   #Group Functions
   post 'profile/:id/group' => 'group#add_group', as: 'add_group'

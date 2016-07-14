@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160701112600) do
+ActiveRecord::Schema.define(version: 20160707115313) do
+
+  create_table "access_tokens", force: :cascade do |t|
+    t.string   "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "group_associations", force: :cascade do |t|
     t.integer  "user_id"

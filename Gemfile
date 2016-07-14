@@ -71,6 +71,6 @@ gem "twitter-bootstrap-rails"
 gem 'rotp'
 gem 'therubyrhino', platform: :jruby
 
-gem 'devise'
+gem 'devise', '4.1.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2' 

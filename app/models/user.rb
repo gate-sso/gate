@@ -8,6 +8,9 @@ class User < ActiveRecord::Base
   has_many :group_associations
   has_many :groups, through: :group_associations
 
+  #we should put this in configuration
+  ##TODO move this to environemnt variable or configuration
+  # 
   after_create :add_uid
   UID_CONSTANT = 5000
   HOME_DIR = "/home"

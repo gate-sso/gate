@@ -1,0 +1,20 @@
+- if @users.count > 0
+  .table-responsive
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th Email
+          th Is Active?
+          th Is Admin?
+      tbody
+        - @users.each do |user|
+          tr
+            td
+              = link_to "#{user.name}", user_path(user)
+            td
+              = "#{user.email}"
+            td
+              = "#{user.active.to_s.camelcase}"
+            td
+              = "#{user.admin.to_s.camelcase}"
