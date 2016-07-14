@@ -64,12 +64,4 @@ hr
             = text_field_tag :host_pattern, "", class: "form-control"
           .col-sm-4
             = submit_tag "Add host pattern", class: "form-control btn-sm btn-primary"
-hr
-.row 
-  .col-md-4.text-primary Your public key
-  .col-md-8
-    = form_tag update_key_path, method: :post do
-      = text_field_tag :public_key, "", class: "form-control"
-      br
-      = submit_tag "Update public key", class "form-control btn-sm btn-primaryp"
 
