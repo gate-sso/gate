@@ -83,8 +83,10 @@ class ProfileController < ApplicationController
   end
 
   def public_key
-    @user = User.find(params[:id])
-    render text: @user.public_key
+    public_key = ''
+    @user = User.get_user(params[:name])
+    public_key = @user.public_key if @user.present?
+    render text: public_key
   end
 
   def user

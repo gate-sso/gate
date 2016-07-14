@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
   def self.get_user email
     user = User.where(email: email).first
     user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first if user.blank?
-    return null if user.blank? || user.active == false
+    return nil if user.blank? || user.active == false
     return user
   end
 
