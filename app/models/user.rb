@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
   def self.get_user email
     splitted_email = email.split '@'
     user = nil
-    if splitted_email > 1
+    if splitted_email.count > 1
       user = User.where(email: email).first 
     else
       user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first 
