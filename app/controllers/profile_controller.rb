@@ -72,6 +72,15 @@ class ProfileController < ApplicationController
 
   end
 
+  def public_key_update
+    @user = User.where(id: params[:id]).first
+    if ( current_user.admin? || current_user.id == @user.id)
+      @user.public_key = params[:public_key]
+      @user.save!
+    end
+    redirect_to user_path
+  end
+
   def user
     @group = Group.all
     @user = User.where(id: params[:id]).first

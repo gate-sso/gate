@@ -64,17 +64,18 @@ hr
             = text_field_tag :host_pattern, "", class: "form-control"
           .col-sm-4
             = submit_tag "Add host pattern", class: "form-control btn-sm btn-primary"
+
+br
+hr
 .row 
   .col-md-4.text-primary Public Key
   .col-md-8
     = form_tag user_public_key_update_path, method: :post do
-    .row 
-      .col-sm-12
-        = text_area_tag "public_key", @user.public_key, class "form-contol"
-    .row
-      .col-sm-10
-      .col-sm-2
-        = sumit_tag "Update key", class: "form-control btn-sm btn-primary"
-
-
-    
+      .row 
+        .col-sm-12
+          = text_area_tag "public_key", @user.public_key, class: "form-contol", style: "font-family:monospace;", rows: 15, cols: 35
+      .row
+        .col-sm-8
+        .col-sm-4
+          = submit_tag "Update key", class: "form-control btn-sm btn-primary"
+br
