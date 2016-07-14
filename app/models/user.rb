@@ -88,9 +88,14 @@ class User < ActiveRecord::Base
   end
 
   def self.get_user email
-    user = User.where(email: email).first
-    user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first if user.blank?
-    return nil if user.blank? || user.active == false
+    splitted_email = email.split '@'
+    user = nil
+    if splitted_email > 1
+      user = User.where(email: email).first 
+    else
+      user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first 
+    end
+    return nil if user.present? and user.active == false
     return user
   end
 
