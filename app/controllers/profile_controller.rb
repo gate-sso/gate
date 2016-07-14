@@ -1,5 +1,5 @@
 class ProfileController < ApplicationController
-  before_filter :authenticate_user!, :except => [:authenticate, :authenticate_pam] unless Rails.env.development?
+  before_filter :authenticate_user!, :except => [:authenticate, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
   def show
