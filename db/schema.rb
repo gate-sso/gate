@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160707115313) do
+ActiveRecord::Schema.define(version: 20160714115228) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20160707115313) do
     t.boolean  "admin",                  default: false
     t.string   "home_dir"
     t.string   "shell"
+    t.text     "public_key",             default: ""
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
