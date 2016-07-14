@@ -81,6 +81,11 @@ class ProfileController < ApplicationController
     redirect_to user_path
   end
 
+  def public_key
+    @user = User.find(params[:id])
+    render text: @user.public_key
+  end
+
   def user
     @group = Group.all
     @user = User.where(id: params[:id]).first
