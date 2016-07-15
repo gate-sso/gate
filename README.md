@@ -56,6 +56,7 @@ Setting up public key lookup
 Given user has uploaded public key into gate
 
 * Add following lines to your sshd_config - It's located at `/etc/ssh/sshd_config` on most linux distros
+
 	````
 	AuthorizedKeysCommand /usr/bin/gate_ssh.sh
 	AuthorizedKeysCommandUser nobody
