@@ -55,12 +55,13 @@ Setting up public key lookup
 ---
 Given user has uploaded public key into gate
 
-* Add following lines to your sshd_config - usually in `/etc/ssh/sshd_config`
-        ````
+* Add following lines to your sshd_config - It's located at `/etc/ssh/sshd_config` on most linux distros
+	````
 	AuthorizedKeysCommand /usr/bin/gate_ssh.sh
-        AuthorizedKeysCommandUser nobody
+	AuthorizedKeysCommandUser nobody
 	````
 * Add a file with following content to `/usr/bin/` with name `gate_ssh.sh` owned by root
+	
 	````
 	#!/bin/sh
         /usr/bin/curl -k --silent "https://<gate server name or IP>/profile/$1/key"
