@@ -49,6 +49,25 @@ Modules
 * nss_gate - for Linux Name Service Switch
 * cas_gate - for JaSig CAS Server 
 * open_vpn_gate - for OpenVPN setup, it's not extracted yet.
+* ssh_gate
+
+Setting up public key lookup 
+---
+Given user has uploaded public key into gate
+
+* Add following lines to your sshd_config - usually in `/etc/ssh/sshd_config`
+        ````
+	AuthorizedKeysCommand /usr/bin/gate_ssh.sh
+        AuthorizedKeysCommandUser nobody
+	````
+* Add a file with following content to `/usr/bin/` with name `gate_ssh.sh` owned by root
+	````
+	#!/bin/sh
+        /usr/bin/curl -k --silent "https://<gate server name or IP>/profile/$1/key"
+	````
+
+> **Please Note** Adjust URL for GateServer and test by executing `gate_ssh.sh <username>` to see if this prints the public key
+
 
 Administration
 --
