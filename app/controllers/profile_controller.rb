@@ -6,6 +6,7 @@ class ProfileController < ApplicationController
 
   end
 
+
   def download_vpn
     if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?
       `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
@@ -30,6 +31,17 @@ class ProfileController < ApplicationController
       render text: 1
     end
   end
+
+  def verify
+    response = User.verify params
+    if response
+      render text: 0
+    else
+      render text: 1
+    end
+
+  end
+
 
   def list
     @users = []

@@ -30,6 +30,12 @@ RSpec.describe User, type: :model do
 
     response = User.get_all_passwd_response
     expect(response.count).to eq(2)
+  end
 
+  it "should return false if user is not permitted" do
+    user = create(:user)
+    response = user.permitted_hosts ["10.1.1.1."]
+
+    expect(response).to eq (false)
   end
 end

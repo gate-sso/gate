@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   end
 
   match 'profile', to: 'profile#show', via: :get, format: :html
+  match 'profile/verify', to: 'profile#verify', via: :get, format: :text
   match 'profile/authenticate', to: 'profile#authenticate', via: :get, format: :text
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get

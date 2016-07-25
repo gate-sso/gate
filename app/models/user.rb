@@ -45,6 +45,16 @@ class User < ActiveRecord::Base
     user
   end
 
+  def self.verify params
+    addresses = params[:addresses]
+    return false if addresses.empty?
+
+    user = User.get_user params[:username]
+    return false if user.blank?
+
+    return user.permitted_hosts? addresses
+  end
+
   def self.authenticate_pam params
     addresses = params[:addresses]
     return false if addresses.empty?
