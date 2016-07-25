@@ -33,13 +33,17 @@ class ProfileController < ApplicationController
   end
 
   def verify
-    response = User.verify params
-    if response
-      render text: 0
+    token = AccessToken.valid_token params[:token]
+    if token
+      response = User.verify params
+      if response
+        render text: 0
+      else
+        render text: 1
+      end
     else
       render text: 1
     end
-
   end
 
 
@@ -104,7 +108,7 @@ class ProfileController < ApplicationController
   def user
     @group = Group.all
     @user = User.where(id: params[:id]).first
-    
+
     if ( current_user.admin? || current_user.id == @user.id)
       render_404 if @user.blank?
       if @user.present?
