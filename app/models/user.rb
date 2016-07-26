@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
     addresses = params[:addresses]
     return false if addresses.empty?
 
-    user = User.get_user params[:username]
+    user = User.get_user params[:user]
     return false if user.blank?
 
     return user.permitted_hosts? addresses
