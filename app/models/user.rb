@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
 
 
       #Add user to default user's group
-      group = Group.where(name: "people").first
+      group = Group.create(name: user.name)
       user.groups << group
       user.save!
     end
