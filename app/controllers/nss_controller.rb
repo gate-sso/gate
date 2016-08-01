@@ -35,7 +35,6 @@ class NssController < ApplicationController
           REDIS_CACHE.set(GROUP_GID_RESPONSE + gid, @response)
           REDIS_CACHE.expire(GROUP_GID_RESPONSE + gid, REDIS_KEY_EXPIRY)
         end
-
       end
 
       if name.blank? and gid.blank?
@@ -109,8 +108,7 @@ class NssController < ApplicationController
           REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
         end
       end
-      render json: @response
     end
-
+    render json: @response
   end
 end
