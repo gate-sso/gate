@@ -30,14 +30,17 @@ class GroupController < ApplicationController
     @user = User.find(params[:user_id])
     if current_user.admin?
       group = Group.find(params[:id])
-      @user.groups.each do |group|
-        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+
+      if @user.email.split('@').first != @group.name
+        @user.groups.each do |group|
+          REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+          REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+        end
+        @user.groups.delete(group)
+        REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
+        REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
+        REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
       end
-      @user.groups.delete(group)
-      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
-      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
-      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
 
     end
 
