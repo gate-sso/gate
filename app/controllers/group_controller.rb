@@ -16,11 +16,11 @@ class GroupController < ApplicationController
       @user.save! 
       REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
       REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
-      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid)
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
 
       @user.groups.each do |group|
         REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
       end
     end
     redirect_to user_path
@@ -32,12 +32,12 @@ class GroupController < ApplicationController
       group = Group.find(params[:id])
       @user.groups.each do |group|
         REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
       end
       @user.groups.delete(group)
       REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
       REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
-      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid)
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
 
     end
 
