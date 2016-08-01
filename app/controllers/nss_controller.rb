@@ -20,7 +20,7 @@ class NssController < ApplicationController
       name = params[:name]
       if name.present?
         @response = REDIS_CACHE.get(GROUP_NAME_RESPONSE + name)
-        if @response.empty?
+        if @response.blank?
           @response = Group.get_name_response(name).to_json
           REDIS_CACHE.set(GROUP_NAME_RESPONSE + name, @response, REDIS_KEY_EXPIRY)
         end
@@ -29,18 +29,18 @@ class NssController < ApplicationController
       gid = params[:gid]
       if gid.present?
         @response = REDIS_CACHE.get(GROUP_GID_RESPONSE + gid)
-        if @response.empty?
+        if @response.blank?
           @response = Group.get_gid_response(gid).to_json
-          REDIS_CACHE.set(GROUP_GID_RESPONSE + gid, @response., REDIS_KEY_EXPIRY)
+          REDIS_CACHE.set(GROUP_GID_RESPONSE + gid, @response, REDIS_KEY_EXPIRY)
         end
 
       end
 
       if name.blank? and gid.blank?
         @response = REDIS_CACHE.get(GROUP_ALL_RESPONSE)
-        if @response.empty?
+        if @response.blank?
           @response = Group.get_all_response.to_json
-          REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response., REDIS_KEY_EXPIRY)
+          REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response, REDIS_KEY_EXPIRY)
         end
       end
     end
@@ -56,13 +56,13 @@ class NssController < ApplicationController
 
       if name.present?
         @response = REDIS_CACHE.get(SHADOW_NAME_RESPONSE + name)
-        if @response.empty?
+        if @response.blank?
           @response = User.get_shadow_name_response(name).to_json
           REDIS_CACHE.set(SHADOW_NAME_RESPONSE + name, @response, REDIS_KEY_EXPIRY)
         end
       else
         @response = REDIS_CACHE.get(SHADOW_ALL_RESPONSE)
-        if @response.empty?
+        if @response.blank?
           @response = User.get_all_shadow_response.to_json
           REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response, REDIS_KEY_EXPIRY)
         end
@@ -80,7 +80,7 @@ class NssController < ApplicationController
 
       if name.present?
         @response = REDIS_CACHE.get(PASSWD_NAME_RESPONSE + name)
-        if @response.empty?
+        if @response.blank?
           @response = User.get_passwd_name_response(name).to_json
           REDIS_CACHE.set(PASSWD_NAME_RESPONSE + name, @response, REDIS_KEY_EXPIRY)
         end
@@ -88,7 +88,7 @@ class NssController < ApplicationController
       uid = params[:uid]
       if uid.present?
         @response = REDIS_CACHE.get(PASSWD_UID_RESPONSE + uid)
-        if @response.empty?
+        if @response.blank?
           @response = User.get_passwd_uid_response(uid).to_json
           REDIS_CACHE.set(PASSWD_UID_RESPONSE + uid, @response, REDIS_KEY_EXPIRY)
         end
@@ -96,7 +96,7 @@ class NssController < ApplicationController
 
       if name.blank? and uid.blank?
         @response = REDIS_CACHE.get(PASSWD_ALL_RESPONSE)
-        if @response.empty?
+        if @response.blank?
           @response = User.get_all_passwd_response.to_json
           REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response, REDIS_KEY_EXPIRY)
         end
