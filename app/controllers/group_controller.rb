@@ -14,9 +14,9 @@ class GroupController < ApplicationController
       @group = Group.find(params[:group_id])
       @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
       @user.save! 
-      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + user.email.split('@'),first)
-      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + user.email.split('@').first)
-      REDIS_CACHE.del(PASSWD_UID_RESPONSE + user.uid)
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
+      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid)
 
       @user.groups.each do |group|
         REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
@@ -30,7 +30,15 @@ class GroupController < ApplicationController
     @user = User.find(params[:user_id])
     if current_user.admin?
       group = Group.find(params[:id])
+      @user.groups.each do |group|
+        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid)
+      end
       @user.groups.delete(group)
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
+      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid)
+
     end
 
     redirect_to user_path(@user)
