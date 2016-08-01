@@ -1,11 +1,17 @@
 class GroupController < ApplicationController
   before_filter :authenticate_user!
-  SHADOW_NAME_RESPONSE = "SHADOW_NAME:"
-  PASSWD_NAME_RESPONSE = "PASSWD_NAME:"
-  PASSWD_UID_RESPONSE = "PASSWD_UID:"
   GROUP_NAME_RESPONSE = "GROUP_NAME:"
   GROUP_GID_RESPONSE = "GROUP_GID:"
+  GROUP_ALL_RESPONSE = "GROUP_ALL"
 
+  SHADOW_NAME_RESPONSE = "SHADOW_NAME:"
+  SHADOW_ALL_RESPONSE = "SHADOW_ALL"
+
+  PASSWD_NAME_RESPONSE = "PASSWD_NAME:"
+  PASSWD_UID_RESPONSE = "PASSWD_UID:"
+  PASSWD_ALL_RESPONSE = "PASSWD_ALL"
+
+  REDIS_KEY_EXPIRY = 12 * 60 * 60
 
   def add_group    
     @user = User.find(params[:id])
@@ -22,6 +28,19 @@ class GroupController < ApplicationController
         REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
         REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
       end
+
+
+      @response = Group.get_all_response.to_json
+      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_shadow_response.to_json
+      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_passwd_response.to_json
+      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
+
     end
     redirect_to user_path
   end
@@ -40,6 +59,17 @@ class GroupController < ApplicationController
         REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
         REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
         REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
+
+        @response = Group.get_all_response.to_json
+        REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+        @response = User.get_all_shadow_response.to_json
+        REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+        @response = User.get_all_passwd_response.to_json
+        REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
       end
 
     end
