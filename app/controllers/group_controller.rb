@@ -14,7 +14,7 @@ class GroupController < ApplicationController
       @group = Group.find(params[:group_id])
       @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
       @user.save! 
-      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
       REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
       REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
 
@@ -35,7 +35,7 @@ class GroupController < ApplicationController
         REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
       end
       @user.groups.delete(group)
-      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@'),first)
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
       REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
       REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
 
