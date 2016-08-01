@@ -1,5 +1,11 @@
 class GroupController < ApplicationController
   before_filter :authenticate_user!
+  SHADOW_NAME_RESPONSE = "SHADOW_NAME:"
+  PASSWD_NAME_RESPONSE = "PASSWD_NAME:"
+  PASSWD_UID_RESPONSE = "PASSWD_UID:"
+  GROUP_NAME_RESPONSE = "GROUP_NAME:"
+  GROUP_GID_RESPONSE = "GROUP_GID:"
+
 
   def add_group    
     @user = User.find(params[:id])
@@ -8,6 +14,14 @@ class GroupController < ApplicationController
       @group = Group.find(params[:group_id])
       @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
       @user.save! 
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + user.email.split('@'),first
+      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + user.email.split('@').first
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + user.uid)
+
+      @user.groups.each do |group|
+        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid)
+      end
     end
     redirect_to user_path
   end
