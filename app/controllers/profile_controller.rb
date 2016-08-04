@@ -1,9 +1,19 @@
 class ProfileController < ApplicationController
-  before_filter :authenticate_user!, :except => [:verify, :authenticate, :authenticate_pam, :public_key] unless Rails.env.development?
+  before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
   def show
 
+  end
+
+  def user_id
+    token = AccessToken.valid_token params[:token]
+    response = 0
+    if token
+      user = User.get_user(params[:name])
+      response = user.uid if @user.present?
+    end
+    render text: response
   end
 
 

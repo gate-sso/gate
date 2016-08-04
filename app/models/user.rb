@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
 
 
       #Add user to default user's group
-      group = Group.create(name: user.name)
+      group = Group.create(name: user.get_user_unix_name)
       user.groups << group
       user.save!
     end
@@ -199,7 +199,7 @@ class User < ActiveRecord::Base
     user_hash[:pw_passwd]  = "x"
     user_hash[:pw_uid] = uid.to_i
     user_hash[:pw_gid] = groups.where(name: get_user_unix_name).first.gid
-    user_hash[:pw_gecos]  = "email: #{email}"
+    user_hash[:pw_gecos]  = "#{name}"
     user_hash[:pw_dir] = "#{HOME_DIR}/#{get_user_unix_name}"
     user_hash[:pw_shell] = "/bin/bash"
     user_hash
