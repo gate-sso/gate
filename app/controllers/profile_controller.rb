@@ -11,7 +11,7 @@ class ProfileController < ApplicationController
     response = 0
     if token
       user = User.get_user(params[:name])
-      response = user.uid if @user.present?
+      response = user.uid if user.present?
     end
     render text: response
   end
