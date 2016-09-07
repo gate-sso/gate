@@ -23,8 +23,8 @@ Rails.application.routes.draw do
   post 'profile/:id' => 'profile#update', as: 'user_update'
   get 'profile/:id/edit' => 'profile#user_edit', as: 'user_edit'
   post 'profile/:id/public_key' => 'profile#public_key_update', as: 'user_public_key_update'
-  get 'profile/:name/key' => 'profile#public_key', as: 'user_public_key', format: :text
-  get 'profile/:name/id' => 'profile#user_id', as: 'user_public_id', format: :text
+  get 'profile/:name/key' => 'profile#public_key', as: 'user_public_key', constraints: { id: /[^\/]+/, format: :text}
+  get 'profile/:name/id' => 'profile#user_id', as: 'user_public_id', constraints: { id: /[^\/]+/, format: :text}
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
   

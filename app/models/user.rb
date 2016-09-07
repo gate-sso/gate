@@ -138,7 +138,8 @@ class User < ActiveRecord::Base
   end
 
   def get_user_unix_name
-    email.split('@').first.gsub(/\./,'_')
+    email.split('@').first
+    #email.split('@').first.gsub(/\./,'_')
   end
 
   def self.get_shadow_name_response name
