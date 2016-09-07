@@ -19,6 +19,7 @@ RSpec.describe User, type: :model do
     expect(response[:sp_namp]).to eq("test4")
   end
   it "should return false if user is not active" do
+    group = create(:group)
     user = create(:user)
     response =  User.get_passwd_uid_response user.uid
     expect(response[:pw_name]).to eq("test5")
@@ -32,9 +33,15 @@ RSpec.describe User, type: :model do
     expect(response.count).to eq(2)
   end
 
+  it "should return _ for . in name" do
+    user = create(:user)
+    user.email = "janata.naam@test.com"
+    expect(user.get_user_unix_name).to eq("janata_naam")
+  end
+
   it "should return false if user is not permitted" do
     user = create(:user)
-    response = user.permitted_hosts ["10.1.1.1."]
+    response = user.permitted_hosts? ["10.1.1.1."]
 
     expect(response).to eq (false)
   end

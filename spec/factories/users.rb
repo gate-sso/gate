@@ -9,6 +9,10 @@ FactoryGirl.define do
     after(:create) do |user, evaluator|
       group = Group.first
       user.groups << group
+
+      group = Group.create(name: user.get_user_unix_name)
+      user.groups << group
+      user.save!
     end
   end
 end
