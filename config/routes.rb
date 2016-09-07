@@ -17,17 +17,20 @@ Rails.application.routes.draw do
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'
-#  match 'profile/admin/user/:id', to: 'profile#admin_user', via: :get, as: 'profile_admin_user'
+  #  match 'profile/admin/user/:id', to: 'profile#admin_user', via: :get, as: 'profile_admin_user'
 
   get 'profile/:id' => 'profile#user', as: 'user'
   post 'profile/:id' => 'profile#update', as: 'user_update'
   get 'profile/:id/edit' => 'profile#user_edit', as: 'user_edit'
   post 'profile/:id/public_key' => 'profile#public_key_update', as: 'user_public_key_update'
-  get 'profile/:name/key' => 'profile#public_key', as: 'user_public_key', constraints: { name: /[^\/]+/, format: :text}
-  get 'profile/:name/id' => 'profile#user_id', as: 'user_public_id', constraints: { name: /[^\/]+/, format: :text}
+  constraints  /[^\/]+/ do
+    get 'profile/:name/key' => 'profile#public_key', as: 'user_public_key', format: :text
+    get 'profile/:name/id' => 'profile#user_id', as: 'user_public_id', format: :text
+  end
+
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
-  
+
 
   #Group Functions
   post 'profile/:id/group' => 'group#add_group', as: 'add_group'
