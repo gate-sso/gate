@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   post 'profile/:id' => 'profile#update', as: 'user_update'
   get 'profile/:id/edit' => 'profile#user_edit', as: 'user_edit'
   post 'profile/:id/public_key' => 'profile#public_key_update', as: 'user_public_key_update'
-  constraints  /[^\/]+/ do
+  constraints(name: /[^\/]+/) do
     get 'profile/:name/key' => 'profile#public_key', as: 'user_public_key', format: :text
     get 'profile/:name/id' => 'profile#user_id', as: 'user_public_id', format: :text
   end
