@@ -105,6 +105,7 @@ class User < ActiveRecord::Base
     if splitted_email.count > 1
       user = User.where(email: email).first 
     else
+      email = email.gsub(/_/, '.')
       user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first 
     end
     return nil if user.present? and user.active == false
