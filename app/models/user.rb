@@ -8,6 +8,11 @@ class User < ActiveRecord::Base
   has_many :group_associations
   has_many :groups, through: :group_associations
 
+  has_many :host_machine_groups
+  has_many :host_machines, through: :host_machine_groups
+
+
+
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
   # 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160714115228) do
+ActiveRecord::Schema.define(version: 20160908081728) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token"
@@ -36,6 +36,22 @@ ActiveRecord::Schema.define(version: 20160714115228) do
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name"
+
+  create_table "host_machine_groups", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "host_machine_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "host_machine_groups", ["host_machine_id"], name: "index_host_machine_groups_on_host_machine_id"
+  add_index "host_machine_groups", ["user_id"], name: "index_host_machine_groups_on_user_id"
+
+  create_table "host_machines", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "hosts", force: :cascade do |t|
     t.string   "host_pattern"

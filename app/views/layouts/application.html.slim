@@ -23,8 +23,9 @@ html lang="en"
         nav
           ul.nav.nav-pills.pull-right
             li role="presentation" 
-             = link_to "Administration", profile_admin_path if current_user.admin?
-            li.active role="presentation" 
+             = link_to "Host Access", host_machine_path if current_user.admin?
+            li role="presentation" 
+             = link_to "Search", profile_admin_path if current_user.admin?
             li role="presentation" 
              = link_to current_user.name, user_path(current_user.id)
             li.active role="presentation" 
