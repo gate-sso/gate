@@ -36,7 +36,7 @@ RSpec.describe User, type: :model do
   it "should return _ for . in name" do
     user = create(:user)
     user.email = "janata.naam@test.com"
-    expect(user.get_user_unix_name).to eq("janata_naam")
+    expect(user.get_user_unix_name).to eq("janata.naam")
     user.save!
     ENV['GATE_EMAIL_DOMAIN'] = "test.com"
     user = User.get_user("janata_naam")
