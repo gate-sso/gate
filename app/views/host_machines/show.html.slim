@@ -1,3 +1,14 @@
+p
+  #notice 
+    = notice
+= form_tag host_machine_path, method: 'post' do
+  .row 
+    .col-md-8
+      = text_field_tag "host_machine[name]", "", class: "form-control", autofocus:  true
+    .col-md-4
+      = submit_tag "Add Host machine", class: "form-control btn btn-sm btn-primary", name: nil
+
+
 - if @host_machines.count > 0
   .table-responsive
     table.table.table-striped
@@ -10,16 +21,8 @@
             td
               = link_to "#{host_machine.name}", host_machine_path(host_machine)
               br
-              - if host_machine.host_machine_group.count > 0
-                - host_machine.host_machine_group.each do |group|
+              - if host_machine.host_machine_groups.count > 0
+                - host_machine.host_machine_groups.each do |group|
                   = "#{group} "
-
-
-= form_tag host_machine_path, method: 'post' do
-  .row 
-    .col-md-8
-      = text_field_tag "host_machine[name]", "", class: "form-control" 
-    .col-md-4
-      = submit_tag "Add Host machine", class: "form-control btn btn-sm btn-primary", name: nil
 
 

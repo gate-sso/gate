@@ -1,18 +1,15 @@
 class HostMachineGroupsController < ApplicationController
   def show
-
     @host_machines = HostMachine.all
-
   end
 
   def create
     @host_machine = HostMachine.new(host_machine_params)
     respond_to do |format|
       @host_machine.save
-      format.html { redirect_to @host_machine, notice: 'host_machine was successfully created.' }
-      format.json { render :show, status: :created, location: @host_machine }
+      format.html { redirect_to :show, notice: 'host_machine was successfully created.' }
+      format.json { render status: :created, json: "#{@host_machine.name}host created" }
     end
-
   end
 
   private
