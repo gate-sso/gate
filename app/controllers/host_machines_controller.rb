@@ -1,7 +1,8 @@
 class HostMachinesController < ApplicationController
 #  before_action :set_host_machine, only: [:show, :edit, :update, :destroy]
   prepend_before_filter :setup_user if Rails.env.development?
-  def show
+  def index
+    @title = "Host"
     @host_machines = HostMachine.all
   end
 
@@ -9,10 +10,10 @@ class HostMachinesController < ApplicationController
     @host_machine = HostMachine.new(host_machine_params)
     respond_to do |format|
       if @host_machine.save
-      format.html { redirect_to @host_machine, notice: 'Host was successfully created.' }
+      format.html { redirect_to host_machines_path, notice: 'Host was successfully created.' }
       format.json { render status: :created, json: "#{@host_machine.name}host created" }
       else
-        format.html { redirect_to host_machine_path, notice: "Can't save '#{host_machine_params[:name]}'" }
+        format.html { redirect_to host_machines_path, notice: "Can't save '#{host_machine_params[:name]}'" }
       format.json { render status: :error, json: "#{@host_machine.name} not created" }
       end
     end

@@ -8,8 +8,7 @@ class User < ActiveRecord::Base
   has_many :group_associations
   has_many :groups, through: :group_associations
 
-  has_many :host_machine_groups
-  has_many :host_machines, through: :host_machine_groups
+  has_many :host_access_groups, through: :user_host_access_groups
 
 
 

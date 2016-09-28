@@ -1,14 +1,6 @@
-ul.nav.nav-tabs
-  li.active role="presentation" 
-    a href="#"  Host
-  li role="presentation" 
-    a href="#"  Host Group
-  li role="presentation" 
-    a href="#"  Host Group Management
-p
-br
-  #notice 
-    = notice
+= render 'host_header'
+#notice 
+  = notice
 = form_tag host_machine_path, method: 'post' do
   .row 
     .col-md-8
@@ -28,9 +20,7 @@ br
           tr
             td
               = link_to "#{host_machine.name}", host_machine_path(host_machine)
-              br
-              - if host_machine.host_machine_groups.count > 0
-                - host_machine.host_machine_groups.each do |group|
-                  = "#{group} "
+br
 
-
+javascript:
+  $("#host_machine").addClass("active");

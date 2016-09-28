@@ -48,8 +48,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
-  resource :host_machine_group 
-  resource :host_machine
+  resources :host_access_groups
+  resources :host_machines
 
 
   # Example of regular route:
