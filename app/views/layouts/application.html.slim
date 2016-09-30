@@ -23,7 +23,7 @@ html lang="en"
         nav
           ul.nav.nav-pills.pull-right
             li role="presentation" 
-             = link_to "Host Access", host_machine_path if current_user.admin?
+             = link_to "Host Access", host_machines_path if current_user.admin?
             li role="presentation" 
              = link_to "Search", profile_admin_path if current_user.admin?
             li role="presentation" 

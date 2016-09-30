@@ -1,7 +1,7 @@
 = render 'host_header'
 #notice 
   = notice
-= form_tag host_machine_path, method: 'post' do
+= form_tag host_machines_path, method: 'post' do
   .row 
     .col-md-8
       = text_field_tag "host_machine[name]", "", class: "form-control", autofocus:  true
@@ -19,7 +19,7 @@
         - @host_machines.each do |host_machine|
           tr
             td
-              = link_to "#{host_machine.name}", host_machine_path(host_machine)
+              = link_to "#{host_machine.name}", host_machine
 br
 
 javascript:

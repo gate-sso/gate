@@ -2,7 +2,7 @@
 
 #notice 
   = notice
-= form_tag host_access_group_path, method: 'post' do
+= form_tag host_access_groups_path, method: 'post' do
   .row 
     .col-md-8
       = text_field_tag "host_access_group[name]", "", class: "form-control", autofocus:  true
@@ -20,7 +20,7 @@
         - @host_access_groups.each do |host_access_group|
           tr
             td
-              = link_to "#{host_access_group.name}", host_access_group_path(host_access_group)
+              = link_to "#{host_access_group.name}", host_access_group
 br
 
 javascript:

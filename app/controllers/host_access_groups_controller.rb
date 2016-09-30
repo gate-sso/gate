@@ -1,5 +1,5 @@
 class HostAccessGroupsController < ApplicationController
-  def show
+  def index
 
     @host_access_groups = HostAccessGroup.all
 
@@ -9,7 +9,7 @@ class HostAccessGroupsController < ApplicationController
     @host_access_group = HostAccessGroup.new(host_access_group_params)
     respond_to do |format|
       if @host_access_group.save
-        format.html { redirect_to @host_access_group, notice: 'Access group was successfully created.' }
+        format.html { redirect_to host_access_groups_path, notice: 'Access group was successfully created.' }
         format.json { render status: :created, json: "#{@host_access_group.name}host created" }
       else
         format.html { redirect_to host_access_group_path, notice: "Can't save '#{host_access_group_params[:name]}'" }
