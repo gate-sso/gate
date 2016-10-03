@@ -1,7 +1,12 @@
 class Group < ActiveRecord::Base
   has_many :group_associations
   has_many :users, through: :group_associations
+
+  has_many :host_machine_groups
+  has_many :host_machines, through: :host_machine_groups
   acts_as_paranoid
+
+
   after_create :add_gid
 
   GID_CONSTANT = 9000

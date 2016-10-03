@@ -8,10 +8,6 @@ class User < ActiveRecord::Base
   has_many :group_associations
   has_many :groups, through: :group_associations
 
-  has_many :host_access_groups, through: :user_host_access_groups
-
-
-
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
   # 
