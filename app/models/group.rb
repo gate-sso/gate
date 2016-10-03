@@ -2,8 +2,8 @@ class Group < ActiveRecord::Base
   has_many :group_associations
   has_many :users, through: :group_associations
 
-  has_many :host_machine_groups
-  has_many :host_machines, through: :host_machine_groups
+  has_many :host_access_groups
+  has_many :host_machines, through: :host_access_groups
   acts_as_paranoid
 
 

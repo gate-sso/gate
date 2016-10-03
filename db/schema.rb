@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160928085945) do
+ActiveRecord::Schema.define(version: 20161003145832) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token"
@@ -38,30 +38,11 @@ ActiveRecord::Schema.define(version: 20160928085945) do
   add_index "groups", ["name"], name: "index_groups_on_name"
 
   create_table "host_access_groups", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "host_machine_access_groups", force: :cascade do |t|
     t.integer  "host_machine_id"
-    t.integer  "host_access_group_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  add_index "host_machine_access_groups", ["host_access_group_id"], name: "index_host_machine_access_groups_on_host_access_group_id"
-  add_index "host_machine_access_groups", ["host_machine_id"], name: "index_host_machine_access_groups_on_host_machine_id"
-
-  create_table "host_machine_groups", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "host_machine_id"
+    t.integer  "group_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
-
-  add_index "host_machine_groups", ["host_machine_id"], name: "index_host_machine_groups_on_host_machine_id"
-  add_index "host_machine_groups", ["user_id"], name: "index_host_machine_groups_on_user_id"
 
   create_table "host_machines", force: :cascade do |t|
     t.string   "name"
@@ -82,16 +63,6 @@ ActiveRecord::Schema.define(version: 20160928085945) do
   add_index "hosts", ["deleted_by"], name: "index_hosts_on_deleted_by"
   add_index "hosts", ["host_pattern"], name: "index_hosts_on_host_pattern"
   add_index "hosts", ["user_id"], name: "index_hosts_on_user_id"
-
-  create_table "user_host_access_groups", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "host_access_group_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
-
-  add_index "user_host_access_groups", ["host_access_group_id"], name: "index_user_host_access_groups_on_host_access_group_id"
-  add_index "user_host_access_groups", ["user_id"], name: "index_user_host_access_groups_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false

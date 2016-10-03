@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :host_access_group do
-    name "MyString"
+    references ""
+    references ""
   end
 end
