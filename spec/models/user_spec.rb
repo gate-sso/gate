@@ -10,19 +10,18 @@ RSpec.describe User, type: :model do
   it "should check uid creation with offset" do
     user = create(:user)
     expect(user.uid.to_i).to eq(user.id + UID_CONSTANT)
-
   end
 
   it "should return false if user is not active" do
     user = create(:user)
     response =  User.get_shadow_name_response user.name
-    expect(response[:sp_namp]).to eq("test4")
+    expect(response[:sp_namp]).to eq(user.get_user_unix_name)
   end
   it "should return false if user is not active" do
     group = create(:group)
     user = create(:user)
     response =  User.get_passwd_uid_response user.uid
-    expect(response[:pw_name]).to eq("test5")
+    expect(response[:pw_name]).to eq(user.get_user_unix_name)
   end
 
   it "should get all users for passwd" do
