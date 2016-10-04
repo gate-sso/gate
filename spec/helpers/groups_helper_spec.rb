@@ -1,14 +1,15 @@
 require 'rails_helper'
 
 # Specs in this file have access to a helper object that includes
-# the HostAccessGroupsHelper. For example:
+# the GroupsHelper. For example:
 #
-# describe HostAccessGroupsHelper do
+# describe GroupsHelper do
 #   describe "string concat" do
 #     it "concats two strings with spaces" do
 #       expect(helper.concat_strings("this","that")).to eq("this that")
 #     end
 #   end
 # end
-RSpec.describe HostAccessGroupsHelper, type: :helper do
+RSpec.describe GroupsHelper, type: :helper do
+  pending "add some examples to (or delete) #{__FILE__}"
 end

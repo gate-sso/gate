@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   root 'home#index'
 
   resources :host_machines
+  resources :groups
 
 
   # Example of regular route:
