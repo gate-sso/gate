@@ -13,21 +13,5 @@ hr
     .col-md-4
       = submit_tag "Search Groups", class: "form-control btn btn-sm btn-primary", name: nil
 hr
-= form_tag host_machine_search_path, method: 'get' do
-  .row 
-    .col-md-8
-      = text_field_tag :host_search, params[:host_machine_search], class: "form-control" 
-    .col-md-4
-      = submit_tag "Search Host", class: "form-control btn btn-sm btn-primary", name: nil
-
-hr
-= form_tag host_machine_group_search_path, method: 'get' do
-  .row 
-    .col-md-8
-      = text_field_tag :group_search, params[:host_machine_group_search], class: "form-control" 
-    .col-md-4
-      = submit_tag "Search Host Groups", class: "form-control btn btn-sm btn-primary", name: nil
-
-b
 br
 
