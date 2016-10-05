@@ -1,18 +1,5 @@
 class GroupController < ApplicationController
   before_filter :authenticate_user!
-  GROUP_NAME_RESPONSE = "GROUP_NAME:"
-  GROUP_GID_RESPONSE = "GROUP_GID:"
-  GROUP_ALL_RESPONSE = "GROUP_ALL"
-
-  SHADOW_NAME_RESPONSE = "SHADOW_NAME:"
-  SHADOW_ALL_RESPONSE = "SHADOW_ALL"
-
-  PASSWD_NAME_RESPONSE = "PASSWD_NAME:"
-  PASSWD_UID_RESPONSE = "PASSWD_UID:"
-  PASSWD_ALL_RESPONSE = "PASSWD_ALL"
-
-  REDIS_KEY_EXPIRY = 12 * 60 * 60
-
   def add_group    
     @user = User.find(params[:id])
     if current_user.admin?
@@ -86,6 +73,8 @@ class GroupController < ApplicationController
   end
 
   def show
+
+    @group = Group.find(params[:id])
 
   end
 end

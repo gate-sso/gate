@@ -36,6 +36,12 @@ RSpec.describe Group, type: :model do
     expect(group_response[:gr_mem].count).to eq(1)
     expect(group_response[:gr_mem][0]).to eq(user.get_user_unix_name)
 
+    host_response = HostMachine.get_group_response host_machine.name
+
+    expect(host_machine.groups.count).to eq(1)
+    expect(host_response[:groups].count).to eq(1)
+    expect(host_response[:groups][0].name).to eq(group.name)
+
   end
 
 

@@ -2,6 +2,7 @@ class ProfileController < ApplicationController
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
+  
   def show
 
   end
@@ -15,7 +16,6 @@ class ProfileController < ApplicationController
     end
     render text: response
   end
-
 
   def download_vpn
     if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?

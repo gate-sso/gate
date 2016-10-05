@@ -1,0 +1,72 @@
+h4
+  = "Showing Details for '#{@group.name}'"
+hr
+
+.row
+  .col-md-4.text-primary Name
+  .col-md-8 
+    = @group.name
+  .col-md-4.text-primary GID
+  .col-md-8 
+    = @group.gid
+
+hr
+.row
+  .col-md-4.text-primary Group Members
+  .col-md-8 
+      - if @group.users.count > 0
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th User Details
+                th Email address
+            tbody
+              - @group.users.each do |user|
+                tr
+                  td
+                    = link_to "#{user.name}", user_path(user)
+                  td
+                    = "#{user.email}"
+                  td 
+                    = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin?
+
+      - else
+        span This group does not have any users
+      .row
+        - if current_user.admin?
+          = form_tag  add_user_to_group_path, method: :post do
+            .col-sm-8
+              = select_tag "user_id", options_from_collection_for_select(@users, "id", "name"), class: "form-control"
+            .col-sm-4
+              = submit_tag "Add User", class: "form-control btn-sm btn-primary"
+
+hr
+.row
+  .col-md-4.text-primary Group Hosts
+  .col-md-8 
+      - if @group.host_machines.count > 0
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th Host Name
+            tbody
+              - @group.host_machines.each do |machine|
+                tr
+                  td
+                    = link_to "#{machine.name}", host_machine_path(machine)
+                  td 
+                    = link_to "Delete", [@group, machine], method: :delete, data: {confirm: 'Are you sure to remove this machine from the group??'} if current_user.admin?
+      - else
+        span This group does not have any hosts
+      .row
+        - if current_user.admin?
+          = form_tag  add_machine_to_group_path, method: :post do
+            .col-sm-8
+              = select_tag "machine_id", options_from_collection_for_select(@host_machines, "id", "name"), class: "form-control"
+            .col-sm-4
+              = submit_tag "Add Host", class: "form-control btn-sm btn-primary"
+hr
+
+= link_to "<< Back to Groups", groups_path

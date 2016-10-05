@@ -1,17 +1,15 @@
 class NssController < ApplicationController
 
-  GROUP_NAME_RESPONSE = "GROUP_NAME:"
-  GROUP_GID_RESPONSE = "GROUP_GID:"
-  GROUP_ALL_RESPONSE = "GROUP_ALL"
+  def host
+    token =  AccessToken.valid_token params[:token]
 
-  SHADOW_NAME_RESPONSE = "SHADOW_NAME:"
-  SHADOW_ALL_RESPONSE = "SHADOW_ALL"
+    @response = nil
+    if token
+      @response = HostMachine.get_group_response(params[:name]) if params[:name].present?
+    end
 
-  PASSWD_NAME_RESPONSE = "PASSWD_NAME:"
-  PASSWD_UID_RESPONSE = "PASSWD_UID:"
-  PASSWD_ALL_RESPONSE = "PASSWD_ALL"
-
-  REDIS_KEY_EXPIRY = 12 * 60 * 60
+    render json: @response
+  end
   def group
     token = AccessToken.valid_token params[:token]
     @reponse = nil

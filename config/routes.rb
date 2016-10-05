@@ -31,16 +31,22 @@ Rails.application.routes.draw do
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
 
-
   #Group Functions
   post 'profile/:id/group' => 'group#add_group', as: 'add_group'
   delete 'profile/:user_id/group/:id' => 'group#delete_group', as: 'user_group'
   get 'group' => 'group#list', as: 'group_list'
-  get 'group/:id' => 'group#show', as: 'group'
   # math nss-http
   get 'nss/group' => 'nss#group', as: 'nss_group', format: :json
   get 'nss/shadow' => 'nss#shadow', as: 'nss_shadow', format: :json
   get 'nss/passwd' => 'nss#passwd', as: 'nss_passwd', format: :json
+  get 'nss/host' => 'nss#host', as: 'nss_host', format: :json
+
+  #Specific Group routes
+
+  post 'groups/:id/add_user' => 'groups#add_user', as: 'add_user_to_group'
+  post 'groups/:id/add_machine' => 'groups#add_machine', as: 'add_machine_to_group'
+  delete 'groups/:id/user/:user_id' => 'groups#delete_user', as: 'group_user'
+  delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

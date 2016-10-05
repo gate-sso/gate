@@ -17,14 +17,16 @@ class HostMachinesController < ApplicationController
       format.json { render status: :error, json: "#{@host_machine.name} not created" }
       end
     end
+  end
 
-
+  def show
+  
   end
 
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_host_machine
-    @host_machine = host_machine.find(params[:id])
+    @host_machine = HostMachine.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

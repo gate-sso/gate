@@ -21,7 +21,8 @@
       = submit_tag "Update", class: "form-control btn-sm btn-primary" if current_user.admin?
 hr
 .row
-  .col-md-4.text-primary Groups
+  .col-md-4.text-primary 
+    = link_to "Groups", groups_path
   .col-md-8
     - @user.groups.each do |group|
       - unless group.deleted?
@@ -43,7 +44,7 @@ hr
             = submit_tag "Add Group", class: "form-control btn-sm btn-primary"
 hr
 .row
-  .col-md-4.text-primary Permitted Hosts
+  .col-md-4.text-primary Permitted Host Patterns
   .col-md-8
     - @user.hosts.each do |host|
       - unless host.deleted?

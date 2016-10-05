@@ -9,4 +9,12 @@ class HostMachine < ActiveRecord::Base
     self.name = self.name.downcase
   end
 
+  def self.get_group_response name
+    host_machine = HostMachine.find_by_name(name)
+    response = {}
+    response[:host_name] = name
+    response[:groups] = host_machine.groups.select { |g| g.name }
+    response
+  end
+
 end

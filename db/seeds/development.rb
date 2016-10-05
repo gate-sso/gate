@@ -26,4 +26,9 @@ User.all.each do |user|
   user.save!
 end
 
+User.all.each do |user|
+  group = Group.create(name: user.get_user_unix_name)
+      user.groups << group
+      user.save!
+end
 group = Group.create(name: "devops")
