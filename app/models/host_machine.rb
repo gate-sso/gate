@@ -13,7 +13,7 @@ class HostMachine < ActiveRecord::Base
     host_machine = HostMachine.find_by_name(name)
     response = {}
     response[:host_name] = name
-    response[:groups] = host_machine.groups.select { |g| g.name }
+    response[:groups] = host_machine.groups.collect { |g| g.name }
     response
   end
 

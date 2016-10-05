@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   post 'groups/:id/add_machine' => 'groups#add_machine', as: 'add_machine_to_group'
   delete 'groups/:id/user/:user_id' => 'groups#delete_user', as: 'group_user'
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
+  delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

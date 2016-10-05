@@ -32,3 +32,4 @@ User.all.each do |user|
       user.save!
 end
 group = Group.create(name: "devops")
+access_token = AccessToken.create(token: "a")

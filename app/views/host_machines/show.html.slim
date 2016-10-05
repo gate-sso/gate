@@ -1,0 +1,33 @@
+h4
+  = "Showing Details for '#{@machine.name}'"
+hr
+
+.row
+  .col-md-4.text-primary Name
+  .col-md-8 
+    = @machine.name
+.row
+  .col-md-4.text-primary Groups
+  .col-md-8 
+      - if @machine.groups.count > 0
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th Group Name 
+                th GID
+            tbody
+              - @machine.groups.each do |group|
+                tr
+                  td
+                    = link_to "#{group.name}", group_path(group)
+                  td
+                    = "#{group.gid}"
+                  td 
+                    = link_to "Delete", [@machine, group], method: :delete, data: {confirm: 'Are you sure to remove this group?'} if current_user.admin?
+
+      - else
+        span This machine does not have any groups! 
+hr
+= link_to "To add, goto Groups >>", groups_path
+
