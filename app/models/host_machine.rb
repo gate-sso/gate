@@ -12,6 +12,7 @@ class HostMachine < ActiveRecord::Base
   def self.get_group_response name
     host_machine = HostMachine.find_by_name(name)
     response = {}
+    return response if host_machine.blank?
     response[:host_name] = name
     response[:groups] = host_machine.groups.collect { |g| g.name }
     response

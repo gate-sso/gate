@@ -1,15 +1,24 @@
 class NssController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token, only: [ :add_host ]
   def host
     token =  AccessToken.valid_token params[:token]
-
     @response = nil
     if token
       @response = HostMachine.get_group_response(params[:name]) if params[:name].present?
     end
-
     render json: @response
   end
+
+  def add_host
+    token =  AccessToken.valid_token params[:token]
+    if token
+      @response = HostMachine.create(name: params[:name]) if params[:name].present?
+    end
+    render json: @response
+      
+  end
+
   def group
     token = AccessToken.valid_token params[:token]
     @reponse = nil

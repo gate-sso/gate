@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   get 'nss/shadow' => 'nss#shadow', as: 'nss_shadow', format: :json
   get 'nss/passwd' => 'nss#passwd', as: 'nss_passwd', format: :json
   get 'nss/host' => 'nss#host', as: 'nss_host', format: :json
+  post 'nss/host' => 'nss#add_host', as: 'add_nss_host', format: :json
 
   #Specific Group routes
 
