@@ -1,6 +1,36 @@
 class NssController < ApplicationController
 
-  skip_before_filter :verify_authenticity_token, only: [ :add_host ]
+  skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
+
+  def add_user_to_group 
+    token =  AccessToken.valid_token params[:token]
+    result = false
+    @response = User.get_user(params[:name]) if params[:name].present?
+    if token && @response.present?
+      @group = Group.where(name: params[:group_name] ).first
+      @response.groups << @group  if @response.present? and @response.groups.find_by_id(@group.id).blank?
+      @response.save!
+
+      @response.groups.each do |group|
+        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+      end
+
+      @response = Group.get_all_response.to_json
+      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_shadow_response.to_json
+      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_passwd_response.to_json
+      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
+      result = true
+    end
+    render json: { success: result }
+  end
+
   def host
     token =  AccessToken.valid_token params[:token]
     @response = nil
@@ -13,10 +43,14 @@ class NssController < ApplicationController
   def add_host
     token =  AccessToken.valid_token params[:token]
     if token
-      @response = HostMachine.create(name: params[:name]) if params[:name].present?
+      @response = HostMachine.find_or_create_by(name: params[:name]) if params[:name].present?
+      @group = Group.find_or_create_by(name: params[:group_name] )
+      @response.groups << @group  if @response.present? and @response.groups.find_by_id(@group.id).blank?
+      @response.save!
+
     end
     render json: @response
-      
+
   end
 
   def group

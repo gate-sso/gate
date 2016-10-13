@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   get 'nss/passwd' => 'nss#passwd', as: 'nss_passwd', format: :json
   get 'nss/host' => 'nss#host', as: 'nss_host', format: :json
   post 'nss/host' => 'nss#add_host', as: 'add_nss_host', format: :json
+  post 'nss/user' => 'nss#add_user_to_group', as: 'add_nss_user_to_group', format: :json
 
   #Specific Group routes
 

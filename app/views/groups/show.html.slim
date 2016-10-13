@@ -37,7 +37,7 @@ hr
         - if current_user.admin?
           = form_tag  add_user_to_group_path, method: :post do
             .col-sm-8
-              = select_tag "user_id", options_from_collection_for_select(@users, "id", "name"), class: "form-control"
+              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), class: "form-control"
             .col-sm-4
               = submit_tag "Add User", class: "form-control btn-sm btn-primary"
 
@@ -64,7 +64,7 @@ hr
         - if current_user.admin?
           = form_tag  add_machine_to_group_path, method: :post do
             .col-sm-8
-              = select_tag "machine_id", options_from_collection_for_select(@host_machines, "id", "name"), class: "form-control"
+              = select_tag "machine_id", options_from_collection_for_select(@host_machines.sort_by { |machine| machine.name}, "id", "name"), class: "form-control"
             .col-sm-4
               = submit_tag "Add Host", class: "form-control btn-sm btn-primary"
 hr

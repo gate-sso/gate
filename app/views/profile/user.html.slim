@@ -39,7 +39,7 @@ hr
       - if current_user.admin?
         = form_tag  add_group_path, method: :post do
           .col-sm-8
-            = select_tag "group_id", options_from_collection_for_select(@group, "id", "name"), class: "form-control"
+            = select_tag "group_id", options_from_collection_for_select(@group.sort_by {|group| group.name}, "id", "name"), class: "form-control"
           .col-sm-4
             = submit_tag "Add Group", class: "form-control btn-sm btn-primary"
 hr

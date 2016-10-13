@@ -4,12 +4,19 @@ class Group < ActiveRecord::Base
 
   has_many :host_access_groups
   has_many :host_machines, through: :host_access_groups
+  validates_uniqueness_of :name, case_sensitive: false
+
+  before_create :set_lower_case_name
   acts_as_paranoid
 
 
   after_create :add_gid
 
   GID_CONSTANT = 9000
+
+  def set_lower_case_name
+    self.name = self.name.downcase
+  end
 
   def add_gid
     self.gid = self.id + GID_CONSTANT
