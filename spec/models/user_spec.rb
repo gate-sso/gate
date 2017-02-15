@@ -48,4 +48,24 @@ RSpec.describe User, type: :model do
 
     expect(response).to eq (false)
   end
+
+  it 'should return user if email registered' do
+    email = Faker::Internet.email
+    create(:user, email: email)
+    user = User.find_by_email(email)
+    expect(user.email).to eq(email)
+  end
+
+  it 'should return nil if email not registered' do
+    email = Faker::Internet.email
+    user = User.find_by_email(email)
+    expect(user.blank?).to eq(true)
+  end
+
+  it 'should return registered groups list' do
+    email = Faker::Internet.email
+    create(:user, email: email)
+    user = User.find_by_email(email)
+    expect(user.group_names_list.include?(user.get_user_unix_name)).to eq(true)
+  end
 end

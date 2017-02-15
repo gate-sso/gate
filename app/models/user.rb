@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
     self.save!
   end
 
+
   def self.from_omniauth(access_token)
     data = access_token.info
     user = User.where(:email => data["email"]).first
@@ -208,5 +209,13 @@ class User < ActiveRecord::Base
     user_hash[:pw_dir] = "#{HOME_DIR}/#{get_user_unix_name}"
     user_hash[:pw_shell] = "/bin/bash"
     user_hash
+  end
+
+  def self.find_by_email(email)
+    User.where(email: email, active: true).first
+  end
+
+  def group_names_list
+    self.groups.map(&:name)
   end
 end
