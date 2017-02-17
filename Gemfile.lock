@@ -71,6 +71,8 @@ GEM
     factory_girl_rails (4.7.0)
       factory_girl (~> 4.7.0)
       railties (>= 3.0.0)
+    faker (1.7.3)
+      i18n (~> 0.5)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.10-java)
@@ -263,6 +265,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   devise (= 4.1.0)
   factory_girl_rails
+  faker
   jbuilder (~> 2.0)
   jdbc-mysql
   jquery-rails
@@ -287,4 +290,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.12.5
+   1.13.7
