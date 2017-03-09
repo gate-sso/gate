@@ -23,6 +23,8 @@ test:
 # This is sample gate username and password for production, since we use sqlite for development
 production:
   adapter: mysql2 # or mysql
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
   database: gate_prod
   username: gate_prod_user
   password: dorp_etag_drow
