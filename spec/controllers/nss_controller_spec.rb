@@ -26,4 +26,15 @@ RSpec.describe NssController, type: :controller do
 		data = JSON.parse(response.body)
 		expect(data["success"]).to eq(true)
 	end	
+
+	it "should remove user from group" do
+		create(:access_token, token: access_token)
+		user = create(:user, email: email)
+		old_group_size = user.groups.size
+		p old_group_size
+		delete :remove_user_from_group, token: access_token, name: user.email, group_name: user.groups.last.name
+		data = JSON.parse(response.body)
+		expect(data["success"]).to eq(true)
+		expect(user.groups.size).not_to eq(old_group_size - 1)
+	end
 end
