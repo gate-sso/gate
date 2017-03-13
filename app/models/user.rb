@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   def add_uid
     self.uid = id + UID_CONSTANT
     self.save!
-  end:w
+  end
 
   def self.add_temp_user (name, email);
     user = User.create(name:name, email: email)
