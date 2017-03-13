@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   end
 
   def self.add_temp_user (name, email)
-    email = email + "@" + GATE_HOSTED_DOMAIN
+    email = email + "@" + ENV['GATE_HOSTED_DOMAIN']
     user = User.create(name:name, email: email)
     host = Host.new
     host.user = user
