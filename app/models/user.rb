@@ -20,6 +20,27 @@ class User < ActiveRecord::Base
   def add_uid
     self.uid = id + UID_CONSTANT
     self.save!
+  end:w
+
+  def self.add_temp_user (name, email);
+    user = User.create(name:name, email: email)
+    host = Host.new
+    host.user = user
+    host.host_pattern = "s*" #by default give host access to all staging instances
+    host.save!
+
+
+    #Add user to default user's group
+    group = Group.create(name: user.get_user_unix_name)
+    user.groups << group
+    user.save!
+
+    if user.persisted? and user.auth_key.blank?
+      user.auth_key = ROTP::Base32.random_base32
+      totp = ROTP::TOTP.new(user.auth_key)
+      user.provisioning_uri = totp.provisioning_uri "GoJek-C #{name}"
+      user.save!
+    end
   end
 
 
