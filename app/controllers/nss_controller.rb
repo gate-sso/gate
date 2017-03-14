@@ -187,7 +187,7 @@ class NssController < ApplicationController
   def groups_list
     token =  AccessToken.valid_token params[:token]
     if token
-      user = User.find_by_email(params[:email])
+      user = User.get_user(params[:email])
       if user.blank?
         render json: { success: false }
       else
