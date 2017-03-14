@@ -42,7 +42,6 @@ Rails.application.routes.draw do
   get 'nss/host' => 'nss#host', as: 'nss_host', format: :json
   post 'nss/host' => 'nss#add_host', as: 'add_nss_host', format: :json
   post 'nss/user' => 'nss#add_user_to_group', as: 'add_nss_user_to_group', format: :json
-  delete 'nss/user' => 'nss#remove_user_from_group', as: 'remove_user_from_group', format: :json
   get 'nss/user/groups' => 'nss#groups_list', as: 'profile_groups_list', format: :json
 
   #Specific Group routes
