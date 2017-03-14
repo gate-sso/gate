@@ -31,6 +31,37 @@ class NssController < ApplicationController
     render json: { success: result }
   end
 
+  def remove_user_from_group 
+    token =  AccessToken.valid_token params[:token]
+    result = false
+    @response = User.get_user(params[:name]) if params[:name].present?
+    if token && @response.present?
+      @group = Group.where(name: params[:group_name] ).first
+      if @response.present? and @response.groups.find_by_id(@group.id).blank?
+        @response.groups.delete(@group)
+      end
+      @response.save!
+
+      @response.groups.each do |group|
+        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+      end
+
+      @response = Group.get_all_response.to_json
+      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_shadow_response.to_json
+      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_passwd_response.to_json
+      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
+      result = true
+    end
+    render json: { success: result }
+  end
+
   def host
     token =  AccessToken.valid_token params[:token]
     @response = nil
@@ -156,7 +187,7 @@ class NssController < ApplicationController
   def groups_list
     token =  AccessToken.valid_token params[:token]
     if token
-      user = User.find_by_email(params[:email])
+      user = User.get_user(params[:email])
       if user.blank?
         render json: { success: false }
       else
