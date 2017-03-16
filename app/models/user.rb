@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   end
 
   def self.add_temp_user (name, email)
-    email = email + "@" + ENV['GATE_HOSTED_DOMAIN']
+    email = email + "@" + ENV['GATE_HOSTED_DOMAIN'].to_s
     user = User.create(name:name, email: email)
     host = Host.new
     host.user = user
@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
       user.provisioning_uri = totp.provisioning_uri "GoJek-C #{name}"
       user.save!
     end
+    user.auth_key
   end
 
 
