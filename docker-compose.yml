@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: gate
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+  web:
+    build: .
+    command: rails s -p 3000 -b '0.0.0.0'
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - db
