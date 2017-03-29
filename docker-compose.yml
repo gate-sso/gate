@@ -7,12 +7,16 @@ services:
       MYSQL_DATABASE: gate
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
+  redis:
+    image: redis
   web:
     build: .
     command: rails s -p 3000 -b '0.0.0.0'
     environment:
       DB_HOST: db
       DB_PORT: 3306
+      CACHE_HOST: redis
+      CACHE_PORT: 6379
     env_file:
       - .env
     ports:
@@ -20,3 +24,4 @@ services:
     restart: always
     depends_on:
       - db
+      - redis

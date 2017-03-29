@@ -1,6 +1,6 @@
 default: &default
-  host: localhost
-  port: 6379
+  host: <%= ENV['CACHE_HOST'] %>
+  port: <%= ENV['CACHE_PORT'] %>
   limit: 20
 
 development:
