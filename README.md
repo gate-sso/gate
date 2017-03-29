@@ -19,6 +19,8 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 
 Gate is a Rails application, compatible with JRuby.
 
+#### Local
+
 * Checkout gate
 * Run `bundle install`
 * Update database.yml
@@ -27,6 +29,7 @@ Gate is a Rails application, compatible with JRuby.
 ```
 GATE_OAUTH_SECRET       - Your OAuth key
 GATE_OAUTH_CLIENT_KEY   - Your client secret key
+GATE_OAUTH_API_KEY      - Your API key
 GATE_HOSTED_DOMAIN      - The hosted domain for gmail
 GATE_SERVER_URL         - Gate server FQDN
 GATE_CONFIG_SECRET      - Ruby required config secret key in production environment
@@ -43,6 +46,14 @@ Once Gate is setup, sign up with your user and you should see welcome page with 
 If you want gate to setup VPN for your, then just install OpenVPN with easy rsa, Gate should just work fine with it.
 
 > **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
+
+#### Local dockerised setup
+
+* Checkout gate
+* Run `make init` to setup `.env` file.
+* Setup proper env variable values in `.env` file.
+* Run `make all` to build, run and run migrations
+* Run `make rpsec` for running specs
 
 ### Modules
 
