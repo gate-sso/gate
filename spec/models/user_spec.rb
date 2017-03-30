@@ -17,8 +17,8 @@ RSpec.describe User, type: :model do
     response =  User.get_shadow_name_response user.name
     expect(response[:sp_namp]).to eq(user.get_user_unix_name)
   end
+
   it "should return false if user is not active" do
-    group = create(:group)
     user = create(:user)
     response =  User.get_passwd_uid_response user.uid
     expect(response[:pw_name]).to eq(user.get_user_unix_name)
