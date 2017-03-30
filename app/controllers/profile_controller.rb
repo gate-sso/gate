@@ -24,6 +24,15 @@ class ProfileController < ApplicationController
     send_file ("/opt/vpnkeys/#{current_user.email}.tar.gz")
   end
 
+  def download_uat_vpn
+    if !uat_profile_exist?
+      `ssh ajey@10.140.0.3 "cd /etc/openvpn/easy-rsa/ && sudo bash /etc/openvpn/easy-rsa/configure_client.sh #{current_user.email}"`
+      `sudo su - && scp ajey@10.140.0.3:/opt/vpnkeys/#{current_user.email}.tar.gz /opt/vpnkeys/#{current_user.email}_uat.tar.gz`
+      `chown ajey:ajey /opt/vpnkeys/#{current_user.email}_uat.tar.gz`
+    end
+      send_file("/opt/vpnkeys/#{current_user.email}_uat.tar.gz")
+  end
+
   def authenticate
     response = User.authenticate params
     if response
@@ -136,5 +145,10 @@ class ProfileController < ApplicationController
   protected
   def admin_active
     params.require(:user).permit(:active, :admin)
+  end
+
+  def uat_profile_exist?
+    grep_response_code = `ssh ajey@10.140.0.3 "ls -la /opt/vpnkeys | grep #{current_user.email}"`
+    grep_response_code.!empty?
   end
 end
