@@ -22,6 +22,7 @@ test:
     useSSL: false
 
 production:
+  <<: *default
   host: <%= ENV['DB_HOST'] %>
   port: <%= ENV['DB_PORT'] %>
   database: <%= ENV['DB_NAME'] %>
