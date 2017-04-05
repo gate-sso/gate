@@ -1,9 +1,5 @@
 sudo: required
 
-language: ruby
-rvm:
-  - jruby
-
 services:
   - docker
 

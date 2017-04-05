@@ -1,4 +1,5 @@
-# gate
+# gate [![Build
+Status](https://travis-ci.org/gate-sso/gate.svg?branch=master)](https://travis-ci.org/gate-sso/gate)
 
 Gate is Single Sign On platform for centralised authentication across Linux, OpenVPN and CAS.
 
