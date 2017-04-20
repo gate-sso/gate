@@ -17,8 +17,6 @@ services:
       GATE_DB_PORT: 3306
       CACHE_HOST: redis
       CACHE_PORT: 6379
-      GATE_DB_USER: mysql
-      GATE_DB_PASSWORD: password
     env_file:
       - .env
     ports:
