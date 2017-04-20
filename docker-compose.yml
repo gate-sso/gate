@@ -4,7 +4,7 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: gate_development
+      MYSQL_DATABASE: gate_test
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
   redis:
