@@ -66,6 +66,7 @@ end
 gem "slim-rails"
 
 gem "twitter-bootstrap-rails"
+gem "font-awesome-rails"
 
 #gem 'therubyracer', platform: :ruby
 gem 'rotp'
