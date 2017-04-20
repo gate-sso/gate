@@ -2,27 +2,24 @@ default: &default
   adapter: mysql
   pool: 5
   timeout: 5000
+  host: <%= ENV['GATE_DB_HOST'] %>
+  port: <%= ENV['GATE_DB_PORT'] %>
+  username: <%= ENV['GATE_DB_USER'] %>
+  password: <%= ENV['GATE_DB_PASSWORD'] %>
+
 
 development:
   <<: *default
   database: gate_development
-  host: <%= ENV['GATE_DB_HOST'] %>
-  port: <%= ENV['GATE_DB_PORT'] %>
   properties:
     useSSL: false
 
 test:
   <<: *default
   database: gate_test
-  host: <%= ENV['GATE_DB_HOST'] %>
-  port: <%= ENV['GATE_DB_PORT'] %>
   properties:
     useSSL: false
 
 production:
   <<: *default
-  host: <%= ENV['GATE_DB_HOST'] %>
-  port: <%= ENV['GATE_DB_PORT'] %>
   database: <%= ENV['GATE_DB_NAME'] %>
-  username: <%= ENV['GATE_DB_USER'] %>
-  password: <%= ENV['GATE_DB_PASSWORD'] %>

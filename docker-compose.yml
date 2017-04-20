@@ -15,6 +15,8 @@ services:
     environment:
       GATE_DB_HOST: db
       GATE_DB_PORT: 3306
+      GATE_DB_USER: mysql
+      GATE_DB_PASSWORD: mysql
       CACHE_HOST: redis
       CACHE_PORT: 6379
     env_file:
