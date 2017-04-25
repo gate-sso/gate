@@ -116,6 +116,18 @@ class User < ActiveRecord::Base
     return false
   end
 
+  def self.authenticate_cas encoded_string
+    username_password = Base64.decode64 encoded_string.split(" ")[1]
+    username = username_password.split(':').first
+    password = username_password.split(':').last
+
+    if User.find_and_check_user username, password
+      return username
+    else
+      return nil
+    end
+  end
+
 
   def self.authenticate params
     email, token = User.get_user_pass_attributes params

@@ -39,13 +39,9 @@ class ProfileController < ApplicationController
 
   def authenticate_cas
 
-    username_password = Base64.decode64 request.env["HTTP_AUTHORIZATION"].split(" ")[1]
-    username = username_password.split(':').first
-    password = username_password.split(':').last
+    username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]
 
-    result = User.find_and_check_user username, password
-
-    if result
+    if username.present?
       render json: { 'id' => username } , status: :ok
     else
       render json: { 'id' => username } , status: 401
