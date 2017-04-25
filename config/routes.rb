@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   match 'profile', to: 'profile#show', via: :get, format: :html
   match 'profile/verify', to: 'profile#verify', via: :get, format: :text
   match 'profile/authenticate', to: 'profile#authenticate', via: :get, format: :text
+  match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'

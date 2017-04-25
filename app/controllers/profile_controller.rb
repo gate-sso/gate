@@ -1,5 +1,6 @@
 class ProfileController < ApplicationController
-  before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_pam, :public_key] unless Rails.env.development?
+  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+  before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
 
@@ -26,12 +27,28 @@ class ProfileController < ApplicationController
     send_file ("/opt/vpnkeys/#{current_user.email}.tar.gz")
   end
 
+
   def authenticate
     response = User.authenticate params
     if response
       render text: 0
     else
       render text: 1
+    end
+  end
+
+  def authenticate_cas
+
+    username_password = Base64.decode64 request.env["HTTP_AUTHORIZATION"].split(" ")[1]
+    username = username_password.split(':').first
+    password = username_password.split(':').last
+
+    result = User.find_and_check_user username, password
+
+    if result
+      render json: { 'id' => username } , status: :ok
+    else
+      render json: { 'id' => username } , status: 401
     end
   end
 
