@@ -60,5 +60,5 @@ Rails.application.routes.draw do
   resources :host_machines
   resources :groups
 
-  get "/ping", to: "ping#ping"
+  resource :ping, only: [:show]
 end
