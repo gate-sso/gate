@@ -15,7 +15,7 @@ cat > /etc/openvpn/keys/$1.ovpn <<EOF
 client
 dev tun
 proto udp
-remote gate.gojek.co.id 1194
+remote <<your server name>> 1194
 resolv-retry infinite
 nobind
 persist-key
