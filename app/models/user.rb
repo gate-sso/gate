@@ -22,6 +22,23 @@ class User < ActiveRecord::Base
     self.save!
   end
 
+  def self.includes_restricted_characters? input_string
+    return false if input_string.include?('@') == false
+    restricted_characters = [ ' ', '-', '*']
+    status  = false
+
+    restricted_characters.each do |char|
+      break if status 
+      status = input_string.include?(char) 
+    end
+
+    status
+  end
+
+  def self.check_email_address email_address
+    !includes_restricted_characters?(email_address) && email_address.split("@").count == 2 ? true : false
+  end
+
   def self.add_temp_user (name, email)
     email = email + "@" + ENV['GATE_HOSTED_DOMAIN'].to_s
     user = User.create(name:name, email: email)

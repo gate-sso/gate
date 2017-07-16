@@ -7,6 +7,21 @@ RSpec.describe User, type: :model do
     group = create(:group)
   end
 
+  it "should check valid email address" do
+    #email address always has 2 parts
+    email_address = "satrya@gmail.com"
+    expect(User.check_email_address(email_address)).to eq(true)
+
+    email_address = "satraya @gmail.com"
+    expect(User.check_email_address(email_address)).to eq(false)
+
+    email_address = "satraya@-gmail.com"
+    expect(User.check_email_address(email_address)).to eq(false)
+
+    email_address = "sat*raya@gmail.com"
+    expect(User.check_email_address(email_address)).to eq(false)
+  end
+
   it "should check uid creation with offset" do
     user = create(:user)
     expect(user.uid.to_i).to eq(user.id + UID_CONSTANT)

@@ -27,6 +27,22 @@ class ProfileController < ApplicationController
     send_file ("/opt/vpnkeys/#{current_user.email}.tar.gz")
   end
 
+  def download_vpn_for_user
+    if ( current_user.admin? )
+      @user = User.find(params[:id])
+      if @user.present?
+        if !Pathname.new("/opt/vpnkeys/#{@user.email}.tar.gz").exist?
+          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
+        else
+          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{@user.email}`
+        end
+        send_file ("/opt/vpnkeys/#{@user.email}.tar.gz")
+      end
+    else
+      redirect_to profile_path
+    end
+  end
+
 
   def authenticate
     response = User.authenticate params
