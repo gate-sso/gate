@@ -57,10 +57,17 @@ class ProfileController < ApplicationController
 
     username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]
 
+    ## cas-5.1.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
+    response_map = {
+      "@class":"org.apereo.cas.authentication.principal.SimplePrincipal",
+      "id" => username,
+      "attributes": {"backend": "gate-sso"}
+    }
+
     if username.present?
-      render json: { 'id' => username } , status: :ok
+      render json: response_map, status: :ok   
     else
-      render json: { 'id' => username } , status: 401
+      render json: response_map, status: 401
     end
   end
 
