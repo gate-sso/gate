@@ -13,6 +13,7 @@ services:
     build: .
     command: rails s -p 3000 -b '0.0.0.0'
     environment:
+      RAILS_ENV: test
       GATE_DB_HOST: db
       GATE_DB_PORT: 3306
       GATE_DB_USER: mysql
