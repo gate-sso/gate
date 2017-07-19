@@ -1,5 +1,7 @@
 # gate
 
+![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
+
 Gate is Single Sign On platform for centralised authentication across Linux, OpenVPN and CAS.
 
 Gate works by automating OpenVPN profile creation for you and also providing you with google multi factor authentication(MFA) integration. Gate provides single MFA Token authorisation across your organisation for following services.
