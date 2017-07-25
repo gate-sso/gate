@@ -55,6 +55,12 @@ Rails.application.routes.draw do
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
 
+
+
+ # api routes
+
+  post 'api/v1/users' => 'api/v1/users#create', as: 'add_users_api', format: :json
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
