@@ -1,7 +1,13 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def google_oauth2
     # You need to implement the method below in your model (e.g. app/models/user.rb)
-    @user = User.from_omniauth(request.env["omniauth.auth"])
+    #
+    data = request.env["omniauth.auth"]
+    domain = data["info"]["email"].split("@").last
+
+    return render :text => "Your domain is unauthorized", :status => :unauthorized if !User.valid_domain? domain
+
+    @user = User.from_omniauth(data)
 
     if @user.persisted?
       if @user.auth_key.blank?

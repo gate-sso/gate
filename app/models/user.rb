@@ -62,6 +62,10 @@ class User < ActiveRecord::Base
     user.auth_key
   end
 
+  def self.valid_domain? domain
+    hosted_domains = ENV['GATE_HOSTED_DOMAINS'].split(",")
+    hosted_domains.include?(domain)
+  end
 
   def self.from_omniauth(access_token)
     data = access_token.info
