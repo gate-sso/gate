@@ -55,7 +55,7 @@ class Group < ActiveRecord::Base
     response_hash[:gr_name] = name
     response_hash[:gr_passwd] = "x"
     response_hash[:gr_gid] = gid
-    response_hash[:gr_mem] = users.collect { |u| u.get_user_unix_name}
+    response_hash[:gr_mem] = users.collect { |u| u.user_login_id}
     response_hash
 
   end

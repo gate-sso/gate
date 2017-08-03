@@ -11,14 +11,15 @@ class User < ActiveRecord::Base
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
   # 
-  after_create :add_uid
+  after_create :add_system_attributes
   UID_CONSTANT = 5000
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
 
-  def add_uid
+  def add_system_attributes
     self.uid = id + UID_CONSTANT
+    self.user_login_id = self.email.split("@").first
     self.save!
   end
 
@@ -49,7 +50,7 @@ class User < ActiveRecord::Base
 
 
     #Add user to default user's group
-    group = Group.create(name: user.get_user_unix_name)
+    group = Group.create(name: user.user_login_id)
     user.groups << group
     user.save!
 
@@ -79,7 +80,7 @@ class User < ActiveRecord::Base
 
 
       #Add user to default user's group
-      group = Group.create(name: user.get_user_unix_name)
+      group = Group.create(name: user.user_login_id)
       user.groups << group
       user.save!
     end
@@ -152,18 +153,8 @@ class User < ActiveRecord::Base
     return User.find_and_check_user email, token
   end
 
-  def self.get_user email
-    splitted_email = email.split '@'
-    user = nil
-    if splitted_email.count > 1
-      user = User.where(email: email).first 
-    else
-      user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first 
-      if user.blank?
-        email = email.gsub(/_/, '.')
-        user = User.where(email: "#{email}@#{ENV['GATE_EMAIL_DOMAIN']}").first 
-      end
-    end
+  def self.get_user user_login_id
+    user = User.where(user_login_id: user_login_id).first 
     return nil if user.present? and user.active == false
     return user
   end
@@ -190,10 +181,6 @@ class User < ActiveRecord::Base
     [email, token]
   end
 
-  def get_user_unix_name
-    email.split('@').first
-    #email.split('@').first.gsub(/\./,'_')
-  end
 
   def self.get_shadow_name_response name
     user = User.where(name: name).first
@@ -204,7 +191,7 @@ class User < ActiveRecord::Base
 
   def get_shadow_hash
     shadow_hash = {}
-    shadow_hash[:sp_namp] = get_user_unix_name
+    shadow_hash[:sp_namp] = user_login_id
     shadow_hash[:sp_pwdp] = "X"
     shadow_hash[:sp_lstchg] = updated_at.to_i
     shadow_hash[:sp_min] = 0
@@ -253,12 +240,12 @@ class User < ActiveRecord::Base
 
   def user_passwd_response 
     user_hash = {}
-    user_hash[:pw_name] = get_user_unix_name
+    user_hash[:pw_name] = user_login_id
     user_hash[:pw_passwd]  = "x"
     user_hash[:pw_uid] = uid.to_i
-    user_hash[:pw_gid] = groups.where(name: get_user_unix_name).first.gid
+    user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid
     user_hash[:pw_gecos]  = "#{name}"
-    user_hash[:pw_dir] = "#{HOME_DIR}/#{get_user_unix_name}"
+    user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
     user_hash[:pw_shell] = "/bin/bash"
     user_hash
   end

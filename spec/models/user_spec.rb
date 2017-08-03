@@ -30,13 +30,13 @@ RSpec.describe User, type: :model do
   it "should return false if user is not active" do
     user = create(:user)
     response =  User.get_shadow_name_response user.name
-    expect(response[:sp_namp]).to eq(user.get_user_unix_name)
+    expect(response[:sp_namp]).to eq(user.user_login_id)
   end
 
   it "should return false if user is not active" do
     user = create(:user)
     response =  User.get_passwd_uid_response user.uid
-    expect(response[:pw_name]).to eq(user.get_user_unix_name)
+    expect(response[:pw_name]).to eq(user.user_login_id)
   end
 
   it "should get all users for passwd" do
@@ -49,11 +49,9 @@ RSpec.describe User, type: :model do
 
   it "should return _ for . in name" do
     user = create(:user)
-    user.email = "janata.naam@test.com"
-    expect(user.get_user_unix_name).to eq("janata.naam")
-    user.save!
+    expect(user.user_login_id).to eq(user.email.split("@").first)
     ENV['GATE_EMAIL_DOMAIN'] = "test.com"
-    user = User.get_user("janata_naam")
+    user = User.get_user(user.user_login_id)
     expect(user).not_to be nil
   end
 
@@ -81,6 +79,6 @@ RSpec.describe User, type: :model do
     email = Faker::Internet.email
     create(:user, email: email)
     user = User.find_by_email(email)
-    expect(user.group_names_list.include?(user.get_user_unix_name)).to eq(true)
+    expect(user.group_names_list.include?(user.user_login_id)).to eq(true)
   end
 end

@@ -34,7 +34,7 @@ class NssController < ApplicationController
   def remove_user_from_group 
     token =  AccessToken.valid_token params[:token]
     result = false
-    @response = User.get_user(params[:name]) if params[:name].present?
+    @response = User.get_user(params[:name].split("@").first) if params[:name].present?
     if token && @response.present?
       @group = Group.where(name: params[:group_name] ).first
       if @response.present? and @response.groups.find_by_id(@group.id).blank?
@@ -187,7 +187,7 @@ class NssController < ApplicationController
   def groups_list
     token =  AccessToken.valid_token params[:token]
     if token
-      user = User.get_user(params[:email])
+      user = User.get_user(params[:email].split("@").first)
       if user.blank?
         render json: { success: false }
       else
