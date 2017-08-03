@@ -3,8 +3,49 @@ class ProfileController < ApplicationController
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
-
   def show
+
+  end
+
+  def user_admin
+    @users = []
+    @groups = []
+    if current_user.admin?
+      @user_search = params[:user_search]
+      if @user_search.present?
+        @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+      end
+
+      @group_search = params[:group_search]
+      if @group_search.present?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+      end
+    else
+      redirect_to profile_path
+    end
+  end
+
+  def group_admin
+    @users = []
+    @groups = []
+    if current_user.admin?
+      @user_search = params[:user_search]
+      if @user_search.present?
+        @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+      end
+
+      @group_search = params[:group_search]
+      if @group_search.present?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+      end
+    else
+      redirect_to profile_path
+    end
+
 
   end
 

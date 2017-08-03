@@ -1,0 +1,32 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    title= content_for?(:title) ? yield(:title) : "Gate"
+    = csrf_meta_tags
+    = stylesheet_link_tag "application", :media => "all"
+    = stylesheet_link_tag 'profile'
+    = stylesheet_link_tag "general", :media => "all"
+    = javascript_include_tag "application"
+    /! Le HTML5 shim, for IE6-8 support of HTML elements
+    /[if lt IE 9]
+      = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"
+
+  body.profile_page
+    .container.container-profile
+      .header.clearfix
+        nav
+          ul.nav.nav-pills.pull-right
+            li role="presentation" 
+             = link_to "Administration", admin_path if current_user.admin?
+            li role="presentation" 
+             = link_to current_user.name, user_path(current_user.id)
+            li.active role="presentation" 
+              = link_to "Sign out", users_sign_out_path,:method => :delete 
+        h3.text-muted Gate - Single Sign On
+      = yield
+
+      footer.footer
+        p &copy; 2015 Gate-SSO

@@ -1,0 +1,9 @@
+.container.container-profile
+  = form_tag profile_user_admin_path, method: 'get' do
+    .row 
+      .col-md-8
+        = text_field_tag :user_search, params[:user_search], class: "form-control" , autofocus: true
+      .col-md-4
+        = submit_tag "Search Users", class: "form-control btn btn-sm btn-primary", name: nil
+
+  hr
