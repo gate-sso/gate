@@ -81,4 +81,14 @@ RSpec.describe User, type: :model do
     user = User.find_by_email(email)
     expect(user.group_names_list.include?(user.user_login_id)).to eq(true)
   end
+
+  it "should check valid hosted domain" do
+    ENV["GATE_HOSTED_DOMAINS"] = "alfa.com,beta.com"
+    expect(User.valid_domain? "alfa.com").to be true
+    expect(User.valid_domain? "beta.com").to be true
+    expect(User.valid_domain? "gama.com").to be false
+
+    ENV["GATE_HOSTED_DOMAINS"] = ""
+    expect(User.valid_domain? "alfa.com").to be false
+  end
 end
