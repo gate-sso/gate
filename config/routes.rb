@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
+  match 'profile/user_admin', to: 'profile#user_admin', via: :get
+  match 'profile/group_admin', to: 'profile#group_admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'
   #  match 'profile/admin/user/:id', to: 'profile#admin_user', via: :get, as: 'profile_admin_user'
 
@@ -66,6 +68,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
+
+  get '/admin' => 'admin#index'
 
   resources :host_machines
   resources :groups

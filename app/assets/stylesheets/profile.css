@@ -1,0 +1,6 @@
+/* Everything but the jumbotron gets side spacing for mobile first views */
+
+.container-profile {
+  max-width: 730px;
+  min-width: 768px;
+}

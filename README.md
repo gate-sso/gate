@@ -29,13 +29,12 @@ Gate is a Rails application, compatible with JRuby.
 * Setup 5 environment variables
 
 ```
-GATE_OAUTH_SECRET       - Your OAuth key
-GATE_OAUTH_CLIENT_KEY   - Your client secret key
-GATE_OAUTH_API_KEY      - Your API key
-GATE_HOSTED_DOMAIN      - The hosted domain for gmail
-GATE_SERVER_URL         - Gate server FQDN
-GATE_CONFIG_SECRET      - Ruby required config secret key in production environment
-GATE_EMAIL_DOMAIN       - Your company's domain for email address
+GATE_OAUTH_CLIENT_ID      - Your OAuth client key
+GATE_OAUTH_CLIENT_SECRET  - Your OAUTH client secret
+GATE_HOSTED_DOMAIN        - The hosted domain for gmail
+GATE_SERVER_URL           - Gate server FQDN
+GATE_CONFIG_SECRET        - Ruby required config secret key in production environment
+GATE_EMAIL_DOMAIN         - Your company's domain for email address
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed

@@ -10,7 +10,7 @@ FactoryGirl.define do
       group = Group.first
       user.groups << group
 
-      group = Group.create(name: user.get_user_unix_name)
+      group = Group.create(name: user.user_login_id)
       user.groups << group
       user.save!
     end

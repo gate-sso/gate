@@ -1,93 +1,99 @@
-.row
-  .col-md-4.text-primary Name
-  .col-md-8 
-    = @user.name
-.row
-  .col-md-4.text-primary Email
-  .col-md-8
-    = @user.email
-= form_tag user_update_path, method: 'post' do
+.container.container-profile
   .row
-    .col-md-4.text-primary Active?
-    .col-md-8
-      = check_box "user", "active"
+    .col-md-4.text-primary Name
+    .col-md-8 
+      = @user.name
   .row
-    .col-md-4.text-primary Administrator?
+    .col-md-4.text-primary Email
     .col-md-8
-      = check_box "user", "admin"
+      = @user.email
+  .row
+    .col-md-4.text-primary MFA Auth String
+    .col-md-8
+      = @user.auth_key
+  - if current_user.admin?
+    = form_tag user_update_path, method: 'post' do
+      .row
+        .col-md-4.text-primary Active?
+        .col-md-8
+          = check_box "user", "active"
+      .row
+        .col-md-4.text-primary Administrator?
+        .col-md-8
+          = check_box "user", "admin"
+      .row 
+        .col-md-4
+        .col-md-2
+          = submit_tag "Update", class: "form-control btn-sm btn-primary"
+  hr
+  .row
+    .col-md-4.text-primary 
+      = link_to "Groups", groups_path
+    .col-md-8
+      - @user.groups.each do |group|
+        - unless group.deleted?
+        .row
+          .col-md-8
+            = "#{group.name} (#{group.gid})"
+          .col-md-4 
+            = link_to "Delete", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
+      = "No groups are associated with this user" if @user.groups.count == 0
   .row 
     .col-md-4
-    .col-md-2
-      = submit_tag "Update", class: "form-control btn-sm btn-primary" if current_user.admin?
-hr
-.row
-  .col-md-4.text-primary 
-    = link_to "Groups", groups_path
-  .col-md-8
-    - @user.groups.each do |group|
-      - unless group.deleted?
+    .col-md-8
       .row
-        .col-md-8
-          = "#{group.name} (#{group.gid})"
-        .col-md-4 
-          = link_to "Delete", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
-    = "No groups are associated with this user" if @user.groups.count == 0
-.row 
-  .col-md-4
-  .col-md-8
-    .row
-      - if current_user.admin?
-        = form_tag  add_group_path, method: :post do
-          .col-sm-8
-            = select_tag "group_id", options_from_collection_for_select(@group.sort_by {|group| group.name}, "id", "name"), class: "form-control"
-          .col-sm-4
-            = submit_tag "Add Group", class: "form-control btn-sm btn-primary"
-hr
-.row
-  .col-md-4.text-primary Permitted Host Patterns
-  .col-md-8
-    - @user.hosts.each do |host|
-      - unless host.deleted?
+        - if current_user.admin?
+          = form_tag  add_group_path, method: :post do
+            .col-sm-8
+              = select_tag "group_id", options_from_collection_for_select(@group.sort_by {|group| group.name}, "id", "name"), class: "form-control"
+            .col-sm-4
+              = submit_tag "Add Group", class: "form-control btn-sm btn-primary"
+  hr
+  .row
+    .col-md-4.text-primary Permitted Host Patterns
+    .col-md-8
+      - @user.hosts.each do |host|
+        - unless host.deleted?
+        .row
+          .col-md-8
+            = host.host_pattern
+          .col-md-4 
+            = link_to "Delete", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
+
+      = "No host patterns are associated with this user" if @user.hosts.count == 0
+  .row 
+    .col-md-4
+    .col-md-8
       .row
-        .col-md-8
-          = host.host_pattern
-        .col-md-4 
-          = link_to "Delete", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
+        - if current_user.admin?
+          = form_tag  add_host_path, method: :post do
+            .col-sm-8
+              = text_field_tag :host_pattern, "", class: "form-control"
+            .col-sm-4
+              = submit_tag "Add host pattern", class: "form-control btn-sm btn-primary"
 
-    = "No host patterns are associated with this user" if @user.hosts.count == 0
-.row 
-  .col-md-4
-  .col-md-8
-    .row
-      - if current_user.admin?
-        = form_tag  add_host_path, method: :post do
+  br
+  hr
+  .row 
+    .col-md-4.text-primary Public Key
+    .col-md-8
+      = form_tag user_public_key_update_path, method: :post do
+        .row 
+          .col-sm-12
+            = text_area_tag "public_key", @user.public_key, class: "form-contol", style: "font-family:monospace;", rows: 15, cols: 35
+        .row
           .col-sm-8
-            = text_field_tag :host_pattern, "", class: "form-control"
           .col-sm-4
-            = submit_tag "Add host pattern", class: "form-control btn-sm btn-primary"
-
-br
-hr
-.row 
-  .col-md-4.text-primary Public Key
-  .col-md-8
-    = form_tag user_public_key_update_path, method: :post do
-      .row 
+            = submit_tag "Update key", class: "form-control btn-sm btn-primary"
+  hr
+  .row 
+    .col-md-4.text-primary VPN Profile 
+    .col-md-8
         .col-sm-12
-          = text_area_tag "public_key", @user.public_key, class: "form-contol", style: "font-family:monospace;", rows: 15, cols: 35
-      .row
-        .col-sm-8
-        .col-sm-4
-          = submit_tag "Update key", class: "form-control btn-sm btn-primary"
-hr
-.row 
-  .col-md-4.text-primary VPN Profile 
-  .col-md-8
-      .col-sm-12
-      .row
-        .col-sm-8
-        .col-sm-4
-          a.btn.btn-primary.btn-sm href="/download_vpn/#{@user.id}" role="button" Download VPN Profile
-br
+        .row
+          .col-sm-8
+          .col-sm-4
+            a.btn.btn-primary.btn-sm href="/download_vpn/#{@user.id}" role="button" Download VPN Profile
+  br
 
 

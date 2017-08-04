@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161003145832) do
+ActiveRecord::Schema.define(version: 20170803140620) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -87,10 +87,12 @@ ActiveRecord::Schema.define(version: 20161003145832) do
     t.string   "home_dir",               limit: 255
     t.string   "shell",                  limit: 255
     t.text     "public_key",             limit: 65535
+    t.string   "user_login_id",          limit: 255
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["user_login_id"], name: "index_users_on_user_login_id", using: :btree
 
   add_foreign_key "hosts", "users"
 end

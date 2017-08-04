@@ -1,4 +1,15 @@
 namespace :users do
+
+  desc "fill user_login_id with email domain prefix"
+  task migrate_user_login_id: :environment do
+    User.all.each do |user|
+
+    user.user_login_id = user.email.split("@").first
+    user.save!
+    puts "Migrating #{user.email}"
+    end
+  end
+
   desc "imports users and prints their keys"
   task import_csv: :environment do
     require 'csv'

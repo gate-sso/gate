@@ -12,13 +12,19 @@
  *
  *= require_tree .
  *= require_self
+ *= stub 'profile'
+ *= stub 'general'
  */
 
 @import url(https://fonts.googleapis.com/css?family=Lato);
-@import font-awesome
 
 body {
-font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
+}
+
+.container-profile {
+  max-width: 768px;
+  min-width: 768px;
 }
 
 
