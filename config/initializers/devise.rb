@@ -13,7 +13,7 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
 
-  config.omniauth :google_oauth2, ENV['GATE_OAUTH_CLIENT_ID'], ENV['GATE_OAUTH_CLIENT_SECRET'] , { hd: ENV['GATE_HOSTED_DOMAINS'].split(','), site: ENV['GATE_SERVER_URL'] }
+  config.omniauth :google_oauth2, ENV['GATE_OAUTH_CLIENT_ID'], ENV['GATE_OAUTH_CLIENT_SECRET'] , { hd: ENV['GATE_HOSTED_DOMAINS']&.split(','), site: ENV['GATE_SERVER_URL'] }
   config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
   config.secret_key = ENV['GATE_CONFIG_SECRET']
 
