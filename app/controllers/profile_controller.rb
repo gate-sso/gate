@@ -65,7 +65,7 @@ class ProfileController < ApplicationController
     else
       `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{current_user.email}`
     end
-    send_file ("/opt/vpnkeys/#{current_user.email}.tar.gz")
+    send_file "/opt/vpnkeys/#{current_user.email}.tar.gz", type: "application/zip", disposition: "attachment; filename=#{current_user.email}.tar.gz"
   end
 
   def download_vpn_for_user
@@ -77,7 +77,7 @@ class ProfileController < ApplicationController
         else
           `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{@user.email}`
         end
-        send_file ("/opt/vpnkeys/#{@user.email}.tar.gz")
+        send_file "/opt/vpnkeys/#{current_user.email}.tar.gz", type: "application/zip", disposition: "attachment; filename=#{current_user.email}.tar.gz"
       end
     else
       redirect_to profile_path
