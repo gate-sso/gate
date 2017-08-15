@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: gate_test
       MYSQL_USER: mysql
       MYSQL_PASSWORD: mysql
-      GATE_HOSTED_DOMAIN: foo.bar
+      GATE_HOSTED_DOMAINS: foo.bar
   redis:
     image: redis
   web:
