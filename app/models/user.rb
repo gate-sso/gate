@@ -132,7 +132,7 @@ class User < ActiveRecord::Base
       end
       host_name = host_address if host_name.blank?
       hosts.each do |host|
-        return true if /^#{host.host_pattern}/.match(host_name).present?
+        return true if /^#{host.host_pattern}/.match(host_name).to_s.present?
       end
     end
     return false

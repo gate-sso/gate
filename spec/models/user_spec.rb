@@ -91,4 +91,22 @@ RSpec.describe User, type: :model do
     ENV["GATE_HOSTED_DOMAINS"] = ""
     expect(User.valid_domain? "alfa.com").to be false
   end
+
+  it "should fails host address if it's not permitted" do
+   user = create(:user)
+    host = Host.new
+    host.user = user
+    host.host_pattern = "s*" #by default give host access to all staging instances
+    host.save!
+    expect(user.permitted_hosts?(["10.0.0.0"])).to be false
+  end
+
+  it "should pass host address if it's permitted" do
+   user = create(:user)
+    host = Host.new
+    host.user = user
+    host.host_pattern = "*" #by default give host access to all staging instances
+    host.save!
+    expect(user.permitted_hosts?(["10.0.0.0"])).to be false
+  end
 end
