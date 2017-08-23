@@ -247,7 +247,7 @@ class User < ActiveRecord::Base
     user_hash[:pw_name] = user_login_id
     user_hash[:pw_passwd]  = "x"
     user_hash[:pw_uid] = uid.to_i
-    user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid
+    user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid if groups.where(name: user_login_id).count > 0
     user_hash[:pw_gecos]  = "#{name}"
     user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
     user_hash[:pw_shell] = "/bin/bash"
