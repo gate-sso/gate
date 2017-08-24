@@ -105,8 +105,8 @@ RSpec.describe User, type: :model do
    user = create(:user)
     host = Host.new
     host.user = user
-    host.host_pattern = "*" #by default give host access to all staging instances
+    host.host_pattern = ".*" #by default give host access to all staging instances
     host.save!
-    expect(user.permitted_hosts?(["10.0.0.0"])).to be false
+    expect(user.permitted_hosts?(["10.0.0.0"])).to be true
   end
 end
