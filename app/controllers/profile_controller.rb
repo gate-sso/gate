@@ -95,9 +95,7 @@ class ProfileController < ApplicationController
   end
 
   def authenticate_cas
-
     username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]
-
     ## cas-5.1.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
     response_map = {
       "@class":"org.apereo.cas.authentication.principal.SimplePrincipal",
@@ -106,7 +104,7 @@ class ProfileController < ApplicationController
     }
 
     if username.present?
-      render json: response_map, status: :ok   
+      render json: response_map, status: :ok
     else
       render json: response_map, status: 401
     end
@@ -119,6 +117,11 @@ class ProfileController < ApplicationController
     else
       render text: 1
     end
+  end
+
+  def authenticate_ms_chap
+    response = User.ms_chap_auth params
+    render text: response
   end
 
   def verify

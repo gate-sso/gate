@@ -5,6 +5,8 @@ gem 'rails', '4.2.6'
 gem "paranoia"
 
 gem 'mysql', platform: :ruby
+gem 'openssl', platform: :ruby
+gem 'jruby-openssl', platform: :jruby
 
 platform :jruby do
   gem 'jdbc-mysql'
