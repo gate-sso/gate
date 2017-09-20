@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-  include MsChapAuth
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   #devise :database_authenticatable, :registerable,
@@ -112,35 +111,15 @@ class User < ActiveRecord::Base
     email, token = get_user_pass_attributes params
     return false if email.blank? || token.blank?
 
-    totp = find_and_check_user email
-    if totp == token
-      user = self.get_user email
-      return user.permitted_hosts?(address_array)
-    else
-      return false
-    end
+    user_auth = find_and_check_user email, token
+    return check_user_host(email, address_array) if user_auth
 
+    return user_auth
   end
 
-  def self.ms_chap_auth params
-    auth_failed_message =  "NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)"
-
-    addresses = params[:addresses]
-    user_name = params[:user]
-    challenge_string = params[:challenge]
-    response_string = params[:response]
-
-    return auth_failed_message  if user_name.blank? || challenge_string.blank? || response_string.blank? || addresses.blank?
-
-    address_array = addresses.split
-
-    user = User.get_user user_name
-    if user.permitted_hosts?(address_array)
-      otp = user.get_user_otp 
-      return user.authenticate_ms_chap otp, challenge_string, response_string
-    else
-      return auth_failed_message
-    end
+  def self.check_user_host email, address_array
+    user = User.get_user email
+    return user.permitted_hosts? address_array
   end
 
   def permitted_hosts? address_array
@@ -184,24 +163,18 @@ class User < ActiveRecord::Base
     return user
   end
 
-  def self.find_and_check_user user_login_id, token
-    user = User.get_user user_login_id
-    return false if user.blank? || !user.active || !user.within_limits?
-    token == user.get_user_otp
-  end
+  def self.find_and_check_user email, token
+    user = User.get_user email
+    return false if user.blank? 
+    return false if !user.active 
 
-  def within_limits?
-    user_key = "#{self.id}:#{Time.now.hour}" 
+    user_key = "#{user.id}:#{Time.now.hour}" 
     request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
-    request_count < RATE_LIMIT
+    return false if request_count > RATE_LIMIT
+    token == ROTP::TOTP.new(user.auth_key).now
   end
 
-  def get_user_otp 
-    return ROTP::TOTP.new(self.auth_key).now
-  end
-
-    
   def self.get_user_pass_attributes params
     token = params[:token]
     email = params[:email]

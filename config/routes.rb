@@ -18,7 +18,6 @@ Rails.application.routes.draw do
   match 'profile/authenticate', to: 'profile#authenticate', via: :get, format: :text
   match 'profile/authenticate_cas', to: 'profile#authenticate_cas', via: :post, format: :json
   match 'profile/authenticate_pam', to: 'profile#authenticate_pam', via: :get, format: :text
-  match 'profile/authenticate_ms_chap', to: 'profile#authenticate_ms_chap', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
   match 'profile/user_admin', to: 'profile#user_admin', via: :get
   match 'profile/group_admin', to: 'profile#group_admin', via: :get

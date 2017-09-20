@@ -109,27 +109,4 @@ RSpec.describe User, type: :model do
     host.save!
     expect(user.permitted_hosts?(["10.0.0.0"])).to be true
   end
-
-  it "should check user login limits" do
-    user = create(:user)
-    (RATE_LIMIT - 2).times do 
-      user.within_limits?
-    end
-    expect(user.within_limits?).to be true
-    expect(user.within_limits?).to be false
-  
-  end
-
-  it "should authenticate ms chap" do
-
-    user = create(:user)
-    totp = "757364"
-    challenge_string = "ee85e142eadfec52"
-    response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
-
-    expect(user.authenticate_ms_chap(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-    expect(user.authenticate_ms_chap("78787", challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
-    
-
-  end
 end
