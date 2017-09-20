@@ -280,6 +280,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  #this method is here because we need to mock/stub for testing
   def get_user_otp 
     return ROTP::TOTP.new(self.auth_key).now
   end
