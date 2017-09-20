@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :user do
     sequence(:name){|n| "TestUser#{n}}"}
+    sequence(:user_login_id){|n| "test#{n}}"}
     sequence(:email) {|n| "test#{n}@test.com"}
     active true
     admin false

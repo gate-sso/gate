@@ -94,6 +94,12 @@ class ProfileController < ApplicationController
     end
   end
 
+  def authenticate_ms_chap
+    response = User.ms_chap_auth params
+    render text: response
+  end
+
+
   def authenticate_cas
 
     username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]

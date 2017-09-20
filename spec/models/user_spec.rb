@@ -93,7 +93,7 @@ RSpec.describe User, type: :model do
   end
 
   it "should fails host address if it's not permitted" do
-   user = create(:user)
+    user = create(:user)
     host = Host.new
     host.user = user
     host.host_pattern = "s*" #by default give host access to all staging instances
@@ -102,11 +102,48 @@ RSpec.describe User, type: :model do
   end
 
   it "should pass host address if it's permitted" do
-   user = create(:user)
+    user = create(:user)
     host = Host.new
     host.user = user
     host.host_pattern = ".*" #by default give host access to all staging instances
     host.save!
     expect(user.permitted_hosts?(["10.0.0.0"])).to be true
   end
+
+  it "should check user login limits" do
+    user = create(:user)
+    (RATE_LIMIT - 2).times do 
+      user.within_limits?
+    end
+    expect(user.within_limits?).to be true
+    expect(user.within_limits?).to be false
+
+  end
+
+  it "should authenticate ms chap" do
+    user = create(:user)
+    totp = "757364"
+    challenge_string = "ee85e142eadfec52"
+    response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
+
+    expect(user.authenticate_ms_chap(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+    expect(user.authenticate_ms_chap("78787", challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
+  end
+  it "should authenticate ms chap" do
+    user = create(:user)
+    host = Host.new
+    host.user = user
+    host.host_pattern = ".*" 
+    host.save!
+    params = {}
+    params[:addresses] = "10.240.0.1"
+    params[:user] = user.user_login_id
+    params[:challenge] = "ee85e142eadfec52"
+    params[:response] = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
+
+    allow_any_instance_of(User).to receive(:get_user_otp).and_return("757364")
+
+    expect(User.ms_chap_auth(params)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+  end
+ 
 end

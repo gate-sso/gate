@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+
+  include MsChapAuth
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   #devise :database_authenticatable, :registerable,
@@ -242,6 +244,47 @@ class User < ActiveRecord::Base
     user.user_passwd_response
   end
 
+  def self.find_by_email(email)
+    User.where(email: email, active: true).first
+  end
+
+  def group_names_list
+    self.groups.map(&:name)
+  end
+
+  def within_limits?
+    user_key = "#{self.id}:#{Time.now.hour}" 
+    request_count = REDIS_CACHE.incrby user_key, 1
+    REDIS_CACHE.expire user_key, 3600
+    request_count < RATE_LIMIT
+  end
+
+  def self.ms_chap_auth params
+    auth_failed_message =  "NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)"
+
+    addresses = params[:addresses]
+    user_name = params[:user]
+    challenge_string = params[:challenge]
+    response_string = params[:response]
+
+    return auth_failed_message  if user_name.blank? || challenge_string.blank? || response_string.blank? || addresses.blank?
+
+    address_array = addresses.split
+
+    user = User.get_user user_name
+    if user.permitted_hosts?(address_array)
+      otp = user.get_user_otp 
+      return user.authenticate_ms_chap otp, challenge_string, response_string
+    else
+      return auth_failed_message
+    end
+  end
+
+  def get_user_otp 
+    return ROTP::TOTP.new(self.auth_key).now
+  end
+
+
   def user_passwd_response 
     user_hash = {}
     user_hash[:pw_name] = user_login_id
@@ -252,13 +295,5 @@ class User < ActiveRecord::Base
     user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
     user_hash[:pw_shell] = "/bin/bash"
     user_hash
-  end
-
-  def self.find_by_email(email)
-    User.where(email: email, active: true).first
-  end
-
-  def group_names_list
-    self.groups.map(&:name)
   end
 end
