@@ -17,27 +17,67 @@ class User < ActiveRecord::Base
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
-  class << self
-    def includes_restricted_characters? input_string
-      return false if input_string.include?('@') == false
-      restricted_characters = [ ' ', '-', '*']
-      status  = false
 
-      restricted_characters.each do |char|
-        break if status 
-        status = input_string.include?(char) 
-      end
+  def add_system_attributes
+    self.uid = id + UID_CONSTANT
+    self.user_login_id = self.email.split("@").first
+    self.save!
+  end
 
-      status
+  def self.includes_restricted_characters? input_string
+    return false if input_string.include?('@') == false
+    restricted_characters = [ ' ', '-', '*']
+    status  = false
+
+    restricted_characters.each do |char|
+      break if status 
+      status = input_string.include?(char) 
     end
 
-    def check_email_address email_address
-      !includes_restricted_characters?(email_address) && email_address.split("@").count == 2 ? true : false
-    end
+    status
+  end
 
-    def add_temp_user (name, email)
-      email = email + "@" + ENV['GATE_HOSTED_DOMAIN'].to_s
-      user = User.create(name:name, email: email)
+  def self.check_email_address email_address
+    !includes_restricted_characters?(email_address) && email_address.split("@").count == 2 ? true : false
+  end
+
+  def self.add_temp_user (name, email)
+    email = email + "@" + ENV['GATE_HOSTED_DOMAIN'].to_s
+    user = User.create(name:name, email: email)
+    host = Host.new
+    host.user = user
+    host.host_pattern = "s*" #by default give host access to all staging instances
+    host.save!
+
+
+    #Add user to default user's group
+    group = Group.create(name: user.user_login_id)
+    user.groups << group
+    user.save!
+
+    if user.persisted? and user.auth_key.blank?
+      user.auth_key = ROTP::Base32.random_base32
+      totp = ROTP::TOTP.new(user.auth_key)
+      user.provisioning_uri = totp.provisioning_uri "GoJek-C #{name}"
+      user.save!
+    end
+    user.auth_key
+  end
+
+  def self.valid_domain? domain
+    hosted_domains = ENV['GATE_HOSTED_DOMAINS'].split(",")
+    hosted_domains.include?(domain)
+  end
+
+  def self.from_omniauth(access_token)
+    data = access_token.info
+    user = User.where(:email => data["email"]).first
+
+    # Uncomment the section below if you want users to be created if they don't exist
+    unless user
+      user = User.create(name: data["name"],
+                         email: data["email"]
+                        )
       host = Host.new
       host.user = user
       host.host_pattern = "s*" #by default give host access to all staging instances
@@ -48,194 +88,60 @@ class User < ActiveRecord::Base
       group = Group.create(name: user.user_login_id)
       user.groups << group
       user.save!
-
-      if user.persisted? and user.auth_key.blank?
-        user.auth_key = ROTP::Base32.random_base32
-        totp = ROTP::TOTP.new(user.auth_key)
-        user.provisioning_uri = totp.provisioning_uri "GoJek-C #{name}"
-        user.save!
-      end
-      user.auth_key
     end
-
-    def valid_domain? domain
-      hosted_domains = ENV['GATE_HOSTED_DOMAINS'].split(",")
-      hosted_domains.include?(domain)
-    end
-
-    def from_omniauth(access_token)
-      data = access_token.info
-      user = User.where(:email => data["email"]).first
-
-      # Uncomment the section below if you want users to be created if they don't exist
-      unless user
-        user = User.create(name: data["name"],
-                           email: data["email"]
-                          )
-        host = Host.new
-        host.user = user
-        host.host_pattern = "s*" #by default give host access to all staging instances
-        host.save!
-
-
-        #Add user to default user's group
-        group = Group.create(name: user.user_login_id)
-        user.groups << group
-        user.save!
-      end
-      user
-    end
-
-    def verify params
-      addresses = params[:addresses]
-      return false if addresses.empty?
-      address_array = addresses.split
-
-
-      user = User.get_user params[:user]
-      return false if user.blank?
-
-      return user.permitted_hosts? address_array
-    end
-
-    def authenticate_pam params
-      addresses = params[:addresses]
-      return false if addresses.empty?
-      address_array = addresses.split
-
-      email, token = get_user_pass_attributes params
-      return false if email.blank? || token.blank?
-
-      user = get_user email
-      if user.present? and  token == user.get_user_otp
-        return user.permitted_hosts?(address_array)
-      else
-        return false
-      end
-
-    end
-
-    def ms_chap_auth params
-      auth_failed_message =  "NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)"
-
-      addresses = params[:addresses]
-      user_name = params[:user]
-      challenge_string = params[:challenge]
-      response_string = params[:response]
-
-      return auth_failed_message  if user_name.blank? || challenge_string.blank? || response_string.blank? || addresses.blank?
-
-      address_array = addresses.split
-
-      user = User.get_user user_name
-      if user.permitted_hosts?(address_array)
-        otp = user.get_user_otp 
-        return user.authenticate_ms_chap otp, challenge_string, response_string
-      else
-        return auth_failed_message
-      end
-    end
-
-    def authenticate_cas encoded_string
-      username_password = Base64.decode64 encoded_string.split(" ")[1]
-      username = username_password.split(':').first
-      password = username_password.split(':').last
-
-      if find_and_check_user username, password
-        return username
-      else
-        return nil
-      end
-    end
-
-
-    def authenticate params
-      email, token = User.get_user_pass_attributes params
-      return false if email.blank? || token.blank?
-      return find_and_check_user email, token
-    end
-
-    def get_user user_login_id
-      user = User.where(user_login_id: user_login_id).first 
-      return nil if user.present? and user.active == false
-      return user
-    end
-
-    def find_and_check_user user_login_id, token
-      user = User.get_user user_login_id
-      return false if user.blank? || !user.active || !user.within_limits?
-      token == user.get_user_otp
-    end
-
-
-    def get_all_shadow_response 
-      user_array = []
-      User.all.each do |user|
-        user_array << user.get_shadow_hash
-      end
-      user_array
-    end
-
-    def get_all_passwd_response
-      user_array = []
-      User.all.each do |user|
-        user_array << user.user_passwd_response
-      end
-      user_array
-    end
-
-    def get_passwd_name_response name
-      user = User.where("email like ?", "#{name}@%").first
-      return [] if user.blank?
-      user.user_passwd_response
-    end
-
-    def response_array response
-      user_response = []
-      user_response << response
-      user_response
-    end
-
-
-    def get_passwd_uid_response uid
-      user = User.where(uid: uid).first
-      return [] if user.blank?
-      user.user_passwd_response
-    end
-
-    def find_by_email(email)
-      User.where(email: email, active: true).first
-    end
-
-    def get_user_pass_attributes params
-      token = params[:token]
-      email = params[:email]
-      email = params[:user] if email.blank?
-      token = params[:password] if token.blank?
-
-      return [null, null] if email.blank? || token.blank?
-      [email, token]
-    end
-
-
-    def get_shadow_name_response name
-      user = User.where(name: name).first
-      return nil if user.blank?
-
-      user.get_shadow_hash
-    end
+    user
   end
 
-  ## End class methods
+  def self.verify params
+    addresses = params[:addresses]
+    return false if addresses.empty?
+    address_array = addresses.split
 
 
-  def add_system_attributes
-    self.uid = id + UID_CONSTANT
-    self.user_login_id = self.email.split("@").first
-    self.save!
+    user = User.get_user params[:user]
+    return false if user.blank?
+
+    return user.permitted_hosts? address_array
   end
 
+  def self.authenticate_pam params
+    addresses = params[:addresses]
+    return false if addresses.empty?
+    address_array = addresses.split
 
+    email, token = get_user_pass_attributes params
+    return false if email.blank? || token.blank?
+
+    totp = find_and_check_user email
+    if totp == token
+      user = self.get_user email
+      return user.permitted_hosts?(address_array)
+    else
+      return false
+    end
+
+  end
+
+  def self.ms_chap_auth params
+    auth_failed_message =  "NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)"
+
+    addresses = params[:addresses]
+    user_name = params[:user]
+    challenge_string = params[:challenge]
+    response_string = params[:response]
+
+    return auth_failed_message  if user_name.blank? || challenge_string.blank? || response_string.blank? || addresses.blank?
+
+    address_array = addresses.split
+
+    user = User.get_user user_name
+    if user.permitted_hosts?(address_array)
+      otp = user.get_user_otp 
+      return user.authenticate_ms_chap otp, challenge_string, response_string
+    else
+      return auth_failed_message
+    end
+  end
 
   def permitted_hosts? address_array
     address_array.each do |host_address|
@@ -253,7 +159,36 @@ class User < ActiveRecord::Base
     return false
   end
 
+  def self.authenticate_cas encoded_string
+    username_password = Base64.decode64 encoded_string.split(" ")[1]
+    username = username_password.split(':').first
+    password = username_password.split(':').last
 
+    if User.find_and_check_user username, password
+      return username
+    else
+      return nil
+    end
+  end
+
+
+  def self.authenticate params
+    email, token = User.get_user_pass_attributes params
+    return false if email.blank? || token.blank?
+    return User.find_and_check_user email, token
+  end
+
+  def self.get_user user_login_id
+    user = User.where(user_login_id: user_login_id).first 
+    return nil if user.present? and user.active == false
+    return user
+  end
+
+  def self.find_and_check_user user_login_id, token
+    user = User.get_user user_login_id
+    return false if user.blank? || !user.active || !user.within_limits?
+    token == user.get_user_otp
+  end
 
   def within_limits?
     user_key = "#{self.id}:#{Time.now.hour}" 
@@ -263,9 +198,27 @@ class User < ActiveRecord::Base
   end
 
   def get_user_otp 
-    return ROTP::TOTP.new(auth_key).now
+    return ROTP::TOTP.new(self.auth_key).now
   end
 
+    
+  def self.get_user_pass_attributes params
+    token = params[:token]
+    email = params[:email]
+    email = params[:user] if email.blank?
+    token = params[:password] if token.blank?
+
+    return [null, null] if email.blank? || token.blank?
+    [email, token]
+  end
+
+
+  def self.get_shadow_name_response name
+    user = User.where(name: name).first
+    return nil if user.blank?
+
+    user.get_shadow_hash
+  end
 
   def get_shadow_hash
     shadow_hash = {}
@@ -281,6 +234,40 @@ class User < ActiveRecord::Base
     shadow_hash
   end
 
+  def self.get_all_shadow_response 
+    user_array = []
+    User.all.each do |user|
+      user_array << user.get_shadow_hash
+    end
+    user_array
+  end
+
+  def self.get_all_passwd_response
+    user_array = []
+    User.all.each do |user|
+      user_array << user.user_passwd_response
+    end
+    user_array
+  end
+
+  def self.get_passwd_name_response name
+    user = User.where("email like ?", "#{name}@%").first
+    return [] if user.blank?
+    user.user_passwd_response
+  end
+
+  def self.response_array response
+    user_response = []
+    user_response << response
+    user_response
+  end
+
+
+  def self.get_passwd_uid_response uid
+    user = User.where(uid: uid).first
+    return [] if user.blank?
+    user.user_passwd_response
+  end
 
   def user_passwd_response 
     user_hash = {}
@@ -294,7 +281,9 @@ class User < ActiveRecord::Base
     user_hash
   end
 
-
+  def self.find_by_email(email)
+    User.where(email: email, active: true).first
+  end
 
   def group_names_list
     self.groups.map(&:name)
