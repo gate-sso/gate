@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   #   get 'signup'  => 'registrations#new', :as => :new_user_registration
   #   get 'signout' => 'devise/sessions#destroy', :as => :destroy_user_session
   # end
+  #
 
   devise_scope :user do
     delete "/users/sign_out" => "devise/sessions#destroy"
@@ -75,6 +76,7 @@ Rails.application.routes.draw do
 
   resources :host_machines
   resources :groups
+  resources :users
 
 
   # Example of regular route:
