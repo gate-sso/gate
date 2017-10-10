@@ -4,7 +4,7 @@ UID_CONSTANT = 5000
 RSpec.describe User, type: :model do
 
   before(:each) do
-    group = create(:group)
+    create(:group)
   end
 
   it "should check valid email address" do
@@ -112,7 +112,7 @@ RSpec.describe User, type: :model do
 
   it "should check user login limits" do
     user = create(:user)
-    (RATE_LIMIT - 2).times do 
+    (RATE_LIMIT - 2).times do
       user.within_limits?
     end
     expect(user.within_limits?).to be true
@@ -133,7 +133,7 @@ RSpec.describe User, type: :model do
     user = create(:user)
     host = Host.new
     host.user = user
-    host.host_pattern = ".*" 
+    host.host_pattern = ".*"
     host.save!
     params = {}
     params[:addresses] = "10.240.0.1"
@@ -145,5 +145,34 @@ RSpec.describe User, type: :model do
 
     expect(User.ms_chap_auth(params)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
   end
- 
+
+  describe '.get_user' do
+    after(:each) do
+      User.destroy_all
+    end
+
+    context 'when two users exist with same login_id' do
+      let(:user_login_id) { 'same-id' }
+      subject(:user) { User.get_user(user_login_id) }
+
+      let(:first_user) { build(:user, user_login_id: user_login_id, name: 'Test1', email: "#{user_login_id}@test.com") }
+      let(:second_user) { build(:user, user_login_id: user_login_id, name: 'Test2', email: "#{user_login_id}@aux.test.com") }
+
+      it 'returns first found active user' do
+        first_user.save
+        second_user.save
+
+        expect(user.name).to eq(first_user.name)
+      end
+
+      it 'returns only active user' do
+        first_user.active = false
+        second_user.active = false
+        first_user.save
+        second_user.save
+
+        expect(user).to be_nil
+      end
+    end
+  end
 end

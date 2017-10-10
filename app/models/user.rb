@@ -160,9 +160,7 @@ class User < ActiveRecord::Base
   end
 
   def self.get_user user_login_id
-    user = User.where(user_login_id: user_login_id).first 
-    return nil if user.present? and user.active == false
-    return user
+    return User.where(user_login_id: user_login_id, active: true).first
   end
 
   def self.find_and_check_user email, token
