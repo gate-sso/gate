@@ -242,7 +242,7 @@ class User < ActiveRecord::Base
     user.user_passwd_response
   end
 
-  def self.find_by_email(email)
+  def self.find_active_user_by_email(email)
     User.where(email: email, active: true).first
   end
 
