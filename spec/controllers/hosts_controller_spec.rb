@@ -25,7 +25,7 @@ RSpec.describe HostsController do
       let(:user_two_email) { 'b@test.com' }
       let(:users_list) { "#{user_one_email},#{user_two_email}" }
 
-      let(:host_pattern) { 'p-kaizen-*' }
+        let(:host_pattern) { 'p-kaizen-*' }
 
       subject(:hosts) { Host.where(host_pattern: host_pattern) }
 
@@ -78,6 +78,6 @@ RSpec.describe HostsController do
           expect(response).to have_http_status(201)
         end
       end
-    end
+      end
   end
 end

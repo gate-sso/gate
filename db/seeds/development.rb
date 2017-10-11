@@ -28,8 +28,8 @@ end
 
 User.all.each do |user|
   group = Group.create(name: user.user_login_id)
-      user.groups << group
-      user.save!
+  user.groups << group
+  user.save!
 end
 group = Group.create(name: "devops")
 access_token = AccessToken.create(token: "a")

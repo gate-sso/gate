@@ -25,6 +25,6 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       post :create,  {user: valid_attributes, "access_token": "foo"}
       expect(response.status).to eq(401)
     end
-  end
+    end
 end
 

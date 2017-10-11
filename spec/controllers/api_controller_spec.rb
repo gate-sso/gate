@@ -20,6 +20,6 @@ RSpec.describe ApiController, type: :controller do
 
       expect(response.status).to eq(401)
     end
-  end
+    end
 end
 

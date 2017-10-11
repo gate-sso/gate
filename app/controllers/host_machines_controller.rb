@@ -10,11 +10,11 @@ class HostMachinesController < ApplicationController
     @host_machine = HostMachine.new(host_machine_params)
     respond_to do |format|
       if @host_machine.save
-      format.html { redirect_to host_machines_path, notice: 'Host was successfully created.' }
-      format.json { render status: :created, json: "#{@host_machine.name}host created" }
+        format.html { redirect_to host_machines_path, notice: 'Host was successfully created.' }
+        format.json { render status: :created, json: "#{@host_machine.name}host created" }
       else
         format.html { redirect_to host_machines_path, notice: "Can't save '#{host_machine_params[:name]}'" }
-      format.json { render status: :error, json: "#{@host_machine.name} not created" }
+        format.json { render status: :error, json: "#{@host_machine.name} not created" }
       end
     end
   end

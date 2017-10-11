@@ -14,13 +14,13 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
       redirect_to profile_path
@@ -34,13 +34,13 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
       redirect_to profile_path
@@ -61,7 +61,7 @@ class ProfileController < ApplicationController
 
   def download_vpn
     if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?
-      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
+        `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
     else
       `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{current_user.email}`
     end
@@ -73,7 +73,7 @@ class ProfileController < ApplicationController
       @user = User.find(params[:id])
       if @user.present?
         if !Pathname.new("/opt/vpnkeys/#{@user.email}.tar.gz").exist?
-          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
+            `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
         else
           `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{@user.email}`
         end
@@ -157,13 +157,13 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
       redirect_to profile_path
@@ -172,7 +172,6 @@ class ProfileController < ApplicationController
 
   def update
     if current_user.admin?
-      user_params = params[:user]
       @user = User.find(params[:id])
       @user.update(admin_active)
     end

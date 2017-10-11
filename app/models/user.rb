@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
     return false if !user.active 
 
     user_key = "#{user.id}:#{Time.now.hour}" 
-    request_count = REDIS_CACHE.incrby user_key, 1
+      request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
     return false if request_count > RATE_LIMIT
     token == ROTP::TOTP.new(user.auth_key).now
@@ -252,7 +252,7 @@ class User < ActiveRecord::Base
 
   def within_limits?
     user_key = "#{self.id}:#{Time.now.hour}" 
-    request_count = REDIS_CACHE.incrby user_key, 1
+      request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
     request_count < RATE_LIMIT
   end
@@ -292,7 +292,7 @@ class User < ActiveRecord::Base
     user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid if groups.where(name: user_login_id).count > 0
     user_hash[:pw_gecos]  = "#{name}"
     user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
-    user_hash[:pw_shell] = "/bin/bash"
+      user_hash[:pw_shell] = "/bin/bash"
     user_hash
   end
 end
