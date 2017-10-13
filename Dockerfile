@@ -13,3 +13,7 @@ RUN bundle install
 
 ADD . /app
 
+EXPOSE 3000
+
+ENTRYPOINT [ "./entrypoint.sh"]
+

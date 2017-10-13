@@ -8,7 +8,12 @@ services:
   - docker
 
 env:
-  DOCKER_COMPOSE_VERSION: 1.11.2
+  global:
+    - secure: "Q2/gUeT/Y6IUKsRzgiiE6HGxLcHAzTtVCv6+6TcQnpJL9+HEO06+ISwekNXHRe/2BNMiWzDG5ufqo2YpA1j9h8899KAJZRYDULbbV0o8nrpT2kZSac1ZejBVYb/SrhDk8wrnQxQ061o6SdKpFEEwbIiJDzaqeQkv4tkyw3dEOq6+FRGS/QXj3mPIIArPbNCOtwcvnmg0mGIuPAAxuRZmz4Tuk2F6JdR4LrZstf33mvUYqbTw02Kl7UoErFjGSx2Ti+JPYIVDJ6D8pNCjv5va3awJskcXE5bj0evR5+OiP69GK6T2/UbP+QKwN2J36Pb9RxBKGuEkBTNuduch+h+RMiYk0A8MDO3Sy47i2v8Oj1xTEYqsNm0scmD2utZ93/VqPipYTrxuos7gbC4mdiW3dcMzyrhgaULEJlvalKaSQV41Xex8h/V7NCRvpoYjnyuWVUMQFgGSnE25Xpt1LvP3epcxlEBA9LcndskbEHaWup8mCD2bp+2Zq10iWi/hNnR2IBrj61fApTWBSoNplJMsMZNb3bverQVFFG79Gfr320HWk+eJVahZNFwUYp9VYn17r38nMRdfP9B85hm2ZUEiokzOvEXEKoSa2QVlCNQHk4HGJmfykPn4L8kDnS6LhYV3Yxugxwsl//1iUOwv4+ARMGn/rs13BDOixWXc+GVZIvk="
+    - secure: "hTSsv54GMEfKuZfk5UL3cekNK4ZgEEWwTp2cbfN39ViWBbq4xtXok1jREx4QyhwkNak47ewHuY0rifxPEYkJVJfj+tA/xiGs9BOG73gNEtQYhXXN/ZodXF0Kq3pYOfcVWDDo7oMAUoohkohHK2TA+KY3mfk5sFbxbXHOlNdSn0vXDSa8MgzALoN6+w1oWkC41perODfNS4EYD3gdhwDg4x6QHrmakrt0oOP4PPMCpOWinvkzWq7lBDdhkPSze47BwGilyUDFSJnunSKip88s6DlP4gNj6YYBiT6xGTPLuR76tgEPma9rp25zGvLxH9LsluMXTNuN0L3/6FzVyv0kJgXIwQrpgreQ+B45q3mT6iNom0alyNk3fYDKU59azpH9G0rC0zflmOhW+jssgwyJN08rJN8rFkhpQreD4dgey7+UDjf7qF3rOd0kXmqBvA/3z/aF8Mla/2+EIb1DjyHwnjAcPF2E0/97Gv2eGpZR/PPrQIVN2m8vEe3ce/39c4S/l9OU0G4Dqz9HMqIBG+0qFdS24+egbjaIoOQzO/eJwG/eew4ncvaz/ES8qCDtvFNeKR+QnfxcbJysybrxDNTqt3cBGTeotIdZxIB3rYK63+s+dvzggm09vBMafoP7zyWzD0xjSES7m+Gv9V8Jlvc7h5JSWrkmAgLmgnqt7FpI7hs="
+    - secure: "KtmItMzRHfZEPS54hTnYXNAWsqxCZZMtmxamJPcr2SVP+pzM/25eEF3M2b0JZECFRtW3xPBGita+4BjH8IY4NljH0IDVhPPKQsMHaVKtaqEeiTCRXCqkJd0DMUDeqyRcccwPDJSy9HeZns6E+zQDCGaC/tmFwDUWy5BYpairWd7sdw436iOeTmQ2fJ8SQ9lBr9LGpk8NwDmkYqg14fnOraIhw70tiWv9Wn82mEv+OwY4iKphOv2ZXEBeJYitoT1LQmhnaVvNvax16TYIY3Mxh89Oy2gVkKCgvbR9q1NmAIiWmMTyCLWxF0bd6A6Q+dHDDaQZF0pDsQqe83rnoA0xuaJUF9dh+ahvW0bn0aVFIa8tWgiBEMXWxHEDuEyfCWFis9vf3uj1xJl0SV0ktE5oIRzaF/0cTQorAwRy0UpN1HxK1yB9aITCad/BJ9ERK8MXYnfzC65jn2zHuQMjBz9Aeig4sgLc4IgtGM2DzabsIkhYG3ygL1TYaXXSj5Mo2KDwOuaZ46C7B6qxlzcesPmSnM3KF1CBatRZQK5tjsMm5GnxXKKtqg/udGtOA2fELlNolFsojtpmO4A79TAnebRUpEsU2vP0da1x7yTD5+2NWg6dnvq7tA3c5b8qBK2cAMnCHS0gmjaN3RYeFhLYO55dHDdmx/DNyQQ1V/YEkuisy80="     
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - DOCKER_COMPOSE_VERSION=1.11.2
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -21,4 +26,13 @@ script:
   - make all
   - make rspec
   - make kill
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - export REPO=sankalpsingh/gate
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
 
