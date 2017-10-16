@@ -67,4 +67,5 @@ Rails.application.routes.draw do
   resources :users
   resources :hosts, only: [:create]
 
+  resource :ping, only: [:show]
 end
