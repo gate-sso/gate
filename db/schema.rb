@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171013115441) do
+ActiveRecord::Schema.define(version: 20171016071526) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20171013115441) do
     t.datetime "deleted_at"
   end
 
-  add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
+  add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
 
   create_table "host_access_groups", force: :cascade do |t|
     t.integer  "host_machine_id", limit: 4
