@@ -20,6 +20,10 @@ test:
   properties:
     useSSL: false
 
+integration:
+  <<: *default
+  database: <%= ENV['GATE_DB_NAME'] %>
+
 production:
   <<: *default
   database: <%= ENV['GATE_DB_NAME'] %>

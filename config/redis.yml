@@ -9,7 +9,8 @@ development:
 test:
   <<: *default
 
+integration:
+  <<: *default
+
 production:
   <<: *default
-  host: <%= ENV['CACHE_HOST'] %>
-  port: <%= ENV['CACHE_PORT'] %>
