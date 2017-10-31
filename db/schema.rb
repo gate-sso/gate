@@ -11,13 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171016071526) do
+ActiveRecord::Schema.define(version: 20171031060217) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  create_table "group_admins", force: :cascade do |t|
+    t.integer  "group_id",   limit: 4
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_admins", ["group_id"], name: "fk_rails_1a1d29d2d3", using: :btree
+  add_index "group_admins", ["user_id"], name: "fk_rails_0ac5a6fa32", using: :btree
 
   create_table "group_associations", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -105,5 +115,7 @@ ActiveRecord::Schema.define(version: 20171016071526) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "group_admins", "groups"
+  add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"
 end
