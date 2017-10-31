@@ -1,5 +1,4 @@
 class HostsController < ApplicationController
-  before_action :set_paper_trail_whodunnit
   before_filter :authenticate_access_token!
   def create
     users_email_list = params[:users_list].split(',')
