@@ -1,12 +1,17 @@
 class Group < ActiveRecord::Base
   has_paper_trail
 
+  has_one :group_admin, dependent: :destroy
+
   has_many :group_associations
   has_many :users, through: :group_associations
-  has_one :group_admin, dependent: :destroy
+
+  has_many :vpn_group_associations
+  has_many :vpns, through: :vpn_group_associations
 
   has_many :host_access_groups
   has_many :host_machines, through: :host_access_groups
+
   validates_uniqueness_of :name, case_sensitive: false
 
   before_create :set_lower_case_name

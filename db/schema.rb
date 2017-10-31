@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171031060217) do
+ActiveRecord::Schema.define(version: 20171031121702) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -115,7 +115,42 @@ ActiveRecord::Schema.define(version: 20171031060217) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  create_table "vpn_group_associations", force: :cascade do |t|
+    t.integer  "group_id",   limit: 4
+    t.integer  "vpn_id",     limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vpn_group_associations", ["group_id"], name: "fk_rails_67a460ac90", using: :btree
+  add_index "vpn_group_associations", ["vpn_id"], name: "fk_rails_9be3690c1d", using: :btree
+
+  create_table "vpn_group_user_associations", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "vpn_id",     limit: 4
+    t.integer  "group_id",   limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vpn_group_user_associations", ["group_id"], name: "fk_rails_30de0bd58e", using: :btree
+  add_index "vpn_group_user_associations", ["user_id"], name: "fk_rails_275419a627", using: :btree
+  add_index "vpn_group_user_associations", ["vpn_id"], name: "fk_rails_dbd29a5c87", using: :btree
+
+  create_table "vpns", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "host_name",  limit: 255
+    t.string   "url",        limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   add_foreign_key "group_admins", "groups"
   add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"
+  add_foreign_key "vpn_group_associations", "groups"
+  add_foreign_key "vpn_group_associations", "vpns"
+  add_foreign_key "vpn_group_user_associations", "groups"
+  add_foreign_key "vpn_group_user_associations", "users"
+  add_foreign_key "vpn_group_user_associations", "vpns"
 end

@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_paper_trail
 
   include MsChapAuth
   # Include default devise modules. Others available are:
@@ -7,8 +8,13 @@ class User < ActiveRecord::Base
   #  :recoverable, :rememberable, :trackable, :validatable, :omniauthable
   devise :timeoutable, :omniauthable, :omniauth_providers => [:google_oauth2]
   has_many :hosts
+
   has_many :group_associations
   has_many :groups, through: :group_associations
+
+  has_many :vpn_group_user_associations
+  has_many :vpns, through: :vpn_group_user_associations
+
   has_many :group_admin, dependent: :destroy
 
   #we should put this in configuration
