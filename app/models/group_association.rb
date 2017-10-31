@@ -1,5 +1,5 @@
 class GroupAssociation < ActiveRecord::Base
+  has_paper_trail
   belongs_to :user
   belongs_to :group
-  has_paper_trail
 end

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :set_paper_trail_whodunnit
 
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
 

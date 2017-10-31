@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  before_action :set_paper_trail_whodunnit
 
   before_action :check_signed_in
 

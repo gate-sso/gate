@@ -1,4 +1,5 @@
 class NssController < ApplicationController
+  before_action :set_paper_trail_whodunnit
 
   skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
 

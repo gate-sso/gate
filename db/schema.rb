@@ -105,11 +105,12 @@ ActiveRecord::Schema.define(version: 20171031121702) do
   add_index "users", ["user_login_id"], name: "index_users_on_user_login_id", using: :btree
 
   create_table "versions", force: :cascade do |t|
-    t.string   "item_type",  limit: 191,        null: false
-    t.integer  "item_id",    limit: 4,          null: false
-    t.string   "event",      limit: 255,        null: false
-    t.string   "whodunnit",  limit: 255
-    t.text     "object",     limit: 4294967295
+    t.string   "item_type",      limit: 191,        null: false
+    t.integer  "item_id",        limit: 4,          null: false
+    t.string   "event",          limit: 255,        null: false
+    t.string   "whodunnit",      limit: 255
+    t.text     "object",         limit: 4294967295
+    t.text     "object_changes", limit: 65535
     t.datetime "created_at"
   end
 

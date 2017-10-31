@@ -1,4 +1,5 @@
 class ApiController < ActionController::Base
+  before_action :set_paper_trail_whodunnit
   protect_from_forgery with: :null_session
   before_filter :authenticate_user_from_token!
 

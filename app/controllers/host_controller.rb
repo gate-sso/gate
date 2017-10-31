@@ -1,4 +1,5 @@
 class HostController < ApplicationController
+  before_action :set_paper_trail_whodunnit
   before_filter :authenticate_user!
   def add_host
     @user = User.find(params[:id])

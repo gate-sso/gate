@@ -1,4 +1,5 @@
 class HostMachineGroupsController < ApplicationController
+  before_action :set_paper_trail_whodunnit
   def show
     @host_machines = HostMachine.all
   end

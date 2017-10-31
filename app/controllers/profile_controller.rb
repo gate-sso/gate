@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  before_action :set_paper_trail_whodunnit
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
