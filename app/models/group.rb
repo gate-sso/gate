@@ -1,6 +1,9 @@
 class Group < ActiveRecord::Base
+  has_paper_trail
+
   has_many :group_associations
   has_many :users, through: :group_associations
+  has_one :group_admin, dependent: :destroy
 
   has_many :host_access_groups
   has_many :host_machines, through: :host_access_groups
@@ -8,7 +11,6 @@ class Group < ActiveRecord::Base
 
   before_create :set_lower_case_name
   acts_as_paranoid
-
 
   after_create :add_gid
 

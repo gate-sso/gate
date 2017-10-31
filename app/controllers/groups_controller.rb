@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :delete_user, :delete_machine]
+  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_admin, :delete_user, :delete_machine]
   prepend_before_filter :setup_user if Rails.env.development?
 
   def index
@@ -103,7 +103,24 @@ class GroupsController < ApplicationController
         redirect_to group_path @group
       end
     end
+  end
 
+  def add_admin
+    if current_user.admin?
+      current_group_admin = GroupAdmin.find_by_group_id(@group.id)
+      if current_group_admin.present?
+        current_group_admin.user_id = params[:user_id]
+        current_group_admin.save!
+      else
+        GroupAdmin.create(group_id: @group.id, user_id: params[:user_id])
+      end
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to group_path @group
+      end
+    end
   end
 
   private

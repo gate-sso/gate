@@ -31,7 +31,7 @@ html lang="en"
                 = link_to "Users", users_path if current_user.admin?
             li
               - if current_user.admin?
-                = link_to "Groups", profile_group_admin_path if current_user.admin?
+                = link_to "Groups", groups_path if current_user.admin?
             li
               - if current_user.admin?
                 a href="#contact"  Hosts

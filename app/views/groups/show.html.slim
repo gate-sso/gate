@@ -4,16 +4,29 @@ hr
 
 .row
   .col-md-4.text-primary Name
-  .col-md-8 
+  .col-md-8
     = @group.name
+.row
   .col-md-4.text-primary GID
-  .col-md-8 
+  .col-md-8
     = @group.gid
+.row
+  .col-md-4.text-primary Admin
+  .col-md-8
+    - if @group.group_admin.present?
+       = @group.group_admin.user.name
+    - if current_user.admin?
+      = form_tag  add_admin_to_group_path, method: :post do
+        .row
+          .col-sm-8
+            = select_tag "user_id", options_from_collection_for_select(@group.users.sort_by { |user| user.name }, "id", "name"), class: "form-control"
+          .col-sm-4
+            = submit_tag "Change Admin", class: "form-control btn-sm btn-primary"
 
 hr
 .row
   .col-md-4.text-primary Group Members
-  .col-md-8 
+  .col-md-8
       - if @group.users.count > 0
         .table-responsive
           table.table.table-striped
@@ -28,7 +41,7 @@ hr
                     = link_to "#{user.name}", user_path(user)
                   td
                     = "#{user.email}"
-                  td 
+                  td
                     = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin?
 
       - else
@@ -44,7 +57,7 @@ hr
 hr
 .row
   .col-md-4.text-primary Group Hosts
-  .col-md-8 
+  .col-md-8
       - if @group.host_machines.count > 0
         .table-responsive
           table.table.table-striped
@@ -56,7 +69,7 @@ hr
                 tr
                   td
                     = link_to "#{machine.name}", host_machine_path(machine)
-                  td 
+                  td
                     = link_to "Delete", [@group, machine], method: :delete, data: {confirm: 'Are you sure to remove this machine from the group??'} if current_user.admin?
       - else
         span This group does not have any hosts

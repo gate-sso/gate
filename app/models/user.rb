@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :hosts
   has_many :group_associations
   has_many :groups, through: :group_associations
+  has_many :group_admin, dependent: :destroy
 
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration

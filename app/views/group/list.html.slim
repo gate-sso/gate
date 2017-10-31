@@ -1,4 +1,4 @@
-= render partial: "group_search"
+= render partial: "groups_header"
 - if @groups.count > 0
   .table-responsive
     table.table.table-striped
@@ -6,6 +6,7 @@
         tr
           th Name
           th Gid
+          th Group Admin
       tbody
         - @groups.each do |group|
           tr
@@ -13,3 +14,5 @@
               = link_to "#{group.name}", group_path(group)
             td
               = "#{group.gid}"
+            td
+              = group.group_admin.present? ? "#{group.group_admin.user.name}" : "Not present"
