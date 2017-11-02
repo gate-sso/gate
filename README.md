@@ -29,12 +29,12 @@ Gate is a Rails application, compatible with JRuby.
 * Setup 5 environment variables
 
 ```
-GATE_OAUTH_CLIENT_ID      - Your OAuth client key
-GATE_OAUTH_CLIENT_SECRET  - Your OAUTH client secret
-GATE_HOSTED_DOMAIN        - The hosted domain for gmail
-GATE_SERVER_URL           - Gate server FQDN
-GATE_CONFIG_SECRET        - Ruby required config secret key in production environment
-GATE_EMAIL_DOMAIN         - Your company's domain for email address
+GATE_OAUTH_CLIENT_ID       - Your OAuth client key
+GATE_OAUTH_CLIENT_SECRET   - Your OAUTH client secret
+GATE_HOSTED_DOMAINS        - The hosted domains for gmail (comma separated)
+GATE_SERVER_URL            - Gate server FQDN
+GATE_CONFIG_SECRET         - Ruby required config secret key in production environment
+GATE_EMAIL_DOMAIN          - Your company's domain for email address
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed
@@ -95,8 +95,3 @@ You might have to open rails console and give one user admin privileges by setti
 * Make user part of group, by default they are part of 'people' group.
 
 > **DNS Alert** Please note gate heavily relies on DNS and host supplied IP addresses, so it authenticates against host's native IP address rather than natted IP address. It does reverse name lookup on supplied IP address, if that fails then it will be looking at matching IP address itself.
-
-
-
-
-
