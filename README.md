@@ -48,6 +48,27 @@ If you want gate to setup VPN for your, then just install OpenVPN with easy rsa,
 
 > **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
 
+### Setting Up with Google Authentication
+
+You want to sign into the Google Cloud Console URL for the project and enabling Google+
+
+```
+https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[ACCOUNT-ID]
+```
+
+Once you click activate, go to the following link
+
+```
+https://console.developers.google.com/apis/credentials?project=[ACCOUNT-ID]
+```
+
+Click `Create credentials > Client ID` and select Web Application
+
+In `Authorized Javascript origins` put the your server url
+In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callback`
+
+You can then put the clientId and clientSecret in the appropriate variables in `.env`
+
 #### Local dockerised setup
 
 * Checkout gate
