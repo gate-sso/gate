@@ -116,3 +116,8 @@ You might have to open rails console and give one user admin privileges by setti
 * Make user part of group, by default they are part of 'people' group.
 
 > **DNS Alert** Please note gate heavily relies on DNS and host supplied IP addresses, so it authenticates against host's native IP address rather than natted IP address. It does reverse name lookup on supplied IP address, if that fails then it will be looking at matching IP address itself.
+
+
+#### Logs
+
+The puma logs are in `shared/log/puma.stdout.log`  and `shared/log/puma.stderr.log` and the app logs are in `log/<env>.log`, some errors may be being written directly to stdout/stderr and may not be available in the application's log file
