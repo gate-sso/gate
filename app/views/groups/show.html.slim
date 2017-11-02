@@ -25,6 +25,40 @@ hr
 
 hr
 .row
+  .col-md-4.text-primary Vpns
+  .col-md-8
+      - if @group.vpns.count > 0
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th Vpn Details
+                th Vpn name
+                th Vpn Host name
+            tbody
+              - @group.vpns.each do |vpn|
+                tr
+                  td
+                    = link_to "#{vpn.name}", vpn_path(vpn)
+                  td
+                    = "#{vpn.name}"
+                  td
+                    = "#{vpn.host_name}"
+                  td
+                    = link_to "Delete", [@group, vpn], method: :delete, data: {confirm: 'Are you sure to remove this vpn from the group?'} if current_user.admin?
+
+      - else
+        span This group does not have any vpns
+      .row
+        - if current_user.admin?
+          = form_tag  add_vpn_to_group_path, method: :post do
+            .col-sm-8
+              = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), class: "form-control"
+            .col-sm-4
+              = submit_tag "Add Vpn", class: "form-control btn-sm btn-primary"
+
+hr
+.row
   .col-md-4.text-primary Group Members
   .col-md-8
       - if @group.users.count > 0

@@ -13,12 +13,12 @@ html lang="en"
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"
 
-  body 
+  body
     /! Fixed navbar
     nav.navbar.navbar-default.navbar-fixed-top
       .container
         .navbar-header
-          button.navbar-toggle.collopsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button" 
+          button.navbar-toggle.collopsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"
             span.sr-only Toggle navigation
             span.icon-bar
             span.icon-bar
@@ -27,17 +27,20 @@ html lang="en"
         #navbar.navbar-collapse.collapse
           ul.nav.navbar-nav
             li.active
-              - if current_user.admin? 
-                = link_to "Users", users_path if current_user.admin?
+              - if current_user.admin?
+                = link_to "Users", profile_user_admin_path if current_user.admin?
             li
               - if current_user.admin?
                 = link_to "Groups", groups_path if current_user.admin?
             li
               - if current_user.admin?
                 a href="#contact"  Hosts
+            li
+              - if current_user.admin?
+                = link_to "Vpns", vpns_path
           ul.nav.navbar-nav.navbar-right
             li
-               = link_to "Sign out", users_sign_out_path,:method => :delete 
+               = link_to "Sign out", users_sign_out_path,:method => :delete
             li.active
                = link_to current_user.name, user_path(current_user.id)
         /! /.nav-collapse

@@ -1,0 +1,29 @@
+h4="form for adding new vpn"
+= form_for @vpn, :class => 'form-horizontal' do |f|
+  - if @vpn.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@vpn.errors.count, "error")} prohibited this vpn from being saved:"
+      ul
+        - @vpn.errors.full_messages.each do |message|
+          li = message
+
+  .form-group.row
+      = f.label :name, :class => 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :name, :required => true, :class => 'form-control'
+  .form-group.row
+      = f.label :url, :class => 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :url, :required => true, :class => 'form-control'
+  .form-group.row
+      = f.label :host_name, :class => 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :host_name, :required => true, :class => 'form-control'
+  .form-group.row
+      = f.label :ip_address, :class => 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :ip_address, :required => true, :class => 'form-control'
+
+  .row
+    .col-sm-2.col-sm-offset-10
+      = f.submit "Add Vpn", class: "btn btn-primary pull-right"

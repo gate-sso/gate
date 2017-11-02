@@ -1,0 +1,25 @@
+#notice
+= notice
+.row
+    .col-md-4.col-md-offset-8
+      = link_to "New", new_vpn_path, class: "pull-right btn btn-primary"
+
+.row
+  .col-md-12
+    table.table.responsive
+      thead
+        tr
+          th="Name"
+          th="URL"
+          th="Hostname"
+          th="IP Address"
+
+      tbody
+         - @vpns.each do |vpn|
+          tr
+            td=vpn.name
+            td=vpn.url
+            td=vpn.host_name
+            td=vpn.ip_address
+
+

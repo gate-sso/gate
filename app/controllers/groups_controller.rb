@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_admin, :delete_user, :delete_machine]
+  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_vpn, :add_admin, :delete_user, :delete_vpn, :delete_machine]
   prepend_before_filter :setup_user if Rails.env.development?
 
   def index
@@ -21,6 +21,7 @@ class GroupsController < ApplicationController
   end
 
   def show
+    @vpns = Vpn.all
     @users = User.all
     @host_machines = HostMachine.all
   end
@@ -116,6 +117,28 @@ class GroupsController < ApplicationController
         GroupAdmin.create(group_id: @group.id, user_id: params[:user_id])
       end
     end
+
+    respond_to do |format|
+      format.html do
+        redirect_to group_path @group
+      end
+    end
+  end
+
+  def add_vpn
+    if current_user.admin?
+      VpnGroupAssociation.find_or_create_by(group_id: @group.id, vpn_id: params[:vpn_id])
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to group_path @group
+      end
+    end
+  end
+
+  def delete_vpn
+    VpnGroupAssociation.where(group_id: @group.id, vpn_id: params[:vpn_id]).destroy_all
 
     respond_to do |format|
       format.html do
