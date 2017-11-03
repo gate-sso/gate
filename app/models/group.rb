@@ -11,6 +11,7 @@ class Group < ActiveRecord::Base
 
   has_many :host_access_groups
   has_many :host_machines, through: :host_access_groups
+  belongs_to :vpn
 
   validates_uniqueness_of :name, case_sensitive: false
 

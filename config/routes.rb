@@ -30,6 +30,9 @@ Rails.application.routes.draw do
   post 'profile/:id/host' => 'host#add_host', as: 'add_host'
   delete 'profile/:user_id/host/:id' => 'host#delete_host', as: 'user_host'
 
+  post 'profile/:id/vpn' => 'profile#add_vpn_group_association', as: 'add_vpn_group_user_association'
+  delete 'profile/:user_id/vpn/:id' => 'profile#delete_vpn_group_association', as: 'delete_vpn_group_association'
+
   #Group Functions
 
   post 'profile/:id/group' => 'group#add_group', as: 'add_group'
@@ -73,4 +76,7 @@ Rails.application.routes.draw do
   resource :ping, only: [:show]
 
   resources :vpns
+
+  get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
+  post 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#create_group_associated_users', format: :json
 end

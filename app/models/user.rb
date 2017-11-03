@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   has_many :vpns, through: :vpn_group_user_associations
 
   has_many :group_admin, dependent: :destroy
+  belongs_to :vpn
 
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
