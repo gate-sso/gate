@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   match 'profile/group_admin', to: 'profile#group_admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'
 
-  get 'profile/:id' => 'profile#user', as: 'user'
+  get 'profile/:id' => 'users#index', as: 'user_profile'
   post 'profile/:id' => 'profile#update', as: 'user_update'
   get 'profile/:id/edit' => 'profile#user_edit', as: 'user_edit'
   post 'profile/:id/public_key' => 'profile#public_key_update', as: 'user_public_key_update'

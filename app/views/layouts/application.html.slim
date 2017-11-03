@@ -28,7 +28,7 @@ html lang="en"
           ul.nav.navbar-nav
             li.active
               - if current_user.admin? 
-                = link_to "Users", profile_user_admin_path if current_user.admin?
+                = link_to "Users", users_path if current_user.admin?
             li
               - if current_user.admin?
                 = link_to "Groups", profile_group_admin_path if current_user.admin?
