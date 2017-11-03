@@ -1,5 +1,6 @@
 class VpnsController < ApplicationController
   before_action :set_paper_trail_whodunnit
+  before_action :authorize_user, except: [:create_group_associated_users, :show, :group_associated_users]
   before_action :set_vpn, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -75,6 +76,17 @@ class VpnsController < ApplicationController
     end
   end
 
+  def destroy
+    VpnGroupUserAssociation.where(vpn_id: params[:id]).destroy_all
+    VpnGroupAssociation.where(vpn_id: params[:id]).destroy_all
+    Vpn.destroy(params[:id])
+
+    respond_to do |format|
+      format.html { redirect_to vpns_path, notice: 'Vpn was successfully destroyed.' }
+      format.json { render status: :ok, json: "vpn destroyed" }
+    end
+  end
+
   private
   def set_vpn
     @vpn = Vpn.find(params[:id])
@@ -82,5 +94,11 @@ class VpnsController < ApplicationController
 
   def vpn_params
     params.require(:vpn).permit(:name, :host_name, :url, :ip_address)
+  end
+
+  def authorize_user
+    unless current_user.admin?
+      redirect_to profile_path
+    end
   end
 end
