@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
-  # 
+  #
   after_create :add_system_attributes
   UID_CONSTANT = 5000
   HOME_DIR = "/home"
@@ -39,8 +39,8 @@ class User < ActiveRecord::Base
     status  = false
 
     restricted_characters.each do |char|
-      break if status 
-      status = input_string.include?(char) 
+      break if status
+      status = input_string.include?(char)
     end
 
     status
@@ -132,6 +132,15 @@ class User < ActiveRecord::Base
     return user.permitted_hosts? address_array
   end
 
+  def permitted_vpns? address_array
+    address_array.each do |host_address|
+      vpns.each do |vpn|
+        return true if vpn.ip_address == host_address
+      end
+    end
+    return false
+  end
+
   def permitted_hosts? address_array
     address_array.each do |host_address|
       host_name = nil
@@ -173,10 +182,10 @@ class User < ActiveRecord::Base
 
   def self.find_and_check_user email, token
     user = User.get_user email
-    return false if user.blank? 
-    return false if !user.active 
+    return false if user.blank?
+    return false if !user.active
 
-    user_key = "#{user.id}:#{Time.now.hour}" 
+    user_key = "#{user.id}:#{Time.now.hour}"
       request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
     return false if request_count > RATE_LIMIT
@@ -215,7 +224,7 @@ class User < ActiveRecord::Base
     shadow_hash
   end
 
-  def self.get_all_shadow_response 
+  def self.get_all_shadow_response
     user_array = []
     User.all.each do |user|
       user_array << user.get_shadow_hash
@@ -259,7 +268,7 @@ class User < ActiveRecord::Base
   end
 
   def within_limits?
-    user_key = "#{self.id}:#{Time.now.hour}" 
+    user_key = "#{self.id}:#{Time.now.hour}"
       request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
     request_count < RATE_LIMIT
@@ -278,8 +287,8 @@ class User < ActiveRecord::Base
     address_array = addresses.split
 
     user = User.get_user user_name
-    if user.permitted_hosts?(address_array)
-      otp = user.get_user_otp 
+    if user.permitted_hosts?(address_array) || user.permitted_vpns?(address_array)
+      otp = user.get_user_otp
       return user.authenticate_ms_chap otp, challenge_string, response_string
     else
       return auth_failed_message
@@ -287,12 +296,12 @@ class User < ActiveRecord::Base
   end
 
   #this method is here because we need to mock/stub for testing
-  def get_user_otp 
+  def get_user_otp
     return ROTP::TOTP.new(self.auth_key).now
   end
 
 
-  def user_passwd_response 
+  def user_passwd_response
     user_hash = {}
     user_hash[:pw_name] = user_login_id
     user_hash[:pw_passwd]  = "x"
