@@ -45,7 +45,7 @@ hr
                   td
                     = "#{vpn.host_name}"
                   td
-                    = link_to "Delete", [@group, vpn], method: :delete, data: {confirm: 'Are you sure to remove this vpn from the group?'} if current_user.admin?
+                    = link_to "Delete", [@group, vpn], method: :delete, data: {confirm: 'Are you sure to remove this vpn from the group?'}
 
       - else
         span This group does not have any vpns
@@ -76,7 +76,7 @@ hr
                   td
                     = "#{user.email}"
                   td
-                    = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin?
+                    = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'}
 
       - else
         span This group does not have any users
