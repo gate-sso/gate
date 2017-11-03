@@ -54,11 +54,17 @@ class VpnsController < ApplicationController
   def create_group_associated_users
     if current_user.admin? ||
         VpnGroupAssociation.find_by_vpn_id_and_group_id(params[:vpn_id].to_i, params[:group_id]).group.group_admin.user == current_user
+      @users_selected = params[:users] || []
       @associations_made = []
-      VpnGroupUserAssociation.where(vpn_id: params[:vpn_id].to_i, group_id: params[:group_id].to_i).destroy_all
-      params[:users].each do |user|
-        @associations_made << VpnGroupUserAssociation.create(vpn_id: params[:vpn_id], group_id: params[:group_id], user_id: user.to_i)
+      VpnGroupUserAssociation.where(vpn_id:params[:vpn_id].to_i, group_id: params[:group_id].to_i).each do |vpn_association|
+        unless @users_selected.include? vpn_association.user.id
+          vpn_association.destroy
+        end
       end
+      @users_selected.each do |user|
+        @associations_made << VpnGroupUserAssociation.find_or_create_by(vpn_id: params[:vpn_id], group_id: params[:group_id], user_id: user.to_i)
+      end
+
       respond_to do |format|
         format.json { render status: :ok, json: @associations_made }
       end

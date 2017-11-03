@@ -1,11 +1,12 @@
 #notice
   = notice
-= form_tag groups_path, method: 'post' do
-  .row
-    .col-md-8
-      = text_field_tag "group[name]", "", class: "form-control", autofocus:  true
-    .col-md-4
-      = submit_tag "Add Group", class: "form-control btn btn-sm btn-primary", name: nil
+- if current_user.admin?
+  = form_tag groups_path, method: 'post' do
+    .row
+      .col-md-8
+        = text_field_tag "group[name]", "", class: "form-control", autofocus:  true
+      .col-md-4
+        = submit_tag "Add Group", class: "form-control btn btn-sm btn-primary", name: nil
 
 br
 = form_tag profile_group_admin_path, method: 'get' do

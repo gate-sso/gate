@@ -30,8 +30,8 @@ html lang="en"
               - if current_user.admin?
                 = link_to "Users", profile_user_admin_path if current_user.admin?
             li
-              - if current_user.admin?
-                = link_to "Groups", groups_path if current_user.admin?
+              - if current_user.admin? || current_user.group_admin?
+                = link_to "Groups", groups_path
             li
               - if current_user.admin?
                 a href="#contact"  Hosts

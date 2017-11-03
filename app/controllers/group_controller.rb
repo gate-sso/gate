@@ -69,7 +69,11 @@ class GroupController < ApplicationController
     @groups = []
     @group_search = params[:group_search]
     if @group_search.present?
-      @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+      if current_user.admin?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
+      elsif current_user.group_admin?
+        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
+      end
     end
   end
 

@@ -31,7 +31,7 @@ class ProfileController < ApplicationController
   def group_admin
     @users = []
     @groups = []
-    if current_user.admin?
+    if current_user.admin? || current_user.group_admin?
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)

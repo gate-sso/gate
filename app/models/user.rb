@@ -303,4 +303,8 @@ class User < ActiveRecord::Base
       user_hash[:pw_shell] = "/bin/bash"
     user_hash
   end
+
+  def group_admin?
+    GroupAdmin.find_by_user_id(self.id).present?
+  end
 end
