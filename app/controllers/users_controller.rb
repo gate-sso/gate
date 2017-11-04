@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :set_paper_trail_whodunnit
 
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
 
@@ -10,13 +11,15 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
-    @groups = Group.all 
-    render_404 if @user.blank?
-    if @user.present? && ( current_user.admin? || current_user.id == @user.id)
-      #hack add blank text to public_key
-      @user.public_key = "Add public key" if @user.public_key.blank?
-      respond_to do |format|
-        format.html
+    if current_user.admin? || current_user == @user
+      @groups = Group.all
+      render_404 if @user.blank?
+      if @user.present? && ( current_user.admin? || current_user.id == @user.id)
+        #hack add blank text to public_key
+        @user.public_key = "Add public key" if @user.public_key.blank?
+        respond_to do |format|
+          format.html
+        end
       end
     end
   end

@@ -1,5 +1,4 @@
 class NssController < ApplicationController
-
   skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
 
   def add_user_to_group 

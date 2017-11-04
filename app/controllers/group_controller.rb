@@ -1,4 +1,5 @@
 class GroupController < ApplicationController
+  before_action :set_paper_trail_whodunnit
   before_filter :authenticate_user!
   def add_group    
     @user = User.find(params[:id])
@@ -38,9 +39,9 @@ class GroupController < ApplicationController
       group = Group.find(params[:id])
 
       if @user.email.split('@').first != group.name
-        @user.groups.each do |group|
-          REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-          REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+        @user.groups.each do |user_group|
+          REDIS_CACHE.del(GROUP_NAME_RESPONSE + user_group.name)
+          REDIS_CACHE.del(GROUP_GID_RESPONSE + user_group.gid.to_s)
         end
         @user.groups.delete(group)
         REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
@@ -68,7 +69,11 @@ class GroupController < ApplicationController
     @groups = []
     @group_search = params[:group_search]
     if @group_search.present?
-      @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+      if current_user.admin?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
+      elsif current_user.group_admin?
+        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
+      end
     end
   end
 

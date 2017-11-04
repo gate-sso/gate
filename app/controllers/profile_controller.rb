@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  before_action :set_paper_trail_whodunnit
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
@@ -14,13 +15,13 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
       redirect_to profile_path
@@ -30,23 +31,21 @@ class ProfileController < ApplicationController
   def group_admin
     @users = []
     @groups = []
-    if current_user.admin?
+    if current_user.admin? || current_user.group_admin?
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count >= 0
       end
     else
       redirect_to profile_path
     end
-
-
   end
 
   def user_id
@@ -61,7 +60,7 @@ class ProfileController < ApplicationController
 
   def download_vpn
     if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?
-        `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
+      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
     else
       `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{current_user.email}`
     end
@@ -73,7 +72,7 @@ class ProfileController < ApplicationController
       @user = User.find(params[:id])
       if @user.present?
         if !Pathname.new("/opt/vpnkeys/#{@user.email}.tar.gz").exist?
-            `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
+          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
         else
           `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{@user.email}`
         end
@@ -157,13 +156,13 @@ class ProfileController < ApplicationController
       @user_search = params[:user_search]
       if @user_search.present?
         @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
-          redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
+        redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
       @group_search = params[:group_search]
       if @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
-          redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
+        redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
       redirect_to profile_path

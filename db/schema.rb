@@ -11,13 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803140620) do
+ActiveRecord::Schema.define(version: 20171102071909) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  create_table "group_admins", force: :cascade do |t|
+    t.integer  "group_id",   limit: 4
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_admins", ["group_id"], name: "fk_rails_1a1d29d2d3", using: :btree
+  add_index "group_admins", ["user_id"], name: "fk_rails_0ac5a6fa32", using: :btree
 
   create_table "group_associations", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -35,7 +45,7 @@ ActiveRecord::Schema.define(version: 20170803140620) do
     t.datetime "deleted_at"
   end
 
-  add_index "groups", ["name"], name: "index_groups_on_name", using: :btree
+  add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
 
   create_table "host_access_groups", force: :cascade do |t|
     t.integer  "host_machine_id", limit: 4
@@ -94,5 +104,55 @@ ActiveRecord::Schema.define(version: 20170803140620) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["user_login_id"], name: "index_users_on_user_login_id", using: :btree
 
+  create_table "versions", force: :cascade do |t|
+    t.string   "item_type",      limit: 191,        null: false
+    t.integer  "item_id",        limit: 4,          null: false
+    t.string   "event",          limit: 255,        null: false
+    t.string   "whodunnit",      limit: 255
+    t.text     "object",         limit: 4294967295
+    t.text     "object_changes", limit: 65535
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+
+  create_table "vpn_group_associations", force: :cascade do |t|
+    t.integer  "group_id",   limit: 4
+    t.integer  "vpn_id",     limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vpn_group_associations", ["group_id"], name: "fk_rails_67a460ac90", using: :btree
+  add_index "vpn_group_associations", ["vpn_id"], name: "fk_rails_9be3690c1d", using: :btree
+
+  create_table "vpn_group_user_associations", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "vpn_id",     limit: 4
+    t.integer  "group_id",   limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vpn_group_user_associations", ["group_id"], name: "fk_rails_30de0bd58e", using: :btree
+  add_index "vpn_group_user_associations", ["user_id"], name: "fk_rails_275419a627", using: :btree
+  add_index "vpn_group_user_associations", ["vpn_id"], name: "fk_rails_dbd29a5c87", using: :btree
+
+  create_table "vpns", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "host_name",  limit: 255
+    t.string   "url",        limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "ip_address", limit: 255
+  end
+
+  add_foreign_key "group_admins", "groups"
+  add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"
+  add_foreign_key "vpn_group_associations", "groups"
+  add_foreign_key "vpn_group_associations", "vpns"
+  add_foreign_key "vpn_group_user_associations", "groups"
+  add_foreign_key "vpn_group_user_associations", "users"
+  add_foreign_key "vpn_group_user_associations", "vpns"
 end

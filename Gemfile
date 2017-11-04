@@ -27,6 +27,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'faker'
+  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
 end
 
 group :development do
@@ -42,3 +43,4 @@ gem 'rotp'
 gem 'devise', '4.1.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2' 
+gem 'paper_trail'

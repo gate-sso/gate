@@ -1,6 +1,10 @@
 require 'rails_helper'
 GID_CONSTANT = 9000
 RSpec.describe Group, type: :model do
+  context 'validate uniqueness' do
+    subject { FactoryGirl.create(:group) }
+    it { should validate_uniqueness_of(:name).ignoring_case_sensitivity }
+  end
 
   it "should save gid after create" do
     group = create(:group)

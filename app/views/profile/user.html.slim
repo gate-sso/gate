@@ -1,7 +1,7 @@
 .container.container-profile
   .row
     .col-md-4.text-primary Name
-    .col-md-8 
+    .col-md-8
       = @user.name
   .row
     .col-md-4.text-primary Email
@@ -21,13 +21,13 @@
         .col-md-4.text-primary Administrator?
         .col-md-8
           = check_box "user", "admin"
-      .row 
+      .row
         .col-md-4
         .col-md-2
           = submit_tag "Update", class: "form-control btn-sm btn-primary"
   hr
   .row
-    .col-md-4.text-primary 
+    .col-md-4.text-primary
       = link_to "Groups", groups_path
     .col-md-8
       - @user.groups.each do |group|
@@ -35,10 +35,10 @@
         .row
           .col-md-8
             = "#{group.name} (#{group.gid})"
-          .col-md-4 
+          .col-md-4
             = link_to "Delete", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
       = "No groups are associated with this user" if @user.groups.count == 0
-  .row 
+  .row
     .col-md-4
     .col-md-8
       .row
@@ -57,11 +57,11 @@
         .row
           .col-md-8
             = host.host_pattern
-          .col-md-4 
+          .col-md-4
             = link_to "Delete", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
 
       = "No host patterns are associated with this user" if @user.hosts.count == 0
-  .row 
+  .row
     .col-md-4
     .col-md-8
       .row
@@ -74,20 +74,31 @@
 
   br
   hr
-  .row 
+  .row
     .col-md-4.text-primary Public Key
     .col-md-8
       = form_tag user_public_key_update_path, method: :post do
-        .row 
+        .row
           .col-sm-12
             = text_area_tag "public_key", @user.public_key, class: "form-contol", style: "font-family:monospace;", rows: 15, cols: 35
         .row
           .col-sm-8
           .col-sm-4
             = submit_tag "Update key", class: "form-control btn-sm btn-primary"
+
   hr
-  .row 
-    .col-md-4.text-primary VPN Profile 
+  .row
+    .col-md-4.text-primary
+      = link_to "Vpns", vpns_path
+    .col-md-8
+      - @user.vpns.each do |vpn|
+        .row
+          .col-md-8
+            = "#{vpn.name}"
+
+  hr
+  .row
+    .col-md-4.text-primary VPN Profile
     .col-md-8
         .col-sm-12
         .row
