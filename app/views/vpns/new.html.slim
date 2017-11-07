@@ -1,4 +1,4 @@
-h4="form for adding new vpn"
+h4="Add new VPN"
 = form_for @vpn, :class => 'form-horizontal' do |f|
   - if @vpn.errors.any?
     #error_explanation
@@ -11,10 +11,6 @@ h4="form for adding new vpn"
       = f.label :name, :class => 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :name, :required => true, :class => 'form-control'
-  .form-group.row
-      = f.label :url, :class => 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :url, :required => true, :class => 'form-control'
   .form-group.row
       = f.label :host_name, :class => 'control-label col-sm-2'
       .col-sm-10

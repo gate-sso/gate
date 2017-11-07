@@ -93,7 +93,7 @@ class VpnsController < ApplicationController
   end
 
   def vpn_params
-    params.require(:vpn).permit(:name, :host_name, :url, :ip_address)
+    params.require(:vpn).permit(:name, :host_name, :ip_address)
   end
 
   def authorize_user

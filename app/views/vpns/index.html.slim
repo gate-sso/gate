@@ -10,7 +10,6 @@
       thead
         tr
           th="Name"
-          th="URL"
           th="Hostname"
           th="IP Address"
 
@@ -18,7 +17,6 @@
          - @vpns.each do |vpn|
           tr
             td=vpn.name
-            td=vpn.url
             td=vpn.host_name
             td=vpn.ip_address
             td= link_to "Delete", vpn, method: :delete, data: {confirm: 'Are you sure to remove this vpn from gate?'}

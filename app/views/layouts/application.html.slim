@@ -37,7 +37,7 @@ html lang="en"
                 a href="#contact"  Hosts
             li
               - if current_user.admin?
-                = link_to "Vpns", vpns_path
+                = link_to "VPNs", vpns_path
           ul.nav.navbar-nav.navbar-right
             li
                = link_to "Sign out", users_sign_out_path,:method => :delete

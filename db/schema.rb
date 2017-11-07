@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171102071909) do
+ActiveRecord::Schema.define(version: 20171107114249) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -141,7 +141,6 @@ ActiveRecord::Schema.define(version: 20171102071909) do
   create_table "vpns", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.string   "host_name",  limit: 255
-    t.string   "url",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "ip_address", limit: 255
