@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   post 'api/v1/users' => 'api/v1/users#create', as: 'add_users_api', format: :json
   post 'api/v1/add_user_list_to_group' => 'api/v1/groups#add_users_list', format: :json
   post 'api/v1/give_hostname_pattern_access_to_user_list' => 'api/v1/hosts#add_users_list', format: :json
+  post 'api/v1/add_user_list_to_a_vpn' => 'api/v1/vpns#add_users_list', format: :json
 
   root 'home#index'
 
