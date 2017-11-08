@@ -11,13 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107114249) do
+ActiveRecord::Schema.define(version: 20171108130353) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "user_id",    limit: 4
   end
+
+  add_index "access_tokens", ["user_id"], name: "fk_rails_96fc070778", using: :btree
 
   create_table "group_admins", force: :cascade do |t|
     t.integer  "group_id",   limit: 4
@@ -146,6 +149,7 @@ ActiveRecord::Schema.define(version: 20171107114249) do
     t.string   "ip_address", limit: 255
   end
 
+  add_foreign_key "access_tokens", "users"
   add_foreign_key "group_admins", "groups"
   add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"

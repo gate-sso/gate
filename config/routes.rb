@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   # api routes
 
   post 'api/v1/users' => 'api/v1/users#create', as: 'add_users_api', format: :json
+  post 'api/v1/add_user_list_to_group' => 'api/v1/groups#add_users_list', format: :json
 
   root 'home#index'
 

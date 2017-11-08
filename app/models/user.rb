@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
   has_many :group_admin, dependent: :destroy
   belongs_to :vpn
 
+  has_one :access_token
+
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
   #

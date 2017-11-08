@@ -11,4 +11,10 @@ class ApiController < ActionController::Base
   def authentication_error
     head :unauthorized
   end
+
+  protected
+
+  def current_user
+    AccessToken.find_by_token(request.headers[:Authorization]).user
+  end
 end
