@@ -14,7 +14,7 @@ class ProfileController < ApplicationController
     if current_user.admin?
       @user_search = params[:user_search]
       if @user_search.present?
-        @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+        @users = User.where("name LIKE ? OR email LIKE ?", "%#{@user_search}%", "%#{@user_search}%").take(5)
         redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
@@ -34,7 +34,7 @@ class ProfileController < ApplicationController
     if current_user.admin? || current_user.group_admin?
       @user_search = params[:user_search]
       if @user_search.present?
-        @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+        @users = User.where("name LIKE ? OR email LIKE ?", "%#{@user_search}%", "%#{@user_search}%").take(5)
         redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
@@ -145,7 +145,7 @@ class ProfileController < ApplicationController
     @users = []
     @user_search = params[:user_search]
     if @user_search.present?
-      @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+      @users = User.where("name LIKE ? OR email LIKE ?", "%#{@user_search}%", "%#{@user_search}%" ).take(5)
     end
   end
 
@@ -155,7 +155,7 @@ class ProfileController < ApplicationController
     if current_user.admin?
       @user_search = params[:user_search]
       if @user_search.present?
-        @users = User.where("name LIKE ?", "%#{@user_search}%" ).take(5)
+        @users = User.where("name LIKE ? OR email LIKE ?", "%#{@user_search}%", "%#{@user_search}%").take(5)
         redirect_to profile_list_path(user_search: params[:user_search]) if @users.count > 0
       end
 
