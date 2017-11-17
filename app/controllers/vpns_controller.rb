@@ -33,7 +33,7 @@ class VpnsController < ApplicationController
       @groups_under_current_user = Group.all
     else
       @vpn.groups.each do |vpn_group|
-        if vpn_group.group_admin.user == current_user
+        if vpn_group.group_admin.try(:user) == current_user
           @groups_under_current_user << vpn_group
         end
       end

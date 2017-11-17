@@ -42,5 +42,5 @@ gem "font-awesome-rails"
 gem 'rotp'
 gem 'devise', '4.1.0'
 gem 'omniauth'
-gem 'omniauth-google-oauth2' 
+gem 'omniauth-google-oauth2'
 gem 'paper_trail'
