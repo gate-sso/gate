@@ -29,12 +29,12 @@ Gate is a Rails application, compatible with JRuby.
 * Setup 5 environment variables
 
 ```
-GATE_OAUTH_CLIENT_ID      - Your OAuth client key
-GATE_OAUTH_CLIENT_SECRET  - Your OAUTH client secret
-GATE_HOSTED_DOMAIN        - The hosted domain for gmail
-GATE_SERVER_URL           - Gate server FQDN
-GATE_CONFIG_SECRET        - Ruby required config secret key in production environment
-GATE_EMAIL_DOMAIN         - Your company's domain for email address
+GATE_OAUTH_CLIENT_ID       - Your OAuth client key
+GATE_OAUTH_CLIENT_SECRET   - Your OAUTH client secret
+GATE_HOSTED_DOMAINS        - The hosted domains for gmail (comma separated)
+GATE_SERVER_URL            - Gate server FQDN
+GATE_CONFIG_SECRET         - Ruby required config secret key in production environment
+GATE_EMAIL_DOMAIN          - Your company's domain for email address
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed
@@ -47,6 +47,27 @@ Once Gate is setup, sign up with your user and you should see welcome page with 
 If you want gate to setup VPN for your, then just install OpenVPN with easy rsa, Gate should just work fine with it.
 
 > **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
+
+### Setting Up with Google Authentication
+
+You want to sign into the Google Cloud Console URL for the project and enabling Google+
+
+```
+https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[ACCOUNT-ID]
+```
+
+Once you click activate, go to the following link
+
+```
+https://console.developers.google.com/apis/credentials?project=[ACCOUNT-ID]
+```
+
+Click `Create credentials > Client ID` and select Web Application
+
+In `Authorized Javascript origins` put the your server url
+In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callback`
+
+You can then put the clientId and clientSecret in the appropriate variables in `.env`
 
 #### Local dockerised setup
 
@@ -97,6 +118,6 @@ You might have to open rails console and give one user admin privileges by setti
 > **DNS Alert** Please note gate heavily relies on DNS and host supplied IP addresses, so it authenticates against host's native IP address rather than natted IP address. It does reverse name lookup on supplied IP address, if that fails then it will be looking at matching IP address itself.
 
 
+#### Logs
 
-
-
+The puma logs are in `shared/log/puma.stdout.log`  and `shared/log/puma.stderr.log` and the app logs are in `log/<env>.log`, some errors may be being written directly to stdout/stderr and may not be available in the application's log file
