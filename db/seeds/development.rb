@@ -6,10 +6,10 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 #
-user = User.create(email: "dev@a.c", encrypted_password: "", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 0, current_sign_in_at: nil, last_sign_in_at: nil, current_sign_in_ip: nil, last_sign_in_ip: nil, created_at: Time.now, updated_at: Time.now, provider: nil,  name: "Dev User", auth_key: "42b57sy4alrbnmfx", provisioning_uri: "otpauth://totp/dev@a.c?secret=42b57sy4alrbnmfx.", active: true, admin: true)
+User.create(email: "dev@a.c", encrypted_password: "", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 0, current_sign_in_at: nil, last_sign_in_at: nil, current_sign_in_ip: nil, last_sign_in_ip: nil, created_at: Time.now, updated_at: Time.now, provider: nil,  name: "Dev User", auth_key: "42b57sy4alrbnmfx", provisioning_uri: "otpauth://totp/dev@a.c?secret=42b57sy4alrbnmfx.", active: true, admin: true)
 
 (1..6).each do |uid|
-  user = User.create(email: "dev#{uid}@a.c", encrypted_password: "", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 0, current_sign_in_at: nil, last_sign_in_at: nil, current_sign_in_ip: nil, last_sign_in_ip: nil, created_at: Time.now, updated_at: Time.now, provider: nil, name: "Dev User #{uid}", auth_key: "42b57sy4alrbnmfx", provisioning_uri: "otpauth://totp/dev@a.c?secret=42b57sy4alrbnmfx.", active: true, admin: false)
+  User.create(email: "dev#{uid}@a.c", encrypted_password: "", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 0, current_sign_in_at: nil, last_sign_in_at: nil, current_sign_in_ip: nil, last_sign_in_ip: nil, created_at: Time.now, updated_at: Time.now, provider: nil, name: "Dev User #{uid}", auth_key: "42b57sy4alrbnmfx", provisioning_uri: "otpauth://totp/dev@a.c?secret=42b57sy4alrbnmfx.", active: true, admin: false)
 end
 
 User.all.each do |user|
@@ -33,3 +33,20 @@ User.all.each do |user|
 end
 group = Group.create(name: "devops")
 access_token = AccessToken.create(token: "a")
+
+vpn = Vpn.create(
+  name: "dev-vpn",
+  host_name: "dev-vpn.go-jek.io",
+  ip_address: "1.2.3.4",
+  uuid: "FC29CB92-FC7E-4F0B-B938-7612DFDECC28"
+)
+
+
+vsd = VpnSearchDomain.create(search_domain: "go-jek.com")
+vdns = VpnDomainNameServer.create(server_address: "8.8.8.8")
+vsmd = VpnSupplementalMatchDomain.create(supplemental_match_domain: "match.domains")
+
+vpn.vpn_search_domains << vsd
+vpn.vpn_domain_name_servers << vdns
+vpn.vpn_supplemental_match_domains << vsmd
+vpn.save!

@@ -1,85 +1,114 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<!-- Set the name to whatever you like, it is used in the profile list on the device -->
-<key>PayloadDisplayName</key>
-<string><%= organization_name %></string>
-<key>PayloadIdentifier</key>
-<!-- This is a reverse-DNS style unique identifier used to detect duplicate profiles -->
-<string><%= reverse_vpn_url %></string>
-<!-- A globally unique identifier, use uuidgen on Linux/Mac OS X to generate it -->
-<key>PayloadUUID</key>
-<string><%= organization_static %></string>
-<key>PayloadType</key>
-<string>Configuration</string>
-<key>PayloadVersion</key>
-<integer>1</integer>
-<key>PayloadContent</key>
-<array>
-<!-- It is possible to add multiple VPN payloads with different identifiers/UUIDs and names -->
-<% for vpn in payload_content %>
-  <dict>
-  <!-- This is an extension of the identifier given above -->
+
+  <!-- Set the name to whatever you like, it is used in the profile list on the device -->
+  <key>PayloadDisplayName</key>
+  <string><%= organization_name %></string>
+
+  <!-- This is a reverse-DNS style unique identifier used to detect duplicate profiles -->
   <key>PayloadIdentifier</key>
-  <string><%= vpn['payload_identifier'] %></string>
-  <!-- A globally unique identifier for this payload -->
-  <key><%= vpn['payload_uuid'] %></key>
-  <string>647D41C3-52E4-497D-BA25-59B9FB4043B6</string>
+  <string><%= reverse_vpn_url %></string>
+
+  <!-- A globally unique identifier, use uuidgen on Linux/Mac OS X to generate it -->
+  <key>PayloadUUID</key>
+  <string><%= organization_static %></string>
+
   <key>PayloadType</key>
-  <string>com.apple.vpn.managed</string>
+  <string>Configuration</string>
+
   <key>PayloadVersion</key>
   <integer>1</integer>
-  <key>UserDefinedName</key>
-  <!-- This is the name of the VPN connection as seen in the VPN application later -->
-  <string><%= vpn['user_defined_name'] %></string>
-  <key>VPNType</key>
-  <string>IKEv2</string>
-  <key>IKEv2</key>
-  <dict>
-  <!-- This is the hostname or IP address of VPN server.
-    Chosing IP address can avoid issues with client DNS resolvers and speed up connection process. -->
-    <key>RemoteAddress</key>
-    <string><%= vpn['ikev2']['remote_address'] %></string>
-    <!-- leftid in ipsec.conf -->
-    <key>RemoteIdentifier</key>
-    <string><%= vpn['ikev2']['remote_identifier'] %></string>
-    <key>DeadPeerDetectionRate</key>
-    <string>High</string>
-    <key>AuthenticationMethod</key>
-    <string>Username</string>
-    <key>NATKeepAliveInterval</key>
-    <integer>30</integer>
-    <key>NATKeepAliveOffloadEnable</key>
-    <true/>
-    <key>ExtendedAuthEnabled</key>
-    <integer>1</integer>
-    <!-- Username and password from ipsec.secrets -->
-    <key>AuthName</key>
-    <string><%= vpn['ikev2']['auth_name'] %></string>
-  </dict>
-  <key>DNS</key>
-  <dict>
-  <key>RemoteAddress</key>
-  <string><%= vpn['ikev2']['remote_address'] %></string>
-  <!-- leftid in ipsec.conf -->
-  <key>RemoteIdentifier</key>
-  <string><%= vpn['ikev2']['remote_identifier'] %></string>
-  <key>DeadPeerDetectionRate</key>
-  <string>High</string>
-  <key>AuthenticationMethod</key>
-  <string>Username</string>
-  <key>NATKeepAliveInterval</key>
-  <integer>30</integer>
-  <key>NATKeepAliveOffloadEnable</key>
-  <true/>
-  <key>ExtendedAuthEnabled</key>
-  <integer>1</integer>
-  <!-- Username and password from ipsec.secrets -->
-  <key>AuthName</key>
-  <string><%= vpn['ikev2']['auth_name'] %></string>
-  </dict>
-  </dict>
-<% end %>
-</array>
+
+  <key>PayloadContent</key>
+  <array>
+
+    <!-- It is possible to add multiple VPN payloads with different identifiers/UUIDs and names -->
+    <% for vpn in payload_content %>
+
+      <dict>
+
+        <!-- This is an extension of the identifier given above -->
+        <key>PayloadIdentifier</key>
+        <string><%= vpn['payload_identifier'] %></string>
+
+        <!-- A globally unique identifier for this payload -->
+        <key>PayloadUUID</key>
+        <string><%= vpn['payload_uuid'] %></string>
+
+        <key>PayloadType</key>
+        <string>com.apple.vpn.managed</string>
+
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+
+        <!-- This is the name of the VPN connection as seen in the VPN application later -->
+        <key>UserDefinedName</key>
+        <string><%= vpn['user_defined_name'] %></string>
+
+        <key>VPNType</key>
+        <string>IKEv2</string>
+
+        <key>IKEv2</key>
+        <dict>
+
+          <!-- This is the hostname or IP address of VPN server. Chosing IP address can avoid issues with client DNS resolvers and speed up connection process. -->
+          <key>RemoteAddress</key>
+          <string><%= vpn['ikev2']['remote_address'] %></string>
+
+          <!-- leftid in ipsec.conf -->
+          <key>RemoteIdentifier</key>
+          <string><%= vpn['ikev2']['remote_identifier'] %></string>
+
+          <key>DeadPeerDetectionRate</key>
+          <string>High</string>
+
+          <key>AuthenticationMethod</key>
+          <string>Username</string>
+
+          <key>NATKeepAliveInterval</key>
+          <integer>30</integer>
+
+          <key>NATKeepAliveOffloadEnable</key>
+          <true/>
+
+          <key>ExtendedAuthEnabled</key>
+          <integer>1</integer>
+
+          <!-- Username and password from ipsec.secrets -->
+          <key>AuthName</key>
+          <string><%= vpn['ikev2']['auth_name'] %></string>
+
+        </dict>
+
+        <key>DNS</key>
+        <dict>
+
+          <key>SearchDomains</key>
+          <array>
+            <% for search_domain in vpn['dns']['search_domains'] %>
+              <string><%= search_domain %></string>
+            <% end %>
+          </array>
+
+          <key>ServerAddresses</key>
+          <array>
+            <% for server_address in vpn['dns']['server_addresses'] %>
+              <string><%= server_address %></string>
+            <% end %>
+          </array>
+
+          <key>SupplementalMatchDomains</key>
+          <array>
+            <% for supplemental_match_domain in vpn['dns']['supplemental_match_domains'] %>
+              <string><%= supplemental_match_domain %></string>
+            <% end %>
+          </array>
+
+        </dict>
+
+      </dict>
+    <% end %>
+  </array>
 </dict>
 </plist>
