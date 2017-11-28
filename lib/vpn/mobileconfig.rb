@@ -31,8 +31,8 @@ class Mobileconfig
       payload_content: vpn_hash
     }
 
-    namespace = namespace.new(confighash)
+    namespace = Namespace.new(confighash)
 
-    return erb.new(mobileconfig_template).result(namespace.get_binding)
+    return ERB.new(mobileconfig_template).result(namespace.get_binding)
   end
 end
