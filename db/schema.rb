@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108130353) do
+ActiveRecord::Schema.define(version: 20171124115925) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -119,6 +119,13 @@ ActiveRecord::Schema.define(version: 20171108130353) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  create_table "vpn_domain_name_servers", force: :cascade do |t|
+    t.integer  "vpn_id",         limit: 4
+    t.string   "server_address", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "vpn_group_associations", force: :cascade do |t|
     t.integer  "group_id",   limit: 4
     t.integer  "vpn_id",     limit: 4
@@ -141,12 +148,27 @@ ActiveRecord::Schema.define(version: 20171108130353) do
   add_index "vpn_group_user_associations", ["user_id"], name: "fk_rails_275419a627", using: :btree
   add_index "vpn_group_user_associations", ["vpn_id"], name: "fk_rails_dbd29a5c87", using: :btree
 
+  create_table "vpn_search_domains", force: :cascade do |t|
+    t.integer  "vpn_id",        limit: 4
+    t.string   "search_domain", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "vpn_supplemental_match_domains", force: :cascade do |t|
+    t.integer  "vpn_id",                    limit: 4
+    t.string   "supplemental_match_domain", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "vpns", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.string   "host_name",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "ip_address", limit: 255
+    t.string   "uuid",       limit: 255
   end
 
   add_foreign_key "access_tokens", "users"

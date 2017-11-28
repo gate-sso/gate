@@ -1,4 +1,6 @@
 class ProfileController < ApplicationController
+  require 'vpn/mobileconfig'
+
   before_action :set_paper_trail_whodunnit
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
@@ -20,7 +22,7 @@ class ProfileController < ApplicationController
 
       @group_search = params[:group_search]
       if @group_search.present?
-        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5)
         redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else
@@ -40,7 +42,7 @@ class ProfileController < ApplicationController
 
       @group_search = params[:group_search]
       if @group_search.present?
-        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5)
         redirect_to group_list_path(group_search: params[:group_search]) if @groups.count >= 0
       end
     else
@@ -59,30 +61,19 @@ class ProfileController < ApplicationController
   end
 
   def download_vpn
-    if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?
-      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
-    else
-      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{current_user.email}`
-    end
-    send_file "/opt/vpnkeys/#{current_user.email}.tar.gz", type: "application/zip", disposition: "attachment; filename=#{current_user.email}.tar.gz"
+    mobileconfig = Mobileconfig.new
+    vpns = current_user.vpns
+
+    render plain: "you don't have access to any vpns" and return unless vpns.present?
+
+    mobileconfig_data = mobileconfig.generate(vpns, current_user)
+
+    send_data(mobileconfig_data, :filename => "#{current_user.email}.mobileconfig" )
   end
 
   def download_vpn_for_user
-    if ( current_user.admin? )
-      @user = User.find(params[:id])
-      if @user.present?
-        if !Pathname.new("/opt/vpnkeys/#{@user.email}.tar.gz").exist?
-          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{@user.email}`
-        else
-          `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{@user.email}`
-        end
-        send_file "/opt/vpnkeys/#{current_user.email}.tar.gz", type: "application/zip", disposition: "attachment; filename=#{current_user.email}.tar.gz"
-      end
-    else
-      redirect_to profile_path
-    end
+    render plain: "Please download vpn config from your homepage"
   end
-
 
   def authenticate
     response = User.authenticate params
@@ -111,7 +102,7 @@ class ProfileController < ApplicationController
     }
 
     if username.present?
-      render json: response_map, status: :ok   
+      render json: response_map, status: :ok
     else
       render json: response_map, status: 401
     end
@@ -161,7 +152,7 @@ class ProfileController < ApplicationController
 
       @group_search = params[:group_search]
       if @group_search.present?
-        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5) 
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" ).take(5)
         redirect_to group_list_path(group_search: params[:group_search]) if @groups.count > 0
       end
     else

@@ -3,6 +3,8 @@ class VpnsController < ApplicationController
   before_action :authorize_user, except: [:create_group_associated_users, :show, :group_associated_users]
   before_action :set_vpn, only: [:show, :edit, :update, :destroy]
 
+  require 'securerandom'
+
   def index
     @vpns = Vpn.all
   end
@@ -12,6 +14,8 @@ class VpnsController < ApplicationController
     puts vpn_params
 
     @vpn = Vpn.new(vpn_params)
+
+    @vpn.uuid = SecureRandom.uuid
     respond_to do |format|
       if @vpn.save
         format.html { redirect_to vpns_path, notice: 'Vpn was successfully added.' }
