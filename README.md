@@ -38,6 +38,9 @@ GATE_EMAIL_DOMAIN          - Your company's domain for email address
 GATE_URL                   - Gate FQDN
 GATE_ORGANIZATION_NAME     - Organization name to be reflected in vpn mobileconfig
 GATE_ORGANIZATION_STATIC   - Organization static to be reflected in vpn mobileconfig
+GATE_VPN_SSL_PVTKEY        - Private key for signing vpn mobileconfig
+GATE_VPN_SSL_CERT          - SSL key for signing vpn mobileconfig
+GATE_VPN_SSL_XSIGNED       - Cross signed key for signing vpn mobileconfig
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed
