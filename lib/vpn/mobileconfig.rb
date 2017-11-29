@@ -26,7 +26,7 @@ class Mobileconfig
     end
 
     confighash = {
-      organization_name: ENV['GATE_ORGANIZATION_NAME']+"IKEv2 VPN Configuration",
+      organization_name: ENV['GATE_ORGANIZATION_NAME']+" IKEv2 VPN Configuration",
       reverse_vpn_url: ENV['GATE_URL'].split('.').reverse.join('.'),
       organization_static: ENV['GATE_ORGANIZATION_STATIC'],
       payload_content: vpn_hash
@@ -42,9 +42,9 @@ class Mobileconfig
   private
 
   def sign_mobileconfig(mobileconfig)
-    private_key = ENV['GATE_VPN_SSL_PVTKEY']
-    signing_cert = ENV['GATE_VPN_SSL_CERT']
-    cross_signed_cert = ENV['GATE_VPN_SSL_XSIGNED']
+    private_key = Base64.decode64(ENV['GATE_VPN_SSL_PVTKEY'])
+    signing_cert = Base64.decode64(ENV['GATE_VPN_SSL_CERT'])
+    cross_signed_cert = Base64.decode64(ENV['GATE_VPN_SSL_XSIGNED'])
 
     key = OpenSSL::PKey::RSA.new private_key
     cert = OpenSSL::X509::Certificate.new signing_cert
