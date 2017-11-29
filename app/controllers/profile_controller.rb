@@ -61,6 +61,15 @@ class ProfileController < ApplicationController
   end
 
   def download_vpn
+    if !Pathname.new("/opt/vpnkeys/#{current_user.email}.tar.gz").exist?
+      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-keys #{current_user.email}`
+    else
+      `cd /etc/openvpn/easy-rsa/ && bash /etc/openvpn/easy-rsa/gen-client-conf #{current_user.email}`
+    end
+    send_file "/opt/vpnkeys/#{current_user.email}.tar.gz", type: "application/zip", disposition: "attachment; filename=#{current_user.email}.tar.gz"
+  end
+
+  def download_vpn_for_ios_and_mac
     mobileconfig = Mobileconfig.new
     vpns = current_user.vpns
 
@@ -68,7 +77,7 @@ class ProfileController < ApplicationController
 
     mobileconfig_data = mobileconfig.generate(vpns, current_user)
 
-    send_data(mobileconfig_data, :filename => "#{current_user.email}.mobileconfig" )
+    send_data(mobileconfig_data, :filename => "#{current_user.email}.mobileconfig", :type => "application/x-apple-aspen-config")
   end
 
   def download_vpn_for_user

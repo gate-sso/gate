@@ -1,5 +1,6 @@
 require 'erb'
 require 'vpn/namespace'
+require 'openssl'
 
 class Mobileconfig
   def generate (vpns, user)
@@ -33,6 +34,22 @@ class Mobileconfig
 
     namespace = Namespace.new(confighash)
 
-    return ERB.new(mobileconfig_template).result(namespace.get_binding)
+    mobileconfig_unsigned = ERB.new(mobileconfig_template).result(namespace.get_binding)
+
+    return sign_mobileconfig(mobileconfig_unsigned)
+  end
+
+  private
+
+  def sign_mobileconfig(mobileconfig)
+    private_key = ENV['GATE_VPN_SSL_PVTKEY']
+    signing_cert = ENV['GATE_VPN_SSL_CERT']
+    cross_signed_cert = ENV['GATE_VPN_SSL_XSIGNED']
+
+    key = OpenSSL::PKey::RSA.new private_key
+    cert = OpenSSL::X509::Certificate.new signing_cert
+    cross_signed = OpenSSL::X509::Certificate.new cross_signed_cert
+
+    return OpenSSL::PKCS7.sign(cert, key, mobileconfig, [cross_signed] ).to_der
   end
 end

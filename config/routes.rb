@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     delete "/users/sign_out" => "devise/sessions#destroy"
     match 'download_vpn', to: 'profile#download_vpn', via: :get, format: :html
+    match 'download_vpn_for_ios_and_mac', to: 'profile#download_vpn_for_ios_and_mac', via: :get, format: :html
     match 'download_vpn/:id', to: 'profile#download_vpn_for_user', via: :get, format: :html
   end
 
