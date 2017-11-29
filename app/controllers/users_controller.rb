@@ -11,6 +11,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
+    @vpns = @user.vpns
     if current_user.admin? || current_user == @user
       @groups = Group.all
       render_404 if @user.blank?

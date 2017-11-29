@@ -83,14 +83,10 @@
             = submit_tag "Update key", class: "form-control btn-sm btn-primary"
   hr
   .row
-    .col-md-4.text-primary VPN Profile
+    .col-md-4.text-primary VPNs
     .col-md-8
-        .col-sm-12
+      - @vpns.each do |vpn|
         .row
-          .col-sm-8
-          .col-sm-4
-            a.btn.btn-primary.btn-sm href="/download_vpn/#{@user.id}" role="button" Download VPN Profile
-  br
-
-
-
+          .col-md-8
+            = "#{vpn.name}"
+      = "No vpns are associated with this user" if @vpns.count == 0
