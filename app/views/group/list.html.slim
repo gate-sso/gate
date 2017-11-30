@@ -15,4 +15,4 @@
             td
               = "#{group.gid}"
             td
-              = group.group_admin.present? ? "#{group.group_admin.user.name}" : "Not present"
+              = group.group_admin.present? ? "#{group.group_admin.user.try(:name)}" : "Not present"
