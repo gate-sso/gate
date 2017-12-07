@@ -290,8 +290,13 @@ class User < ActiveRecord::Base
 
     user = User.get_user user_name
     if user.permitted_hosts?(address_array) || user.permitted_vpns?(address_array)
-      otp = user.get_user_otp
-      return user.authenticate_ms_chap otp, challenge_string, response_string
+      drift_interval = 30
+      t = Time.now
+      otps = []
+      otps.push(user.get_user_otp_at(t))
+      otps.push(user.get_user_otp_at(t - drift_interval))
+      otps.push(user.get_user_otp_at(t + drift_interval))
+      return user.authenticate_ms_chap_with_drift otps, challenge_string, response_string
     else
       return auth_failed_message
     end
@@ -302,6 +307,9 @@ class User < ActiveRecord::Base
     return ROTP::TOTP.new(self.auth_key).now
   end
 
+  def get_user_otp_at time
+    return ROTP::TOTP.new(self.auth_key).at time
+  end
 
   def user_passwd_response
     user_hash = {}
