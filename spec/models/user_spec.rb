@@ -141,7 +141,7 @@ RSpec.describe User, type: :model do
     params[:challenge] = "ee85e142eadfec52"
     params[:response] = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
 
-    allow_any_instance_of(User).to receive(:get_user_otp).and_return("757364")
+    allow_any_instance_of(User).to receive(:get_user_otp_at).and_return("757364")
 
     expect(User.ms_chap_auth(params)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
   end
