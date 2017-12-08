@@ -22,7 +22,6 @@ class User < ActiveRecord::Base
 
   #we should put this in configuration
   ##TODO move this to environemnt variable or configuration
-  #
   after_create :add_system_attributes
   UID_CONSTANT = 5000
   HOME_DIR = "/home"
