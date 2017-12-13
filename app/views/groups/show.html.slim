@@ -82,7 +82,7 @@ hr
       - else
         span This group does not have any users
       .row
-        - if current_user.admin?
+        - if current_user.admin? || current_user.group_admin?
           = form_tag  add_user_to_group_path, method: :post do
             .col-sm-8
               = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), class: "form-control"
