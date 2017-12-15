@@ -132,11 +132,18 @@ RSpec.describe User, type: :model do
 
   it "should authenticate ms chap with drift" do
     user = create(:user)
-    totp = ["757364", "123456", "876543"]
     challenge_string = "ee85e142eadfec52"
     response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
 
+    totp = ["757364", "123456", "876543"]
     expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
+    totp = ["123456", "757364", "876543"]
+    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
+    totp = ["123456", "876543", "757364"]
+    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
     expect(user.authenticate_ms_chap_with_drift(["78787", "121212", "545454"], challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
   end
 
