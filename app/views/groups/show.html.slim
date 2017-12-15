@@ -39,7 +39,7 @@ hr
               - @group.vpns.each do |vpn|
                 tr
                   td
-                    = link_to "#{vpn.name}", vpn_path(vpn)
+                    = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
                   td
                     = "#{vpn.name}"
                   td
