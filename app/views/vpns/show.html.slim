@@ -22,10 +22,29 @@ hr
       .list-group-item#group-user-vpn-submit
         = "Please select a group from left"
 
+
+
 javascript:
   $(document).ready(function() {
-    var selected_group_id; 
+    var selected_group_id;
     var selected_vpn_id;
+
+
+      $(".group-user-list").empty();
+      $("#group-user-vpn-submit").empty();
+      var all_uncles = $(this).parent().siblings();
+      for(var i = 0; i < all_uncles.length; i++) {
+        $(all_uncles[i]).css('background-color', 'inherit');
+      }
+      $(this).parent().css('background-color', 'grey');
+      var group_id = #{@group_id};
+      var vpn_id = $(this).data('vpn-id');
+      selected_vpn_id = vpn_id;
+      selected_group_id = group_id;
+      $(".group-user-list").append("<div class='list-group-item'>Users</div>");
+      display_users(vpn_id, group_id)
+
+
     $(".group-list-click").on('click', function(e) {
       e.preventDefault();
       $(".group-user-list").empty();
@@ -40,21 +59,7 @@ javascript:
       selected_vpn_id = vpn_id;
       selected_group_id = group_id;
       $(".group-user-list").append("<div class='list-group-item'>Users</div>");
-      $.get("/vpns/"+vpn_id+"/groups/"+group_id + "/users", function(data, status){
-          if (status == 'success') {
-            var users = data;
-            for(var i = 0; i < users['enabled'].length; i++) {
-              var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['enabled'][i]['id']+" checked value=''>"+users['enabled'][i]['name']+"</label></div></div>";
-              $(".group-user-list").append(list_item);
-            }
-            for(var j = 0; j < users['disabled'].length; j++) {
-              var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['disabled'][j]['id']+" value=''>"+users['disabled'][j]['name']+"</label></div></div>";
-              $(".group-user-list").append(list_item);
-            }
-            var submit_btn = "<a href='' class='btn btn-primary'>Submit</a>";
-            $("#group-user-vpn-submit").append(submit_btn);
-          }
-      });
+      display_users(vpn_id, group_id)
     });
 
     $('#group-user-vpn-submit').on('click', function(e) {
@@ -76,4 +81,22 @@ javascript:
       });
     });
   });
+
+  function display_users(vpn_id, group_id) {
+    $.get("/vpns/"+vpn_id+"/groups/"+group_id + "/users", function(data, status){
+      if (status == 'success') {
+        var users = data;
+        for(var i = 0; i < users['enabled'].length; i++) {
+          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['enabled'][i]['id']+" checked value=''>"+users['enabled'][i]['name']+"</label></div></div>";
+          $(".group-user-list").append(list_item);
+        }
+        for(var j = 0; j < users['disabled'].length; j++) {
+          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['disabled'][j]['id']+" value=''>"+users['disabled'][j]['name']+"</label></div></div>";
+          $(".group-user-list").append(list_item);
+        }
+        var submit_btn = "<a href='' class='btn btn-primary'>Submit</a>";
+        $("#group-user-vpn-submit").append(submit_btn);
+      }
+    });
+  }
 

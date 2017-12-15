@@ -1,7 +1,7 @@
 class VpnsController < ApplicationController
   before_action :set_paper_trail_whodunnit
   before_action :authorize_user, except: [:create_group_associated_users, :show, :group_associated_users]
-  before_action :set_vpn, only: [:show, :edit, :update, :destroy]
+  before_action :set_vpn, only: [:show, :edit, :update, :destroy, :user_associated_groups]
 
   require 'securerandom'
 
@@ -33,6 +33,7 @@ class VpnsController < ApplicationController
 
   def show
     @groups_under_current_user = []
+    @group_id = Group.find(params[:id])
     if current_user.admin?
       @groups_under_current_user = Group.all
     else
@@ -42,6 +43,22 @@ class VpnsController < ApplicationController
         end
       end
     end
+  end
+
+  def user_associated_groups
+    @groups_under_current_user = []
+    @group_id = params[:group_id]
+    if current_user.admin?
+      @groups_under_current_user = Group.all
+    else
+      @vpn.groups.each do |vpn_group|
+        if vpn_group.group_admin.try(:user) == current_user
+          @groups_under_current_user << vpn_group
+        end
+      end
+    end
+
+    render "show"
   end
 
   def group_associated_users
