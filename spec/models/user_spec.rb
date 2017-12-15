@@ -129,6 +129,24 @@ RSpec.describe User, type: :model do
     expect(user.authenticate_ms_chap(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
     expect(user.authenticate_ms_chap("78787", challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
   end
+
+  it "should authenticate ms chap with drift" do
+    user = create(:user)
+    challenge_string = "ee85e142eadfec52"
+    response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
+
+    totp = ["757364", "123456", "876543"]
+    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
+    totp = ["123456", "757364", "876543"]
+    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
+    totp = ["123456", "876543", "757364"]
+    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+
+    expect(user.authenticate_ms_chap_with_drift(["78787", "121212", "545454"], challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
+  end
+
   it "should authenticate ms chap" do
     user = create(:user)
     host = Host.new
@@ -141,9 +159,24 @@ RSpec.describe User, type: :model do
     params[:challenge] = "ee85e142eadfec52"
     params[:response] = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
 
-    allow_any_instance_of(User).to receive(:get_user_otp).and_return("757364")
+    allow_any_instance_of(User).to receive(:get_user_otp_at).and_return("757364")
 
     expect(User.ms_chap_auth(params)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
+  end
+
+  it "should return different otps for different times" do
+    user = create(:user)
+    user.auth_key = ROTP::Base32.random_base32
+
+    drift_interval = 30
+    t = Time.now
+    otp1 = user.get_user_otp_at(t)
+    otp2 = user.get_user_otp_at(t - drift_interval)
+    otp3 = user.get_user_otp_at(t + drift_interval)
+
+    expect(otp1).to_not equal(otp2)
+    expect(otp2).to_not equal(otp3)
+    expect(otp3).to_not equal(otp1)
   end
 
   describe '.get_user' do

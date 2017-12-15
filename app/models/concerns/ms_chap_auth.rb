@@ -73,7 +73,6 @@ module MsChapAuth
 
     end
 
-
     def nt_password_hash password
       md4 = OpenSSL::Digest::MD4.new
       md4.digest(password)
@@ -93,6 +92,14 @@ module MsChapAuth
       return ("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
     end
 
+    def authenticate_ms_chap_with_drift passwords, challenge, response
+      passwords.each do |password|
+        if ntlm_challenge_response(password, unhexlify(challenge)) == response
+          return "NT_KEY: " + get_nt_key(password).upcase
+        end
+      end
+      return ("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
+    end
 
   end
 
