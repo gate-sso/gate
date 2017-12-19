@@ -38,7 +38,7 @@ javascript:
       }
       $(this).parent().css('background-color', 'grey');
       var group_id = #{@group_id};
-      var vpn_id = $(this).data('vpn-id');
+      var vpn_id = #{@vpn_id};
       selected_vpn_id = vpn_id;
       selected_group_id = group_id;
       $(".group-user-list").append("<div class='list-group-item'>Users</div>");
