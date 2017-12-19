@@ -48,6 +48,7 @@ class VpnsController < ApplicationController
   def user_associated_groups
     @groups_under_current_user = []
     @group_id = params[:group_id]
+    @vpn_id = params[:id]
     if current_user.admin?
       @groups_under_current_user = Group.all
     else
