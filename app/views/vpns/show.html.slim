@@ -87,11 +87,11 @@ javascript:
       if (status == 'success') {
         var users = data;
         for(var i = 0; i < users['enabled'].length; i++) {
-          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['enabled'][i]['id']+" checked value=''>"+users['enabled'][i]['name']+"</label></div></div>";
+          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['enabled'][i]['id']+" checked value=''>"+users['enabled'][i]['name']+"<label>" +users['enabled'][i]['email']+"</label></label></div></div>";
           $(".group-user-list").append(list_item);
         }
         for(var j = 0; j < users['disabled'].length; j++) {
-          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['disabled'][j]['id']+" value=''>"+users['disabled'][j]['name']+"</label></div></div>";
+          var list_item = "<div class='list-group-item'><div class='checkbox'><label><input type='checkbox' data-user-id="+users['disabled'][j]['id']+" value=''>"+users['disabled'][j]['name']+"<label>"+users['disabled'][j]['email']+"</label></label></div></div>";
           $(".group-user-list").append(list_item);
         }
         var submit_btn = "<a href='' class='btn btn-primary'>Submit</a>";
