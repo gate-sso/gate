@@ -19,7 +19,7 @@ hr
       = form_tag  add_admin_to_group_path, method: :post do
         .row
           .col-sm-8
-            = select_tag "user_id", options_from_collection_for_select(@group.users.sort_by { |user| user.name }, "id", "name"), class: "form-control"
+            = select_tag "user_id", options_from_collection_for_select(@group.users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
           .col-sm-4
             = submit_tag "Change Admin", class: "form-control btn-sm btn-primary"
 
@@ -36,7 +36,7 @@ hr
                 th Vpn name
                 th Vpn Host name
             tbody
-              - @group.vpns.each do |vpn|
+              - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
                 tr
                   td
                     = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
@@ -54,7 +54,7 @@ hr
         - if current_user.admin?
           = form_tag  add_vpn_to_group_path, method: :post do
             .col-sm-8
-              = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), class: "form-control"
+              = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), include_blank: true, class: "form-control"
             .col-sm-4
               = submit_tag "Add Vpn", class: "form-control btn-sm btn-primary"
 
@@ -85,7 +85,7 @@ hr
         - if current_user.admin? || current_user.group_admin?
           = form_tag  add_user_to_group_path, method: :post do
             .col-sm-8
-              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), class: "form-control"
+              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
             .col-sm-4
               = submit_tag "Add User", class: "form-control btn-sm btn-primary"
 
