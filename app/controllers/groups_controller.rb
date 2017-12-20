@@ -71,7 +71,7 @@ class GroupsController < ApplicationController
   end
 
   def add_user
-    if current_user.admin?
+    if current_user.admin? || @group.group_admin.user == current_user
       user = User.find(params[:user_id])
       user.groups << @group if user.present? and user.groups.find_by_id(@group.id).blank?
       user.save!
@@ -169,7 +169,6 @@ class GroupsController < ApplicationController
   def group_params
     params.require(:group).permit(:name)
   end
-
 
 
 end
