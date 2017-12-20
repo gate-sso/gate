@@ -6,6 +6,8 @@
     p="#{@vpn.name} Users"
 hr
 
+.message
+
 .row
   .col-md-5
     .list-group
@@ -70,12 +72,14 @@ javascript:
         selected_users.push($(selected[i]).data('user-id'));
       }
       console.log(selected_users);
-      
+
       $.ajax({
         type: "POST",
         url: "/vpns/"+selected_vpn_id+"/groups/"+selected_group_id+"/users",
         data: {"users": selected_users},
         success: function(data){
+          var message = "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong></div>";
+          $(".message").append(message);
           console.log(data);
         }
       });
