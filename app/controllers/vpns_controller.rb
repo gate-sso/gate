@@ -69,6 +69,10 @@ class VpnsController < ApplicationController
     @vpn_enabled_users = @vpn_group_user_associations.map { |r| r.user }
 
     @vpn_disabled_users = @users - @vpn_enabled_users
+
+    @vpn_enabled_users = @vpn_enabled_users.sort_by{ |user| user.email}
+    @vpn_disabled_users = @vpn_disabled_users.sort_by{ |user| user.email}
+
     respond_to do |format|
       format.json { render status: :ok, json: { enabled: @vpn_enabled_users, disabled: @vpn_disabled_users } }
     end
