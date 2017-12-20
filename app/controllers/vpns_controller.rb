@@ -64,15 +64,16 @@ class VpnsController < ApplicationController
 
   def group_associated_users
     @group = Group.find(params[:group_id])
-    @users = @group.users
-    @vpn_group_user_associations = VpnGroupUserAssociation.where(vpn_id: params[:vpn_id], group_id: params[:group_id])
-    @vpn_enabled_users = @vpn_group_user_associations.map { |r| r.user }
+    if current_user.admin? || @group.group_admin.try(:user) == current_user
+      @users = @group.users
+      @vpn_group_user_associations = VpnGroupUserAssociation.where(vpn_id: params[:vpn_id], group_id: params[:group_id])
+      @vpn_enabled_users = @vpn_group_user_associations.map { |r| r.user }
 
-    @vpn_disabled_users = @users - @vpn_enabled_users
+      @vpn_disabled_users = @users - @vpn_enabled_users
 
-    @vpn_enabled_users = @vpn_enabled_users.sort_by{ |user| user.email}
-    @vpn_disabled_users = @vpn_disabled_users.sort_by{ |user| user.email}
-
+      @vpn_enabled_users = @vpn_enabled_users.sort_by{ |user| user.email}
+      @vpn_disabled_users = @vpn_disabled_users.sort_by{ |user| user.email}
+    end
     respond_to do |format|
       format.json { render status: :ok, json: { enabled: @vpn_enabled_users, disabled: @vpn_disabled_users } }
     end
