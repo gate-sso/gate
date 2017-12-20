@@ -36,7 +36,7 @@ hr
                 th Vpn name
                 th Vpn Host name
             tbody
-              - @group.vpns.each do |vpn|
+              - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
                 tr
                   td
                     = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
