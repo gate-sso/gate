@@ -70,7 +70,7 @@ hr
                 th User Details
                 th Email address
             tbody
-              - @group.users.each do |user|
+              - @group.users.sort_by{ |user| user.email}.each do |user|
                 tr
                   td
                     = link_to "#{user.name}", user_path(user)
