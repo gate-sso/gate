@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    @user.update(product_name: params["product_name"])
+    @user.update(product_name: product_name)
 
     respond_to do |format|
       format.html { redirect_to user_path, notice: "product name updated successfully!!" }
@@ -36,5 +36,10 @@ class UsersController < ApplicationController
 
   def create
 
+  end
+
+  private
+  def product_name
+    params.require(:product_name)
   end
 end
