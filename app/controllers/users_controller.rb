@@ -26,11 +26,15 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
+    @user.update(product_name: params["product_name"])
 
+    respond_to do |format|
+      format.html { redirect_to user_path, notice: "product name updated successfully!!" }
+    end
   end
 
   def create
 
   end
-
 end
