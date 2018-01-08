@@ -11,7 +11,7 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def show
-    user = User.where(email: params[:email]).first
+    user = User.where(email: params.require(:email)).first
     if user.present?
       render json: { user: user }, status: :ok
     else
