@@ -9,6 +9,10 @@ class ::Api::V1::UsersController < ApiController
     end
   end
 
+  def show
+    render json: {}, status: :ok
+  end
+
   def user_params
     params.require(:user).permit(:name,:email)
   end
