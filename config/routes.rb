@@ -62,14 +62,17 @@ Rails.application.routes.draw do
 
 
   # api routes
-
-  post 'api/v1/users' => 'api/v1/users#create', as: 'add_users_api', format: :json
-  post 'api/v1/add_user_list_to_group' => 'api/v1/groups#add_users_list', format: :json
-  post 'api/v1/add_vpn_list_to_a_group' => 'api/v1/groups#add_vpns_list', format: :json
-  post 'api/v1/give_hostname_pattern_access_to_user_list' => 'api/v1/hosts#add_users_list', format: :json
-  post 'api/v1/add_user_list_to_a_vpn' => 'api/v1/vpns#add_users_list', format: :json
-  post 'api/v1/add_properties_to_vpn' => 'api/v1/vpns#add_properties', format: :json
-  get 'api/v1/users/:email' => 'api/v1/users#show', format: :json, :constraints => { :email => /.+@.+\..*/ }
+  namespace :api do
+    namespace :v1 do
+      post 'users' => 'users#create', as: 'add_users_api', format: :json
+      post 'add_user_list_to_group' => 'groups#add_users_list', format: :json
+      post 'add_vpn_list_to_a_group' => 'groups#add_vpns_list', format: :json
+      post 'give_hostname_pattern_access_to_user_list' => 'hosts#add_users_list', format: :json
+      post 'add_user_list_to_a_vpn' => 'vpns#add_users_list', format: :json
+      post 'add_properties_to_vpn' => 'vpns#add_properties', format: :json
+      get 'users/:email' => 'users#show', format: :json, :constraints => { :email => /.+@.+\..*/ }
+    end
+  end
 
   root 'home#index'
 
