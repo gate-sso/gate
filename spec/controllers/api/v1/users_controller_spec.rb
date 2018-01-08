@@ -46,6 +46,16 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
         expect(reponse_json["user"]["product_name"]).to eq(user.product_name)
       end
     end
+
+    context 'failure' do
+      it 'should return the user details' do
+        group = FactoryGirl.create(:group)
+        user =  FactoryGirl.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
+
+        get :show, { email: "test@test.com", "access_token": "my_secret" }
+
+        expect(response.status).to eq(404)
+      end
+    end
   end
 end
-
