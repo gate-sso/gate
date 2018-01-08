@@ -90,3 +90,27 @@
           .col-md-8
             = "#{vpn.name}"
       = "No vpns are associated with this user" if @vpns.count == 0
+  hr
+  .row
+    .col-md-4.text-primary Product Name
+    - if @user.product_name.nil?
+      = form_tag  user_path, method: :patch do
+        .col-sm-6
+          = select_tag :product_name, options_for_select(ENV["PRODUCT_LIST"].split(",")), class: "form-control"
+        .col-sm-2
+          = submit_tag "Assign", class: "form-control btn-sm btn-primary"
+    - else
+      .row
+        .col-md-4.text-primary
+          .col-md-6
+            = @user.product_name
+      br
+        .col-md-4
+        .col-md-8
+          .row
+            = form_tag user_path, method: :patch do
+              .col-sm-8
+                = select_tag :product_name, options_for_select(ENV["PRODUCT_LIST"].split(",")), class: "form-control"
+              .col-sm-4
+                = submit_tag "Modify", class: "form-control btn-sm btn-primary"
+

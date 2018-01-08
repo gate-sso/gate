@@ -25,12 +25,29 @@ class UsersController < ApplicationController
     end
   end
 
-  def update
-
-  end
-
   def create
-
   end
 
+  def update
+    @user = User.find(params[:id])
+    begin
+      @user.update(product_name: product_name)
+      response_message = "product name updated successfully!!"
+    rescue ActionController::ParameterMissing => e
+      response_message = "Params are missing"
+    end
+
+    form_response(response_message)
+  end
+
+  private
+  def form_response(message)
+    respond_to do |format|
+      format.html { redirect_to user_path, notice: message }
+    end
+  end
+
+  def product_name
+    params.require(:product_name)
+  end
 end
