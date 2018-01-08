@@ -1,5 +1,6 @@
 class ::Api::V1::UsersController < ApiController
   before_filter :authenticate_user_from_token!
+
   def create
     user = user_params
     if User.add_temp_user user[:name], user[:email]

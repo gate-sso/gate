@@ -48,13 +48,22 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
     end
 
     context 'failure' do
-      it 'should return the user details' do
+      it 'should return http status code 404' do
         group = FactoryGirl.create(:group)
         user =  FactoryGirl.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
 
         get :show, { email: "test@test.com", "access_token": "my_secret" }
 
         expect(response.status).to eq(404)
+      end
+
+      it 'should not authenticate user for invalid acces token' do
+        group = FactoryGirl.create(:group)
+        user =  FactoryGirl.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
+
+        get :show, { email: "test@test.com", "access_token": "invalid_access_token" }
+
+        expect(response.status).to eq(401)
       end
     end
   end
