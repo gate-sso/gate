@@ -10,7 +10,7 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def show
-    render json: {}, status: :ok
+    render json: { user: User.where(email: params[:email]).first }, status: :ok
   end
 
   def user_params
