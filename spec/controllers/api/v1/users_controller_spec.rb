@@ -48,25 +48,29 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
 
       it 'should not display user secrets' do
         group = FactoryGirl.create(:group)
-        user =  FactoryGirl.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
+        user =  FactoryGirl.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct", created_at: "2018-01-11T21:30:41.000Z", updated_at: "2018-01-11T21:30:41.000Z")
 
         get :show, { email: user.email, "access_token": "my_secret" }
 
         reponse_json = JSON(response.body)
 
         expected_response = {"user"=>
-                                 {"id"=>user.id,
-                                  "email"=>"foo@foobar.com",
-                                  "provider"=>nil,
-                                  "uid"=>user.uid,
-                                  "name"=>"foo",
+                                 {"id" => user.id,
+                                  "email" => "foo@foobar.com",
+                                  "created_at" => "2018-01-11T21:30:41.000Z",
+                                  "updated_at" => "2018-01-11T21:30:41.000Z",
+                                  "provider" => nil,
+                                  "uid" => user.uid,
+                                  "name" => "foo",
+                                  "auth_key" => nil,
+                                  "provisioning_uri" => nil,
                                   "active" => true,
-                                  "admin"=>false,
-                                  "home_dir"=>nil,
-                                  "shell"=>nil,
-                                  "public_key"=>nil,
-                                  "user_login_id"=>"foo",
-                                  "product_name"=>"fooproduct"}
+                                  "admin" => false,
+                                  "home_dir" => nil,
+                                  "shell" => nil,
+                                  "public_key" => nil,
+                                  "user_login_id" => "foo",
+                                  "product_name" => "fooproduct"}
         }
         expect(reponse_json).to eq(expected_response)
       end
