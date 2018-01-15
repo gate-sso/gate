@@ -44,3 +44,6 @@ gem 'devise', '4.1.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'paper_trail'
+
+gem 'ruby-saml', '~> 1.4'
+gem 'saml_idp', '~> 0.7'
