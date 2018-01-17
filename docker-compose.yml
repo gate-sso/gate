@@ -4,24 +4,29 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: gate_test
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      GATE_HOSTED_DOMAINS: foo.bar
   redis:
     image: redis
   web:
     build: .
-    command: bash -c "bundle exec rake db:reset && rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm tmp/pids/server.pid && rails s -p 3000 -b '0.0.0.0'"
     environment:
-      RAILS_ENV: development
+      GATE_HOSTED_DOMAINS: "test.com,example.com"
+      RAILS_ENV: test
       GATE_DB_HOST: db
       GATE_DB_PORT: 3306
-      GATE_DB_USER: root
+      GATE_DB_USER: mysql
       GATE_DB_PASSWORD: mysql
+      GATE_HOSTED_DOMAINS: foo.bar
       CACHE_HOST: redis
       CACHE_PORT: 6379
     env_file:
       - .env
     ports:
       - "3000:3000"
-    # restart: always
     volumes:
       - .:/app
     depends_on:

@@ -45,5 +45,4 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'paper_trail'
 
-gem 'ruby-saml', '~> 1.4'
-gem 'saml_idp', '~> 0.7'
+gem 'saml_idp', :git => "https://github.com/gate-sso/saml_idp.git"

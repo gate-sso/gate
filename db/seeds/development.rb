@@ -36,13 +36,13 @@ access_token = AccessToken.create(token: "a")
 
 vpn = Vpn.create(
   name: "dev-vpn",
-  host_name: "dev-vpn.go-jek.io",
+  host_name: "dev-vpn.example.com",
   ip_address: "1.2.3.4",
   uuid: "FC29CB92-FC7E-4F0B-B938-7612DFDECC28"
 )
 
 
-vsd = VpnSearchDomain.create(search_domain: "go-jek.com")
+vsd = VpnSearchDomain.create(search_domain: "dev-search.vpn.example.com")
 vdns = VpnDomainNameServer.create(server_address: "8.8.8.8")
 vsmd = VpnSupplementalMatchDomain.create(supplemental_match_domain: "match.domains")
 

@@ -92,6 +92,7 @@ Rails.application.routes.draw do
 
   # SAML routes
 
-  get 'sso/saml/metadata' => 'saml#show', format: :xml
-
+  get 'sso/saml/metadata' => 'saml_idp#show', format: :xml
+  get '/saml/auth' => 'saml_idp#new'
+  post '/saml/auth' => 'saml_idp#create'
 end

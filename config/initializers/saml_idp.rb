@@ -1,28 +1,40 @@
 SamlIdp.configure do |config|
-  # noinspection RubyUnusedLocalVariable
-  base   = ENV['GATE_SAML_IDP_BASE']
-  domain = ENV['GATE_SAML_IDP_DOMAIN']
+
+  base      = ENV['GATE_SERVER_URL']
+  saml_base = "#{base}/saml"
 
   config.x509_certificate = ENV['GATE_SAML_IDP_X509_CERTIFICATE'].gsub("\\n", "\n")
-  config.secret_key = ENV['GATE_SAML_IDP_SECRET_KEY'].gsub("\\n", "\n")
+  config.secret_key       = ENV['GATE_SAML_IDP_SECRET_KEY'].gsub("\\n", "\n")
+
   service_providers = {
-      ENV['GATE_SAML_IDP_DATA_DOG_SSO_URL']  => {
+      ENV['GATE_SAML_IDP_DATA_DOG_SSO_URL'] => {
           :fingerprint  => ENV['GATE_SAML_IDP_FINGERPRINT'],
           :metadata_url => ENV['GATE_SAML_IDP_DATA_DOG_METADATA_URL']
       }
   }
 
-  config.organization_name = ENV['GATE_SAML_IDP_ORGANIZATION_NAME']
-  config.organization_url  = ENV['GATE_SAML_IDP_ORGANIZATION_URL']
+  config.organization_name  = ENV['GATE_SAML_IDP_ORGANIZATION_NAME']
+  config.organization_url   = ENV['GATE_SAML_IDP_ORGANIZATION_URL']
 
-  config.base_saml_location           = ENV['GATE_SAML_IDP_BASE_SAML_LOCATION']
-  config.single_service_post_location = ENV['GATE_SAML_IDP_SINGLE_SERVICE_POST_LOCATION']
-  config.session_expiry               = ENV['GATE_SAML_IDP_SESSION_EXPIRY'].to_i
+  config.base_saml_location                       = saml_base
+  config.single_service_post_location             = "#{saml_base}/auth"
+  config.session_expiry                           = ENV['GATE_SAML_IDP_SESSION_EXPIRY'].to_i
 
   config.name_id.formats = {
-      transient:     -> (principal) {"#{principal.username}@#{domain}"},
-      persistent:    -> (principal) {"#{principal.username}@#{domain}"},
-      email_address: -> (principal) {"#{principal.username}@#{domain}"}
+      email_address: -> (principal) {principal.email},
+      transient: -> (principal) {principal.user_login_id},
+      persistent: -> (principal) {principal.user_login_id},
+      name: -> (principal) {principal.name},
+  }
+
+  config.attributes = {
+      'eduPersonPrincipalName' => {
+          'name' => 'urn:oid:1.3.6.1.4.1.5923.1.1.1.6',
+          'name_format' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+          'getter' => ->(principal) {
+            "#{principal.email}"
+          }
+      },
   }
 
   config.service_provider.metadata_persister = ->(identifier, settings) {
