@@ -89,4 +89,10 @@ Rails.application.routes.draw do
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
   post 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#create_group_associated_users', format: :json
+
+  # SAML routes
+
+  get 'sso/saml/metadata' => 'saml_idp#show', format: :xml
+  get '/saml/auth' => 'saml_idp#new'
+  post '/saml/auth' => 'saml_idp#create'
 end

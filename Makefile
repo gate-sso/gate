@@ -1,4 +1,9 @@
 .PHONY: all
+CMD=openssl genrsa -des3 -passout pass:x -out /tmp/server.pass.key 2048 && \
+    openssl rsa -passin pass:x -in /tmp/server.pass.key -out /tmp/server.key && \
+    rm /tmp/server.pass.key && \
+    openssl req -new -key /tmp/server.key -out /tmp/server.csr -subj "/C=UK/ST=Warwickshire/L=Leamington/O=Test/OU=Example/CN=test-example.com" && \
+    openssl x509 -req -days 1 -in /tmp/server.csr -signkey /tmp/server.key -out /tmp/server.crt && cat /tmp/server.crt
 
 all: build run db_setup
 
@@ -37,4 +42,4 @@ attach:
 
 rspec:
 	docker-compose run --rm web rake db:migrate:reset
-	docker-compose run --rm web rspec
+	docker-compose run --rm web bash -c "${CMD} && env && rspec"

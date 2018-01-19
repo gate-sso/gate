@@ -44,3 +44,5 @@ gem 'devise', '4.1.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'paper_trail'
+
+gem 'saml_idp', :git => "https://github.com/gate-sso/saml_idp.git"
