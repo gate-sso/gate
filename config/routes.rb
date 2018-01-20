@@ -70,7 +70,7 @@ Rails.application.routes.draw do
       post 'give_hostname_pattern_access_to_user_list' => 'hosts#add_users_list', format: :json
       post 'add_user_list_to_a_vpn' => 'vpns#add_users_list', format: :json
       post 'add_properties_to_vpn' => 'vpns#add_properties', format: :json
-      get 'users/:email' => 'users#show', format: :json, :constraints => { :email => /.+@.+\..*/ }
+      get 'users(/:email)' => 'users#show', format: :json, :constraints => { :email => /.+@.+\..*/, format: 'json' }
     end
   end
 

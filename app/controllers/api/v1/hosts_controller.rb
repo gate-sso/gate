@@ -16,4 +16,3 @@ class ::Api::V1::HostsController < ApiController
     render plain: "List of users given access"
   end
 end
-

@@ -38,4 +38,3 @@ class ::Api::V1::GroupsController < ApiController
     render plain: "Group has access to list of vpns"
   end
 end
-

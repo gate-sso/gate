@@ -29,6 +29,10 @@ class User < ActiveRecord::Base
   USER_SHELL = "/bin/bash"
 
 
+  def self.by_token(token)
+    User.joins(:access_token).where("access_tokens.token = ? and users.active = ?", token, true).first
+  end
+
   def add_system_attributes
     self.uid = id + UID_CONSTANT
     self.user_login_id = self.email.split("@").first

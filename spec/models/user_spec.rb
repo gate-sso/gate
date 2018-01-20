@@ -7,6 +7,22 @@ RSpec.describe User, type: :model do
     create(:group)
   end
 
+  context ".by_token" do
+    before(:each) do
+      @user = create(:user)
+      @token = create(:access_token, token: SecureRandom::uuid, user: @user)
+    end
+    it "should return user with valid token" do
+      user = User.by_token(@token.token)
+      expect(user).to eql(@user)
+    end
+
+    it "shouldn't return user with invalid token" do
+      user = User.by_token(SecureRandom::uuid)
+      expect(user).not_to eql(@user)
+    end
+  end
+
   it "should check valid email address" do
     #email address always has 2 parts
     email_address = "satrya@gmail.com"
@@ -110,14 +126,20 @@ RSpec.describe User, type: :model do
     expect(user.permitted_hosts?(["10.0.0.0"])).to be true
   end
 
-  it "should check user login limits" do
+  it "login limits should pass" do
     user = create(:user)
     (RATE_LIMIT - 2).times do
       user.within_limits?
     end
     expect(user.within_limits?).to be true
-    expect(user.within_limits?).to be false
+  end
 
+  it "login limits should fail" do
+    user = create(:user)
+    (RATE_LIMIT + 2).times do
+      user.within_limits?
+    end
+    expect(user.within_limits?).to be false
   end
 
   it "should authenticate ms chap" do

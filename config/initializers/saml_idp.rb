@@ -3,8 +3,8 @@ SamlIdp.configure do |config|
   base      = ENV['GATE_SERVER_URL']
   saml_base = "#{base}/saml"
 
-  config.x509_certificate = ENV['GATE_SAML_IDP_X509_CERTIFICATE'].gsub("\\n", "\n")
-  config.secret_key       = ENV['GATE_SAML_IDP_SECRET_KEY'].gsub("\\n", "\n")
+  config.x509_certificate = ENV['GATE_SAML_IDP_X509_CERTIFICATE'].to_s.gsub("\\n", "\n")
+  config.secret_key       = ENV['GATE_SAML_IDP_SECRET_KEY'].to_s.gsub("\\n", "\n")
 
   service_providers = {
       ENV['GATE_SAML_IDP_DATA_DOG_SSO_URL'] => {
