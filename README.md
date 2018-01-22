@@ -81,7 +81,12 @@ You can then put the clientId and clientSecret in the appropriate variables in `
 * Run `make init` to setup `.env` file.
 * Setup proper env variable values in `.env` file.
 * Run `make all` to build, run and run migrations
-* Run `make rpsec` for running specs
+* Run `make rpsec` or `make rspec <filename:line_no>` for running specs.
+* Run `make routes` to list all the routes.
+* Run `make shell` for shell access to app server.
+* Run `make logs` to view logs of web container.
+* Run `make kill` to remove daemonised containers.
+
 
 ### Modules
 

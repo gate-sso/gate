@@ -17,6 +17,7 @@ build:
 
 run:
 	@echo "\nDaemonising docker compose\n"
+	rm -f tmp/pids/server.pid
 	docker-compose up -d
 
 db_setup:
@@ -35,11 +36,31 @@ kill:
 	@echo "\nRemoving daemonised containers\n"
 	docker-compose kill
 	docker ps | grep gate_web | awk '{ print $$1 }' | xargs -I{} docker kill {}
+	docker ps -a | grep "gate" | awk '{print $1}' | xargs -I{} docker rm {}
+
+logs:
+	@echo "\nGetting logs of web container\n"
+	docker-compose logs -f web
 
 attach:
 	@echo "\nAttaching to gate web container\n"
 	docker attach gate_web_1
 
+shell:
+	@echo "\n Shell Access to App server\n"
+	docker-compose exec -it web /bin/bash
+
+routes:
+	@echo "\nListing routes\n"
+	docker-compose run --rm web rake routes
+
 rspec:
-	docker-compose run --rm web rake db:migrate:reset
-	docker-compose run --rm web bash -c "${CMD} && env && rspec"
+	docker-compose run --rm -e RAILS_ENV=test -e DB_NAME=gate_test web rake db:drop db:create db:migrate
+	docker-compose run --rm \
+	-e RAILS_ENV=test \
+    -e DB_NAME=gate_test \
+    web bash -c "${CMD} && env && rspec $(filter-out $@,$(MAKECMDGOALS))"
+
+
+%:
+    @:

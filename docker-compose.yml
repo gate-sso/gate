@@ -4,25 +4,22 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: gate_test
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
-      GATE_HOSTED_DOMAINS: foo.bar
   redis:
     image: redis
   web:
     build: .
-    command: bash -c "rm tmp/pids/server.pid && rails s -p 3000 -b '0.0.0.0'"
+    command: rails s -p 3000 -b '0.0.0.0'
     environment:
-      GATE_HOSTED_DOMAINS: "test.com,example.com"
-      RAILS_ENV: test
+      RAILS_ENV: development
       GATE_DB_HOST: db
       GATE_DB_PORT: 3306
-      GATE_DB_USER: mysql
+      GATE_DB_USER: root
       GATE_DB_PASSWORD: mysql
-      GATE_HOSTED_DOMAINS: foo.bar
       CACHE_HOST: redis
       CACHE_PORT: 6379
+      GATE_HOSTED_DOMAINS: "test.com,example.com"
+      GATE_SAML_IDP_X509_CERTIFICATE:  "cert"
+      GATE_SAML_IDP_SECRET_KEY: "key"
     env_file:
       - .env
     ports:
