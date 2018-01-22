@@ -36,6 +36,11 @@ kill:
 	@echo "\nRemoving daemonised containers\n"
 	docker-compose kill
 	docker ps | grep gate_web | awk '{ print $$1 }' | xargs -I{} docker kill {}
+	docker ps -a | grep "gate" | awk '{print $1}' | xargs -I{} docker rm {}
+
+logs:
+	@echo "\nGetting logs of web container\n"
+	docker-compose logs -f web
 
 logs:
 	@echo "\nGetting logs of web container\n"
