@@ -8,11 +8,9 @@ WORKDIR /app
 COPY Gemfile /app
 COPY Gemfile.lock /app
 
-RUN apk --update add build-base nodejs mariadb-dev mariadb-client-libs tzdata git && \
+RUN apk --update add build-base nodejs mariadb-dev mariadb-client-libs tzdata git openssl  && \
     apk del build-base mariadb-dev && \
     rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
-
-RUN apk --update add openssl
 
 RUN bundle install
 
