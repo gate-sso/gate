@@ -1,24 +1,24 @@
 SamlIdp.configure do |config|
 
-  base      = ENV['GATE_SERVER_URL']
+  base      = Figaro.env.GATE_SERVER_URL
   saml_base = "#{base}/saml"
 
-  config.x509_certificate = ENV['GATE_SAML_IDP_X509_CERTIFICATE'].to_s.gsub("\\n", "\n")
-  config.secret_key       = ENV['GATE_SAML_IDP_SECRET_KEY'].to_s.gsub("\\n", "\n")
+  config.x509_certificate = Figaro.env.GATE_SAML_IDP_X509_CERTIFICATE.gsub("\\n", "\n")
+  config.secret_key       = Figaro.env.GATE_SAML_IDP_SECRET_KEY.gsub("\\n", "\n")
 
   service_providers = {
-      ENV['GATE_SAML_IDP_DATA_DOG_SSO_URL'] => {
-          :fingerprint  => ENV['GATE_SAML_IDP_FINGERPRINT'],
-          :metadata_url => ENV['GATE_SAML_IDP_DATA_DOG_METADATA_URL']
+      Figaro.env.GATE_SAML_IDP_DATA_DOG_SSO_URL => {
+          :fingerprint  => Figaro.env.GATE_SAML_IDP_FINGERPRINT,
+          :metadata_url => Figaro.env.GATE_SAML_IDP_DATA_DOG_METADATA_URL
       }
   }
 
-  config.organization_name  = ENV['GATE_SAML_IDP_ORGANIZATION_NAME']
-  config.organization_url   = ENV['GATE_SAML_IDP_ORGANIZATION_URL']
+  config.organization_name  = Figaro.env.GATE_SAML_IDP_ORGANIZATION_NAME
+  config.organization_url   = Figaro.env.GATE_SAML_IDP_ORGANIZATION_URL
 
   config.base_saml_location                       = saml_base
   config.single_service_post_location             = "#{saml_base}/auth"
-  config.session_expiry                           = ENV['GATE_SAML_IDP_SESSION_EXPIRY'].to_i
+  config.session_expiry                           = Figaro.env.GATE_SAML_IDP_SESSION_EXPIRY.to_i
 
   config.name_id.formats = {
       email_address: -> (principal) {principal.email},

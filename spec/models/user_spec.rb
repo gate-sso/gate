@@ -57,13 +57,13 @@ RSpec.describe User, type: :model do
 
   it "should return false if user is not active" do
     user = create(:user)
-    response =  User.get_shadow_name_response user.name
+    response = User.get_shadow_name_response user.name
     expect(response[:sp_namp]).to eq(user.user_login_id)
   end
 
   it "should return false if user is not active" do
     user = create(:user)
-    response =  User.get_passwd_uid_response user.uid
+    response = User.get_passwd_uid_response user.uid
     expect(response[:pw_name]).to eq(user.user_login_id)
   end
 
@@ -78,7 +78,6 @@ RSpec.describe User, type: :model do
   it "should return _ for . in name" do
     user = create(:user)
     expect(user.user_login_id).to eq(user.email.split("@").first)
-    ENV['GATE_EMAIL_DOMAIN'] = "test.com"
     user = User.get_user(user.user_login_id)
     expect(user).not_to be nil
   end
@@ -111,12 +110,12 @@ RSpec.describe User, type: :model do
   end
 
   it "should check valid hosted domain" do
-    ENV["GATE_HOSTED_DOMAINS"] = "alfa.com,beta.com"
+    allow(Figaro.env).to receive(:GATE_HOSTED_DOMAINS).and_return("alfa.com,beta.com")
     expect(User.valid_domain? "alfa.com").to be true
     expect(User.valid_domain? "beta.com").to be true
     expect(User.valid_domain? "gama.com").to be false
 
-    ENV["GATE_HOSTED_DOMAINS"] = ""
+    allow(Figaro.env).to receive(:GATE_HOSTED_DOMAINS).and_return("")
     expect(User.valid_domain? "alfa.com").to be false
   end
 
@@ -219,11 +218,11 @@ RSpec.describe User, type: :model do
     end
 
     context 'when two users exist with same login_id' do
-      let(:user_login_id) { 'same-id' }
-      subject(:user) { User.get_user(user_login_id) }
+      let(:user_login_id) {'same-id'}
+      subject(:user) {User.get_user(user_login_id)}
 
-      let(:first_user) { build(:user, user_login_id: user_login_id, name: 'Test1', email: "#{user_login_id}@test.com") }
-      let(:second_user) { build(:user, user_login_id: user_login_id, name: 'Test2', email: "#{user_login_id}@aux.test.com") }
+      let(:first_user) {build(:user, user_login_id: user_login_id, name: 'Test1', email: "#{user_login_id}@test.com")}
+      let(:second_user) {build(:user, user_login_id: user_login_id, name: 'Test2', email: "#{user_login_id}@aux.test.com")}
 
       it 'returns first found active user' do
         first_user.save
@@ -241,5 +240,5 @@ RSpec.describe User, type: :model do
         expect(user).to be_nil
       end
     end
-    end
+  end
 end
