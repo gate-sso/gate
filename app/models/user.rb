@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   end
 
   def self.add_temp_user (name, email)
-    email = email + "@" + ENV['GATE_HOSTED_DOMAIN'].to_s
+    email = email + "@" + Figaro.env.GATE_HOSTED_DOMAIN
     user = User.create(name:name, email: email)
     host = Host.new
     host.user = user
@@ -76,7 +76,7 @@ class User < ActiveRecord::Base
   end
 
   def self.valid_domain? domain
-    hosted_domains = ENV['GATE_HOSTED_DOMAINS'].split(",")
+    hosted_domains = Figaro.env.GATE_HOSTED_DOMAINS.split(",")
     hosted_domains.include?(domain)
   end
 

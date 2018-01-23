@@ -1,6 +1,6 @@
-ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
+Figaro.env.RAILS_ENV ||= 'test'
 
 module ActiveSupport
   class TestCase
