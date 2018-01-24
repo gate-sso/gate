@@ -23,6 +23,34 @@ RSpec.describe User, type: :model do
     end
   end
 
+  context ".update_profile" do
+    before(:each) do
+      @user = create(:user)
+    end
+    it "should update the public_key" do
+      require 'openssl'
+      rsa_key = OpenSSL::PKey::RSA.new(2048)
+      public_key = rsa_key.public_key.to_pem
+      @user.update_profile({ 'public_key' => public_key })
+      @user = User.find(@user.id)
+      expect(@user.public_key).to eq(public_key)
+    end
+
+    it "should update the name" do
+      name = "test_name"
+      @user.update_profile({ 'name' => name })
+      @user = User.find(@user.id)
+      expect(@user.name).to eq(name)
+    end
+
+    it "should update the product name" do
+      name = "test_product"
+      @user.update_profile({ 'product_name' => name })
+      @user = User.find(@user.id)
+      expect(@user.product_name).to eq(name)
+    end
+  end
+
   it "should check valid email address" do
     #email address always has 2 parts
     email_address = "satrya@gmail.com"

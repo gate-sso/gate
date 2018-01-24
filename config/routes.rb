@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       post 'add_user_list_to_a_vpn' => 'vpns#add_users_list', format: :json
       post 'add_properties_to_vpn' => 'vpns#add_properties', format: :json
       get 'users(/:email)' => 'users#show', format: :json, :constraints => { :email => /.+@.+\..*/, format: 'json' }
+      post 'users(/:email)' => 'users#update', format: :json, :constraints => { :email => /.+@.+\..*/, format: 'json' }
     end
   end
 

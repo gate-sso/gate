@@ -33,6 +33,13 @@ class User < ActiveRecord::Base
     User.joins(:access_token).where("access_tokens.token = ? and users.active = ?", token, true).first
   end
 
+  def update_profile(attrs)
+    self.public_key = attrs['public_key'].blank? ? self.public_key : attrs['public_key']
+    self.name = attrs['name'].blank? ? self.name : attrs['name']
+    self.product_name = attrs['product_name'].blank? ? self.product_name : attrs['product_name']
+    self.save!
+  end
+
   def add_system_attributes
     self.uid = id + UID_CONSTANT
     self.user_login_id = self.email.split("@").first

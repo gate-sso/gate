@@ -24,7 +24,13 @@ class ::Api::V1::UsersController < ApiController
     end
   end
 
+  def update
+    attrs = params.select { |k,v| %w(public_key name product_name).include?(k) }
+    @user = params.key?(:email) ? User.where(email: params[:email]).first : current_user
+    render json: { success: @user.update_profile(attrs) }
+  end
+
   def user_params
-    params.require(:user).permit(:name,:email)
+    params.require(:user).permit(:name, :email, :public_key, :product_name)
   end
 end
