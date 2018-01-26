@@ -7,22 +7,6 @@ RSpec.describe User, type: :model do
     create(:group)
   end
 
-  context ".by_token" do
-    before(:each) do
-      @user = create(:user)
-      @token = create(:access_token, token: SecureRandom::uuid, user: @user)
-    end
-    it "should return user with valid token" do
-      user = User.by_token(@token.token)
-      expect(user).to eql(@user)
-    end
-
-    it "shouldn't return user with invalid token" do
-      user = User.by_token(SecureRandom::uuid)
-      expect(user).not_to eql(@user)
-    end
-  end
-
   context ".update_profile" do
     before(:each) do
       @user = create(:user)

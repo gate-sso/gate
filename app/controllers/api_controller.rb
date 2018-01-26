@@ -3,8 +3,7 @@ class ApiController < ActionController::Base
   before_filter :authenticate_user_from_token!
 
   def authenticate_user_from_token!
-    user = User.by_token(get_token)
-    if user.blank?
+    unless AccessToken.valid_token(get_token)
       raise_unauthorized
     end
   end
@@ -26,7 +25,13 @@ class ApiController < ActionController::Base
 
   protected
   def current_user
-    user = User.by_token(get_token)
+    user = if params.key?("email")
+      User.find_by_email(params["email"])
+    elsif params.key?("uid")
+      User.find_by_uid(params["uid"])
+    elsif params.key?("username")
+      User.find_by_user_login_id(params["username"])
+    end
     raise_unauthorized if user.blank?
     return user
   end

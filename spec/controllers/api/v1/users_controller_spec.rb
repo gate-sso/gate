@@ -32,15 +32,14 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
 
   describe 'Update Profile' do
     it "should return 200 http status code" do
-      user =  build(:user)
-      user.access_token = build(:access_token, token: SecureRandom.uuid)
-      user.save
+      user =  create(:user)
+      access_token = create(:access_token, token: SecureRandom.uuid)
       require 'openssl'
       rsa_key = OpenSSL::PKey::RSA.new(2048)
       public_key = rsa_key.public_key.to_pem
       name = "test_name"
       product_name = "test_product"
-      post :update, { "access_token" => user.access_token.token, 'public_key' => public_key, 'product_name' => product_name, 'name' => name }
+      post :update, { "access_token" => access_token.token, 'public_key' => public_key, 'product_name' => product_name, 'name' => name, 'email' => user.email }
       expect(response.status).to eq(200)
     end
   end

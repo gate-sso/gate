@@ -10,7 +10,7 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def show
-    @user = params.key?(:email) ? User.where(email: params[:email]).first : current_user
+    @user = current_user
     if @user.present?
       user_attrs = %w(
         email uid name active admin home_dir shell public_key user_login_id
@@ -26,7 +26,7 @@ class ::Api::V1::UsersController < ApiController
 
   def update
     attrs = params.select { |k,v| %w(public_key name product_name).include?(k) }
-    @user = params.key?(:email) ? User.where(email: params[:email]).first : current_user
+    @user = current_user
     render json: { success: @user.update_profile(attrs) }
   end
 

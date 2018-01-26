@@ -28,11 +28,6 @@ class User < ActiveRecord::Base
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
-
-  def self.by_token(token)
-    User.joins(:access_token).where("access_tokens.token = ? and users.active = ?", token, true).first
-  end
-
   def update_profile(attrs)
     self.public_key = attrs['public_key'].blank? ? self.public_key : attrs['public_key']
     self.name = attrs['name'].blank? ? self.name : attrs['name']
