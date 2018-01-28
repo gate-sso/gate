@@ -9,8 +9,7 @@ FactoryGirl.define do
     sequence(:reset_password_token) {|n| "secret#{n}" }
     after(:create) do |user, evaluator|
       group = Group.first
-      user.groups << group
-
+      user.groups << group unless group.blank?
       group = Group.create(name: user.user_login_id)
       user.groups << group
       user.save!

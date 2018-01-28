@@ -7,6 +7,34 @@ RSpec.describe User, type: :model do
     create(:group)
   end
 
+  context ".update_profile" do
+    before(:each) do
+      @user = create(:user)
+    end
+    it "should update the public_key" do
+      require 'openssl'
+      rsa_key = OpenSSL::PKey::RSA.new(2048)
+      public_key = rsa_key.public_key.to_pem
+      @user.update_profile({ 'public_key' => public_key })
+      @user = User.find(@user.id)
+      expect(@user.public_key).to eq(public_key)
+    end
+
+    it "should update the name" do
+      name = "test_name"
+      @user.update_profile({ 'name' => name })
+      @user = User.find(@user.id)
+      expect(@user.name).to eq(name)
+    end
+
+    it "should update the product name" do
+      name = "test_product"
+      @user.update_profile({ 'product_name' => name })
+      @user = User.find(@user.id)
+      expect(@user.product_name).to eq(name)
+    end
+  end
+
   it "should check valid email address" do
     #email address always has 2 parts
     email_address = "satrya@gmail.com"
@@ -109,14 +137,20 @@ RSpec.describe User, type: :model do
     expect(user.permitted_hosts?(["10.0.0.0"])).to be true
   end
 
-  it "should check user login limits" do
+  it "login limits should pass" do
     user = create(:user)
     (RATE_LIMIT - 2).times do
       user.within_limits?
     end
     expect(user.within_limits?).to be true
-    expect(user.within_limits?).to be false
+  end
 
+  it "login limits should fail" do
+    user = create(:user)
+    (RATE_LIMIT + 2).times do
+      user.within_limits?
+    end
+    expect(user.within_limits?).to be false
   end
 
   it "should authenticate ms chap" do

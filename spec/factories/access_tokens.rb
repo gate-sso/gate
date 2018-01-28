@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :access_token do
-    token "MyString"
+    token SecureRandom.uuid
   end
 end
