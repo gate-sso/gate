@@ -14,10 +14,10 @@ RSpec.describe Group, type: :model do
   it "should provide name response" do
     group = create(:group)
     user = create(:user)
-    group_response = Group.get_name_response "people"
+    group_response = Group.get_name_response group.name
     expect(group_response.count).to eq(4)
     expect(group_response[:gr_mem].count).to eq(1)
-    expect(group_response[:gr_mem][0]).to eq("test1")
+    expect(group_response[:gr_mem][0]).to eq(user.user_login_id)
   end
 
   it "should provide gid response" do

@@ -68,5 +68,3 @@ class ::Api::V1::VpnsController < ApiController
     render plain: "Properties added to vpn"
   end
 end
-
-
