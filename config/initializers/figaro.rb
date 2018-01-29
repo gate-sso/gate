@@ -6,9 +6,7 @@ Figaro.require_keys('GATE_DB_HOST',
                     'CACHE_HOST',
                     'CACHE_PORT',
                     'GATE_HOSTED_DOMAINS',
-                    'GATE_HOSTED_DOMAIN',
-                    'GATE_SAML_IDP_X509_CERTIFICATE',
-                    'GATE_SAML_IDP_SECRET_KEY')
+                    'GATE_HOSTED_DOMAIN')
 rescue => e
   puts e.to_s
   exit -1
