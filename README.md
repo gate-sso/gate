@@ -26,21 +26,32 @@ Gate is a Rails application, compatible with JRuby.
 * Checkout gate
 * Run `bundle install`
 * Update database.yml
-* Setup 5 environment variables
+* Setup below environment variables
 
 ```
-GATE_OAUTH_CLIENT_ID       - Your OAuth client key
-GATE_OAUTH_CLIENT_SECRET   - Your OAUTH client secret
-GATE_HOSTED_DOMAINS        - The hosted domains for gmail (comma separated)
-GATE_SERVER_URL            - Gate server FQDN
-GATE_CONFIG_SECRET         - Ruby required config secret key in production environment
-GATE_EMAIL_DOMAIN          - Your company's domain for email address
-GATE_URL                   - Gate FQDN
-GATE_ORGANIZATION_NAME     - Organization name to be reflected in vpn mobileconfig
-GATE_ORGANIZATION_STATIC   - Organization static to be reflected in vpn mobileconfig
-GATE_VPN_SSL_PVTKEY        - Private key for signing vpn mobileconfig
-GATE_VPN_SSL_CERT          - SSL key for signing vpn mobileconfig
-GATE_VPN_SSL_XSIGNED       - Cross signed key for signing vpn mobileconfig
+GATE_OAUTH_CLIENT_ID                - Your OAuth client key
+GATE_OAUTH_CLIENT_SECRET            - Your OAUTH client secret
+GATE_HOSTED_DOMAINS                 - The hosted domains for gmail (comma separated)
+GATE_SERVER_URL                     - Gate server FQDN
+GATE_CONFIG_SECRET                  - Ruby required config secret key in production environment
+GATE_EMAIL_DOMAIN                   - Your company's domain for email address
+GATE_URL                            - Gate FQDN
+GATE_ORGANIZATION_NAME              - Organization name to be reflected in vpn mobileconfig
+GATE_ORGANIZATION_STATIC            - Organization static to be reflected in vpn mobileconfig
+GATE_VPN_SSL_PVTKEY                 - Private key for signing vpn mobileconfig
+GATE_VPN_SSL_CERT                   - SSL key for signing vpn mobileconfig
+GATE_VPN_SSL_XSIGNED                - Cross signed key for signing vpn mobileconfig
+PRODUCT_LIST                        - comma separated product list
+
+GATE_SAML_IDP_ORGANIZATION_NAME     - company name
+GATE_SAML_IDP_ORGANIZATION_URL      - company website url
+GATE_SAML_IDP_RESPONSE_EXPIRY       - response timeout in seconds
+GATE_SAML_IDP_SESSION_EXPIRY        - session timeout in seconds
+GATE_SAML_IDP_X509_CERTIFICATE      - x509 cert
+GATE_SAML_IDP_SECRET_KEY            - x509 key
+GATE_SAML_IDP_FINGERPRINT           - x509 fingerprint
+GATE_SAML_IDP_DATA_DOG_SSO_URL      - datadog service provider sso url
+GATE_SAML_IDP_DATA_DOG_METADATA_URL - datadog service provider metadata url
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed
@@ -74,6 +85,33 @@ In `Authorized Javascript origins` put the your server url
 In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callback`
 
 You can then put the clientId and clientSecret in the appropriate variables in `.env`
+
+### Creating self signed x509 certificate for datadog SAML setup
+> **NOTE** We will be putting some more effort to automate the integration for SAML Service Providers through UI.
+
+Please run the following commands to generate certificate and key. You need to have openssl installed on your local System.
+```
+openssl genrsa -des3 -passout pass:x -out /tmp/server.pass.key 2048 && \
+    openssl rsa -passin pass:x -in /tmp/server.pass.key -out /tmp/server.key && \
+    rm /tmp/server.pass.key
+```
+
+```
+    openssl req -new -key /tmp/server.key -out /tmp/server.csr -subj "/C=UK/ST=Warwickshire/L=Leamington/O=Test/OU=Example/CN=test-example.com"
+```
+> **NOTE** Please use appropriate values in place of C[Country Code], ST[State/Province], L[Location], O[Organization Name], OU[Organization Unit Name], CN[Company Domain Name]
+
+```
+    openssl x509 -req -days 365 -in /tmp/server.csr -signkey /tmp/server.key -out /tmp/server.crt
+```
+Use /tmp/server.crt for `GATE_SAML_IDP_X509_CERTIFICATE` and /tmp/server.key for `GATE_SAML_IDP_SECRET_KEY`
+
+please run the following command to generate fingerprint[GATE_SAML_IDP_FINGERPRINT]
+```
+openssl x509 -in /tmp/server.crt -noout -sha256 -fingerprint
+```
+
+
 
 #### Local dockerised setup
 
