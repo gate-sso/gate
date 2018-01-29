@@ -1,6 +1,6 @@
 default: &default
-  host: <%= ENV['CACHE_HOST'] %>
-  port: <%= ENV['CACHE_PORT'] %>
+  host: <%= Figaro.env.CACHE_HOST %>
+  port: <%= Figaro.env.CACHE_PORT %>
   limit: 20
 
 development:

@@ -96,7 +96,7 @@
     - if @user.product_name.nil?
       = form_tag  user_path, method: :patch do
         .col-sm-6
-          = select_tag :product_name, options_for_select(ENV["PRODUCT_LIST"].split(",")), class: "form-control"
+          = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
         .col-sm-2
           = submit_tag "Assign", class: "form-control btn-sm btn-primary"
     - else
@@ -110,7 +110,7 @@
           .row
             = form_tag user_path, method: :patch do
               .col-sm-8
-                = select_tag :product_name, options_for_select(ENV["PRODUCT_LIST"].split(",")), class: "form-control"
+                = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
               .col-sm-4
                 = submit_tag "Modify", class: "form-control btn-sm btn-primary"
 

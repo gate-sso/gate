@@ -87,7 +87,7 @@ In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callbac
 You can then put the clientId and clientSecret in the appropriate variables in `.env`
 
 ### Creating self signed x509 certificate for datadog SAML setup
-> **NOTE** We will be putting some more effort to automate the integration for SAML Service Providers through UI.
+> **NOTE** We will be automating the integration for SAML Service Providers through rake task/UI.
 
 Please run the following commands to generate certificate and key. You need to have openssl installed on your local System.
 ```
