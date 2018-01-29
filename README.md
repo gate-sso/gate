@@ -26,6 +26,7 @@ Gate is a Rails application, compatible with JRuby.
 * Checkout gate
 * Run `bundle install`
 * Update database.yml
+* Update redis.yml
 * Setup below environment variables
 
 ```
@@ -42,16 +43,21 @@ GATE_VPN_SSL_PVTKEY                 - Private key for signing vpn mobileconfig
 GATE_VPN_SSL_CERT                   - SSL key for signing vpn mobileconfig
 GATE_VPN_SSL_XSIGNED                - Cross signed key for signing vpn mobileconfig
 PRODUCT_LIST                        - comma separated product list
+```
 
-GATE_SAML_IDP_ORGANIZATION_NAME     - company name
-GATE_SAML_IDP_ORGANIZATION_URL      - company website url
-GATE_SAML_IDP_RESPONSE_EXPIRY       - response timeout in seconds
-GATE_SAML_IDP_SESSION_EXPIRY        - session timeout in seconds
-GATE_SAML_IDP_X509_CERTIFICATE      - x509 cert
-GATE_SAML_IDP_SECRET_KEY            - x509 key
-GATE_SAML_IDP_FINGERPRINT           - x509 fingerprint
-GATE_SAML_IDP_DATA_DOG_SSO_URL      - datadog service provider sso url
-GATE_SAML_IDP_DATA_DOG_METADATA_URL - datadog service provider metadata url
+* (OPTIONAL) Setup below environment variables if you want to integrate SAML into gate
+> **NOTE** We will be automating the integration for SAML Service Providers through rake task/UI.
+```
+ENABLE_SAML                         - [Default to false] Set true to enable SAML
+GATE_SAML_IDP_ORGANIZATION_NAME     - company name. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_ORGANIZATION_URL      - company website url. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_RESPONSE_EXPIRY       - response timeout in seconds. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_SESSION_EXPIRY        - session timeout in seconds. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_X509_CERTIFICATE      - x509 cert. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_SECRET_KEY            - x509 key. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_FINGERPRINT           - x509 fingerprint. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_DATA_DOG_SSO_URL      - datadog service provider sso url. Required if ENABLE_SAML is set to true
+GATE_SAML_IDP_DATA_DOG_METADATA_URL - datadog service provider metadata url. Required if ENABLE_SAML is set to true
 ```
 
 * Run bundle exec rake db:create db:migrate db:seed
@@ -87,8 +93,6 @@ In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callbac
 You can then put the clientId and clientSecret in the appropriate variables in `.env`
 
 ### Creating self signed x509 certificate for datadog SAML setup
-> **NOTE** We will be automating the integration for SAML Service Providers through rake task/UI.
-
 Please run the following commands to generate certificate and key. You need to have openssl installed on your local System.
 ```
 openssl genrsa -des3 -passout pass:x -out /tmp/server.pass.key 2048 && \

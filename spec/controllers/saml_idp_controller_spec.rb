@@ -14,7 +14,11 @@ RSpec.describe SamlIdpController, type: :controller do
     FactoryGirl.create(:group)
     user = FactoryGirl.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com", admin: 1)
     sign_in user
+
+    allow(Figaro.env).to receive(:ENABLE_SAML).and_return(true)
+
     get :show
+
     hash = Hash.from_xml(response.body)
     expect(hash["EntityDescriptor"]["Organization"]["OrganizationName"]).to eq("Test")
     expect(hash["EntityDescriptor"]["Organization"]["OrganizationDisplayName"]).to eq("Test")

@@ -1,13 +1,15 @@
 class SamlIdpController < SamlIdp::IdpController
+  before_filter :is_saml_enabled
   before_filter :authenticate_user!, :except => [:create] unless Rails.env.development?
+
   def show
     if current_user.admin?
       render xml: SamlIdp.metadata.signed
     else
       respond_to do |format|
-        format.html { render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found }
-        format.xml  { head :not_found }
-        format.any  { head :not_found }
+        format.html {render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found}
+        format.xml {head :not_found}
+        format.any {head :not_found}
       end
     end
   end
@@ -27,15 +29,29 @@ class SamlIdpController < SamlIdp::IdpController
   end
 
   def idp_authenticate(username, token)
-   if User.find_and_check_user username, token
+    if User.find_and_check_user username, token
       return User.get_user(username)
     end
     return false
   end
+
   private :idp_authenticate
 
   def idp_make_saml_response(found_user)
     encode_response found_user
   end
+
   private :idp_make_saml_response
+
+  def is_saml_enabled
+    if Figaro.env.ENABLE_SAML
+      return true
+    else
+      respond_to do |format|
+        format.html {render :file => "#{Rails.root}/public/saml_not_enabled", :layout => false, :status => :not_found}
+        format.xml {head :not_found}
+        format.any {head :not_found}
+      end
+    end
+  end
 end
