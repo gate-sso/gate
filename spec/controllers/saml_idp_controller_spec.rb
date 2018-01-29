@@ -4,9 +4,10 @@ include Devise::TestHelpers
 RSpec.describe SamlIdpController, type: :controller do
 
   it "should return proper xml for admin user" do
+    cert_helper  = CertificateHelper.new
     SamlIdp.configure do |config|
-      config.x509_certificate = File.open('/tmp/server.crt').read
-      config.secret_key       = File.open('/tmp/server.key').read
+      config.x509_certificate = cert_helper.get_cert
+      config.secret_key       = cert_helper.get_private_key
       config.organization_name  = "Test"
       config.organization_url   = "test-example.com"
     end
