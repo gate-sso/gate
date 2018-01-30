@@ -16,6 +16,6 @@ namespace :app do
   end
 
   task :rspec do
-    sh "bundle exec rake spec"
+    sh "RAILS_ENV=test DB_NAME=gate_test bundle exec rake spec"
   end
 end
