@@ -23,5 +23,4 @@ env:
 
 script:
   - bundle exec rake app:setup
-  - bundle exec rake app:start
   - bundle exec rake app:rspec
