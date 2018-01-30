@@ -24,7 +24,7 @@ Gate is a Rails application, compatible with JRuby.
 #### Local
 
 * Checkout gate
-* Run `bundle install`
+* Run `bundle install --path .local`
 * Setup below environment variables
 
 ```
