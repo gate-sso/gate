@@ -54,34 +54,6 @@ deploy:
     secure: Tx5Nam3ITh2elRpMqlw3PEJmUciPRNuI6k5QhU3Z9pE4eJbuKqpMtMtq41hfMWfXCdtOZOzji39A9TkRbatL2Wd8y3619sWV4dpmfH9KBcx4+MLdbZCzxjJTmTMt3TdTeY2Iioz4wDM5PCSmKUbLcGzKH5wV307MfemK3ZTMhrlN2+qUXXZLdVGbC/ddUselXyqgHALcALe3z67BIgd7xK8PpkkTfrrjmAaJQpvBaJSVSKucXgIdtxQXqxBXZ+TR16Kxib8fhcYJEmvu3IdEbfVCwaWcejTGogOtxM/Y1OynYOjNwmwDld+NghBUtP4ioaTVQ0LKXxfl5OMIzokw/zj/iYHIuT0OSMSz+co3ZbTPSWFP8F+3DZHYhxoRQysOneIlszw8eS675E5USwGcXwUqYrE5tjWpfmhaFFRqDPMu34V4V9eMWdajhs+s0Tr2w6Qo9J+8MCixFIQOT7eGobEtWGBCxn/NGKDviG/AK797fK65E4kxKhnkVTu2SRzzYZkkJa1xyxKMze00zuEaMNNYZiE/lFp8yKjNVEBYlKQTJ3C+IYtbH/ToUpN7booPv7JZOwOyJ81WIVC2/OSLEZVtHmTDTm0lrEaQx+okavExRxy/BnUqY5Av6vvnSCrQtobPR5PWGQBsZGNZN5Kp5iCfe/ZO9wiYxAIkv0jlUFI=
   file_glob: true
   file:
-    - gate/app/*
-    - gate/api_blueprints/*
-    - gate/bin/*
-    - gate/config/*
-    - gate/db/*
-    - gate/lib/*
-    - gate/log/*
-    - gate/public/*
-    - gate/spec/*
-    - gate/scripts/*
-    - gate/test/*
-    - gate/vendor/assets/*
-    - gate/.dockerignore
-    - gate/.env.sample
-    - gate/.gitignore
-    - gate/.rspec
-    - gate/.ruby-version
-    - gate/.travis.yml
-    - gate/Dockerfile
-    - gate/Gemfile
-    - gate/Gemfile.lock
-    - gate/LICENSE
-    - gate/Makefile
-    - gate/README.md
-    - gate/Rakefile
-    - gate/config.ru
-    - gate/docker-compose.yml
-    - gate/dump.rdb
-    - gate/entrypoint.sh
+    - gate/*
   on:
-    repo: AishwaryaRK/gate
+    repo: gate-sso/gate
