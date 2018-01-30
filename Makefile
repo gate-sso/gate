@@ -41,10 +41,6 @@ logs:
 	@echo "\nGetting logs of web container\n"
 	docker-compose logs -f web
 
-logs:
-	@echo "\nGetting logs of web container\n"
-	docker-compose logs -f web
-
 attach:
 	@echo "\nAttaching to gate web container\n"
 	docker attach gate_web_1
