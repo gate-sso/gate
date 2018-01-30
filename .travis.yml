@@ -4,6 +4,9 @@ language: ruby
 rvm:
   - jruby-9.1.7.0
 
+services:
+  - redis-server
+
 env:
   global:
     - GATE_OAUTH_CLIENT_ID=totally_secret_client_id
