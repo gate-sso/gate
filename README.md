@@ -24,15 +24,14 @@ Gate is a Rails application, compatible with JRuby.
 #### Local
 
 * Checkout gate
-* Run `bundle install`
-* Update database.yml
-* Update redis.yml
+* Run `bundle install --path .local`
 * Setup below environment variables
 
 ```
 GATE_OAUTH_CLIENT_ID                - Your OAuth client key
 GATE_OAUTH_CLIENT_SECRET            - Your OAUTH client secret
 GATE_HOSTED_DOMAINS                 - The hosted domains for gmail (comma separated)
+GATE_HOSTED_DOMAIN                  - The hosted domain for Gate
 GATE_SERVER_URL                     - Gate server FQDN
 GATE_CONFIG_SECRET                  - Ruby required config secret key in production environment
 GATE_EMAIL_DOMAIN                   - Your company's domain for email address
@@ -43,6 +42,12 @@ GATE_VPN_SSL_PVTKEY                 - Private key for signing vpn mobileconfig
 GATE_VPN_SSL_CERT                   - SSL key for signing vpn mobileconfig
 GATE_VPN_SSL_XSIGNED                - Cross signed key for signing vpn mobileconfig
 PRODUCT_LIST                        - comma separated product list
+CACHE_PORT                          - redis port
+CACHE_HOST                          - redis host
+GATE_DB_HOST                        - Mysql db host
+GATE_DB_PORT                        - Mysql db port
+GATE_DB_USER                        - Mysql db user
+GATE_DB_PASSWORD                    - Mysql db password
 ```
 
 * (OPTIONAL) Setup below environment variables if you want to integrate SAML into gate
