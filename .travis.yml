@@ -4,8 +4,24 @@ language: ruby
 rvm:
   - jruby-9.1.7.0
 
+env:
+  global:
+    - GATE_OAUTH_CLIENT_ID=totally_secret_client_id
+    - GATE_OAUTH_CLIENT_SECRET=totally_secret
+    - GATE_HOSTED_DOMAIN=gate.domain
+    - GATE_SERVER_URL=gate.server/url
+    - GATE_CONFIG_SECRET=gate_pw_secret
+    - GATE_EMAIL_DOMAIN=gate.domain
+    - GATE_HOSTED_DOMAINS="test1.com,test2.com"
+    - PRODUCT_LIST=pr1,pr2
+    - CACHE_PORT=6379
+    - CACHE_HOST=localhost
+    - GATE_DB_HOST=localhost
+    - GATE_DB_PORT=3306
+    - GATE_DB_USER=root
+    - GATE_DB_PASSWORD=
+
 script:
-  - bundle exec rake app:init
   - bundle exec rake app:setup
   - bundle exec rake app:start
   - bundle exec rake app:rspec

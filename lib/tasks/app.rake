@@ -7,12 +7,11 @@ namespace :app do
   end
 
   task :setup do
-    sh "source .env"
     sh "bundle install --path .local"
     sh "bundle exec rake db:drop db:create db:migrate db:seed"
   end
 
-  task :start do
+  task :start => [:setup] do
     sh "rails server"
   end
 
