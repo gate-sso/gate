@@ -8,7 +8,7 @@ namespace :app do
 
   task :setup do
     sh "bundle install"
-    sh "bundle exec rake db:drop db:create db:migrate db:seed"
+    sh "bundle exec rake db:drop db:create db:migrate"
   end
 
   task :start => [:setup] do
