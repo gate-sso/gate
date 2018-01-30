@@ -5,6 +5,7 @@ rvm:
   - jruby-9.1.7.0
 
 script:
-  - rake init
-  - rake all
-  - rake rspec
+  - bundle exec rake app:init
+  - bundle exec rake app:setup
+  - bundle exec rake app:start
+  - bundle exec rake app:rspec
