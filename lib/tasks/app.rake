@@ -7,7 +7,7 @@ namespace :app do
   end
 
   task :setup do
-    sh "bundle install --path .local"
+    sh "bundle install"
     sh "bundle exec rake db:drop db:create db:migrate db:seed"
   end
 
