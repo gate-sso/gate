@@ -2,7 +2,7 @@ require 'rails_helper'
 GID_CONSTANT = 9000
 RSpec.describe Group, type: :model do
   context 'validate uniqueness' do
-    subject { FactoryGirl.create(:group) }
+    subject { FactoryBot.create(:group) }
     it { should validate_uniqueness_of(:name).ignoring_case_sensitivity }
   end
 

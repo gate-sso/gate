@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :access_token do
     token SecureRandom.uuid
   end

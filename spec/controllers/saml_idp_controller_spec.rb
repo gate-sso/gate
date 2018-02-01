@@ -11,8 +11,8 @@ RSpec.describe SamlIdpController, type: :controller do
       config.organization_name  = "Test"
       config.organization_url   = "test-example.com"
     end
-    FactoryGirl.create(:group)
-    user = FactoryGirl.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com", admin: 1)
+    FactoryBot.create(:group)
+    user = FactoryBot.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com", admin: 1)
     sign_in user
 
     allow(Figaro.env).to receive(:ENABLE_SAML).and_return(true)

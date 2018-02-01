@@ -3,8 +3,8 @@ include Devise::TestHelpers
 
 RSpec.describe UsersController, type: :controller do
   let(:product_name) { "product-name"  }
-  let!(:group) { FactoryGirl.create(:group)  }
-  let(:user) { FactoryGirl.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com")  }
+  let!(:group) { FactoryBot.create(:group)  }
+  let(:user) { FactoryBot.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com")  }
 
   context "update user profile" do
     it "should update profile with product name" do
