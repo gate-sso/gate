@@ -1,4 +1,4 @@
-return unless Figaro.env.ENABLE_SAML
+return unless (Figaro.env.ENABLE_SAML && (defined?(Rails::Server) || defined?(Rails::Console)))
 
 SamlIdp.configure do |config|
     base = Figaro.env.GATE_SERVER_URL
@@ -7,12 +7,13 @@ SamlIdp.configure do |config|
     config.x509_certificate = Figaro.env.GATE_SAML_IDP_X509_CERTIFICATE.gsub("\\n", "\n")
     config.secret_key = Figaro.env.GATE_SAML_IDP_SECRET_KEY.gsub("\\n", "\n")
 
-    service_providers = {
-        Figaro.env.GATE_SAML_IDP_DATA_DOG_SSO_URL => {
-            :fingerprint => Figaro.env.GATE_SAML_IDP_FINGERPRINT,
-            :metadata_url => Figaro.env.GATE_SAML_IDP_DATA_DOG_METADATA_URL
-        }
-    }
+    service_providers = {}
+    SamlServiceProvider.find_each do |sp|
+      service_providers[sp.sso_url] = {
+          :fingerprint => Figaro.env.GATE_SAML_IDP_FINGERPRINT,
+          :metadata_url => sp.metadata_url
+      }
+    end
 
     config.organization_name = Figaro.env.GATE_SAML_IDP_ORGANIZATION_NAME
     config.organization_url = Figaro.env.GATE_SAML_IDP_ORGANIZATION_URL

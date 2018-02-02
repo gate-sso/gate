@@ -11,7 +11,7 @@ namespace :app do
     sh "bundle exec rake db:drop db:create db:migrate"
   end
 
-  task :start => [:setup] do
+  task :start do
     sh "rails server"
   end
 

@@ -24,4 +24,32 @@ RSpec.describe SamlIdpController, type: :controller do
     expect(hash["EntityDescriptor"]["Organization"]["OrganizationDisplayName"]).to eq("Test")
     expect(hash["EntityDescriptor"]["Organization"]["OrganizationURL"]).to eq("test-example.com")
   end
+
+  describe "Service provider" do
+    before(:each) do
+      @user = build(:user)
+      @user.access_token = build(:access_token)
+      @user.save
+      @token = @user.access_token.token
+    end
+    it "should create new service provider in db" do
+      post :add_saml_sp, name: "test_sp", sso_url: "sso1", metadata_url: "metadata1", access_token: @token
+      body = JSON.parse(response.body)
+      expect(response.status).to eq(200)
+      expect(body['name']).to eq("test_sp")
+      expect(body['sso_url']).to eq("sso1")
+      expect(body['metadata_url']).to eq("metadata1")
+    end
+    it "should create new service provider in db" do
+      FactoryBot.create(:saml_service_provider, name: "test_sp", sso_url: "sso1", metadata_url: "metadata1")
+
+      get :get_saml_sp, name: "test_sp", access_token: @token
+      body = JSON.parse(response.body)
+      expect(response.status).to eq(200)
+      expect(body['name']).to eq("test_sp")
+      expect(body['sso_url']).to eq("sso1")
+      expect(body['metadata_url']).to eq("metadata1")
+    end
+  end
+
 end
