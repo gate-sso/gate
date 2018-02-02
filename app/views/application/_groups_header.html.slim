@@ -9,7 +9,7 @@
         = submit_tag "Add Group", class: "form-control btn btn-sm btn-primary", name: nil
 
 br
-= form_tag profile_group_admin_path, method: 'get' do
+= form_tag groups_path, method: 'get' do
   .row
     .col-md-8
       = text_field_tag :group_search, params[:group_search], class: "form-control" , autofocus: true

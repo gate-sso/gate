@@ -14,6 +14,7 @@ hr
   .col-md-4.text-primary Admin
   .col-md-8
     - if @group.group_admin.present?
+      - if @group.group_admin.user.present?
        = @group.group_admin.user.name
     - if current_user.admin?
       = form_tag  add_admin_to_group_path, method: :post do
@@ -51,7 +52,7 @@ hr
       - else
         span This group does not have any vpns
       .row
-        - if current_user.admin?
+        - if current_user.admin? 
           = form_tag  add_vpn_to_group_path, method: :post do
             .col-sm-8
               = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), include_blank: true, class: "form-control"

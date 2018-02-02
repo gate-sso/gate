@@ -16,7 +16,6 @@ Rails.application.routes.draw do
   match 'profile/authenticate_ms_chap', to: 'profile#authenticate_ms_chap', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
   match 'profile/user_admin', to: 'profile#user_admin', via: :get
-  match 'profile/group_admin', to: 'profile#group_admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'
 
   get 'profile/:id' => 'users#index', as: 'user_profile'
@@ -36,9 +35,8 @@ Rails.application.routes.draw do
 
   #Group Functions
 
-  post 'profile/:id/group' => 'group#add_group', as: 'add_group'
-  delete 'profile/:user_id/group/:id' => 'group#delete_group', as: 'user_group'
-  get 'group' => 'group#list', as: 'group_list'
+  post 'profile/:id/group' => 'groups#add_group', as: 'add_group'
+  delete 'profile/:user_id/group/:id' => 'groups#delete_group', as: 'user_group'
   get 'nss/group' => 'nss#group', as: 'nss_group', format: :json
   get 'nss/shadow' => 'nss#shadow', as: 'nss_shadow', format: :json
   get 'nss/passwd' => 'nss#passwd', as: 'nss_passwd', format: :json

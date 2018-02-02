@@ -29,7 +29,7 @@ RSpec.describe UsersController, type: :controller do
 
       patch :update, id: user.id, product_name: product_name
 
-      response.should redirect_to user_path
+      expect(response).to redirect_to(user_path)
     end
 
     context "for invalid request" do
