@@ -34,6 +34,7 @@ html lang="en"
            - if current_user.admin? || current_user.group_admin?
              = link_to "VPNs", vpns_path, class: "nav-link"
           li.nav-item.dropdown
+           - if current_user.admin? || current_user.group_admin?
             a#dropdown01.nav-link.dropdown-toggle aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="http://example.com"  New
             .dropdown-menu aria-labelledby="dropdown01" 
               = link_to "Group", new_group_path, class: "dropdown-item"

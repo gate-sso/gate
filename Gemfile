@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
-gem 'devise', '~> 3.2'
+gem 'devise'
 
 gem "paranoia"
 

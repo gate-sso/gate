@@ -20,17 +20,23 @@ html lang="en"
 
 
   body.home
-    .top-content
-      .inner-bg
-        .container
-          .row
-            .col-sm-8.col-sm-offset-2.text
-              h1
-                strong Gate-SSO 
-          .description
-            h3 
-              Single Sign-On
-      .row
-        .col-sm-6.col-sm-offset-3
-          = yield
+      .form-signin
+        .row
+          .col
+            h1 Gate-SSO 
+        br
+        .row
+          .col
+            h3 Single Sign-On
+        br
+        br
+        br
+        br
+        .row
+          .col
+            a.btn.btn-link-1.btn-link-1-google-plus href="#{url_for  user_google_oauth2_omniauth_authorize_path}"
+              i.fa.fa-google-plus
+              | &nbsp Login with Google
+
+
        
