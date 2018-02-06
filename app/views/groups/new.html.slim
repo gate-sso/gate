@@ -1,0 +1,21 @@
+.container-fluid.col-md-4.col-md-offset-4
+  h5 Add new group
+  = form_for @group, :class => 'form-horizontal' do |f|
+    - if @group.errors.any?
+      #error_explanation
+        h2 = "#{pluralize(@group.errors.count, "error")} prohibited this vpn from being saved:"
+        ul
+          - @group.errors.full_messages.each do |message|
+            li = message
+
+    hr
+    .mb-3
+      label for="name" 
+        | Name
+      = f.text_field :name, required: true, class: "form-control", placeholder: "Group Name"
+      .invalid-feedback
+        | Please enter a name
+
+    .mb-4
+      = f.submit "Add Group", class: "btn btn-primary pull-right"
+

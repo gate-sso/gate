@@ -22,7 +22,7 @@ class GroupsController < ApplicationController
       @group = Group.new(group_params)
       respond_to do |format|
         if @group.save
-          format.html { redirect_to groups_path, notice: 'Group was successfully created.' }
+          format.html { redirect_to group_path(@group), notice: 'Group was successfully created.' }
           format.json { render status: :created, json: "#{@group.name}host created" }
         else
           format.html { redirect_to groups_path, notice: "Can't save '#{group_params[:name]}'" }
@@ -35,13 +35,18 @@ class GroupsController < ApplicationController
     end
   end
 
-  def show
+  def new
+    @group = Group.new
+  end
 
+  def show
     #This is set in before_action filter
     #@group = Group.find(params[:id])
     @vpns = Vpn.all
     @users = User.all
     @host_machines = HostMachine.all
+    @group_admin_id = 0
+    @group_admin_id = @group.group_admin.user_id if @group.group_admin.present?
   end
 
   def delete_machine

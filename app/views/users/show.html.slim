@@ -1,116 +1,127 @@
 .container.container-profile
-  .row
-    .col-md-4.text-primary Name
-    .col-md-8
-      = @user.name
-  .row
-    .col-md-4.text-primary Email
-    .col-md-8
-      = @user.email
-  - if current_user.admin?
-    = form_tag user_update_path, method: 'post' do
-      .row
-        .col-md-4.text-primary Active?
-        .col-md-8
-          = check_box "user", "active"
-      .row
-        .col-md-4.text-primary Administrator?
-        .col-md-8
-          = check_box "user", "admin"
-      .row
-        .col-md-4
-        .col-md-2
-          = submit_tag "Update", class: "form-control btn-sm btn-primary"
+  h5.mb-3 User Profile 
   hr
-  .row
-    .col-md-4.text-primary
-      = link_to "Groups", groups_path
-    .col-md-8
+  form.needs-validation novalidate="" 
+    .form-row.mb-3
+      .col
+        label for="Name" 
+          b
+            = @user.name
+          span.text-muted (Optional)
+      .col
+        .input-group
+          .input-group-prepend
+             span.input-group-text @
+          input#email.form-control placeholder="you@example.com" readonly="" type="email" value="#{@user.email}"
+
+  .card
+    .card-body
+      h6.card-title Access and Permissions 
+      hr
+      - if current_user.admin?
+        = form_tag user_update_path, method: 'post' do
+          .row
+            .col
+              .custom-control.custom-checkbox
+                = check_box "user", "active", class: "custom-control-input", id: "active-checkbox" 
+                label.custom-control-label for="active-checkbox"  Active?
+            .col
+              .custom-control.custom-checkbox
+                = check_box "user", "admin", class: "custom-control-input", id: "admin-checkbox" 
+                label.custom-control-label for="admin-checkbox"  Adminstrator?
+            .col
+              = submit_tag "Update", class: "form-control btn-md btn-primary"
+  br
+  .card
+    .card-body
+      h6.card-title Groups
+      hr
       - @user.groups.each do |group|
         - unless group.deleted?
         .row
-          .col-md-8
+          .col
             = "#{group.name} (#{group.gid})"
-          .col-md-4
-            = link_to "Delete", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
-      = "No groups are associated with this user" if @user.groups.count == 0
-  .row
-    .col-md-4
-    .col-md-8
-      .row
-        - if current_user.admin?
+          .col.append
+            = link_to "Remove group", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
+      br
+      - if current_user.admin?
           = form_tag  add_group_path, method: :post do
-            .col-sm-8
-              = select_tag "group_id", options_from_collection_for_select(@groups.sort_by {|group| group.name}, "id", "name"), class: "form-control"
-            .col-sm-4
-              = submit_tag "Add Group", class: "form-control btn-sm btn-primary"
-  hr
-  .row
-    .col-md-4.text-primary Permitted Host Patterns
-    .col-md-8
+            .row
+              .col
+                = select_tag "group_id", options_from_collection_for_select(@groups.sort_by {|group| group.name}, "id", "name"), class: "form-control"
+              .col
+                = submit_tag "Add Group", class: "form-control btn-md btn-primary pull-right"
+      = "No groups are associated with this user" if @user.groups.count == 0
+  br
+  .card
+    .card-body
+      h6.card-title Pattern based host access
+      hr
       - @user.hosts.each do |host|
         - unless host.deleted?
         .row
-          .col-md-8
+          .col
             = host.host_pattern
-          .col-md-4
-            = link_to "Delete", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
-
-      = "No host patterns are associated with this user" if @user.hosts.count == 0
-  .row
-    .col-md-4
-    .col-md-8
-      .row
-        - if current_user.admin?
-          = form_tag  add_host_path, method: :post do
+          .col.pull-right
+            = link_to "Remove host pattern", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
+      br
+      - if current_user.admin?
+        = form_tag  add_host_path, method: :post do
+          .row
             .col-sm-8
               = text_field_tag :host_pattern, "", class: "form-control"
             .col-sm-4
-              = submit_tag "Add host pattern", class: "form-control btn-sm btn-primary"
+              = submit_tag "Add host pattern", class: "form-control btn-md btn-primary"
+      = "No host patterns are associated with this user" if @user.hosts.count == 0
 
   br
-  hr
-  .row
-    .col-md-4.text-primary Public Key
-    .col-md-8
+  .card
+    .card-body
+      h6.card-title Public Key
       = form_tag user_public_key_update_path, method: :post do
-        .row
-          .col-sm-12
-            = text_area_tag "public_key", @user.public_key, class: "form-contol", style: "font-family:monospace;", rows: 15, cols: 35
-        .row
-          .col-sm-8
-          .col-sm-4
-            = submit_tag "Update key", class: "form-control btn-sm btn-primary"
-  hr
-  .row
-    .col-md-4.text-primary VPNs
-    .col-md-8
+          .row
+            .col
+              = text_field_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:100px;width:100%;"
+          br
+          .row
+            .col-md-3
+              = submit_tag "Update key", class: "form-control btn-md btn-primary"
+
+  br
+  .card
+    .card-body
+      h6.card-title VPN Access
+      hr
       - @vpns.each do |vpn|
         .row
-          .col-md-8
-            = "#{vpn.name}"
+          = "#{vpn.name}"
       = "No vpns are associated with this user" if @vpns.count == 0
-  hr
-  .row
-    .col-md-4.text-primary Product Name
-    - if @user.product_name.nil?
-      = form_tag  user_path, method: :patch do
-        .col-sm-6
-          = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
-        .col-sm-2
-          = submit_tag "Assign", class: "form-control btn-sm btn-primary"
-    - else
-      .row
-        .col-md-4.text-primary
-          .col-md-6
-            = @user.product_name
-      br
-        .col-md-4
-        .col-md-8
-          .row
-            = form_tag user_path, method: :patch do
-              .col-sm-8
-                = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
-              .col-sm-4
-                = submit_tag "Modify", class: "form-control btn-sm btn-primary"
+  
+  br
+  .card
+    .card-body
+      h6.card-title SAML Product Access
+      hr
+      - if @user.product_name.nil?
+        = form_tag  user_path, method: :patch do
+          .col-sm-6
+            = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
+          .col-sm-2
+            = submit_tag "Assign", class: "form-control btn-md btn-primary"
+      - else
+        .row
+          .col-md-4.text-primary
+            .col-md-6
+              = @user.product_name
+        br
+          .col-md-4
+          .col-md-8
+            .row
+              = form_tag user_path, method: :patch do
+                .col-sm-8
+                  = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
+                .col-sm-4
+                  = submit_tag "Modify", class: "form-control btn-md btn-primary"
 
+javascript:
+  $("#user-index").addClass("active");

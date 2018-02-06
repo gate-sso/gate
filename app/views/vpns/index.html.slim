@@ -1,24 +1,28 @@
-#notice
-= notice
-.row
-    .col-md-4.col-md-offset-8
-      = link_to "New", new_vpn_path, class: "pull-right btn btn-primary"
+.container-fluid.col-md-4.col-md-offset-4
+  - if notice.present?
+    .alert.alert-primary role="alert"
+      #notice
+        = notice
 
-.row
-  .col-md-12
+  h5 
+    b Listing VPNs
+
+  .row
     table.table.responsive
       thead
         tr
           th="Name"
           th="Hostname"
           th="IP Address"
+          th
 
       tbody
          - @vpns.each do |vpn|
           tr
-            td=vpn.name
+            td= link_to vpn.name, vpn
             td=vpn.host_name
             td=vpn.ip_address
             td= link_to "Delete", vpn, method: :delete, data: {confirm: 'Are you sure to remove this vpn from gate?'}
 
-
+javascript:
+  $("#vpn-index").addClass("active");

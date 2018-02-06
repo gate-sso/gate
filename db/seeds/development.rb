@@ -41,6 +41,13 @@ vpn = Vpn.create(
   uuid: "FC29CB92-FC7E-4F0B-B938-7612DFDECC28"
 )
 
+host_machine = HostMachine.create(
+  name: "SampleHost1"
+)
+
+host_machine = HostMachine.create(
+  name: "SampleHost2"
+)
 
 vsd = VpnSearchDomain.create(search_domain: "dev-search.vpn.example.com")
 vdns = VpnDomainNameServer.create(server_address: "8.8.8.8")
@@ -50,3 +57,5 @@ vpn.vpn_search_domains << vsd
 vpn.vpn_domain_name_servers << vdns
 vpn.vpn_supplemental_match_domains << vsmd
 vpn.save!
+
+

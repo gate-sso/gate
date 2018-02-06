@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   post 'groups/:id/add_admin' => 'groups#add_admin', as: 'add_admin_to_group'
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
+  post 'host_machines/:id/add_group' => 'host_machines#add_group', as: 'add_group_to_machine'
 
 
 

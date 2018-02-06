@@ -39,7 +39,7 @@ end
 
 gem 'puma'
 gem "slim-rails"
-gem "twitter-bootstrap-rails"
+gem 'bootstrap', '~> 4.0.0'
 gem "font-awesome-rails"
 gem 'rotp'
 gem 'omniauth'

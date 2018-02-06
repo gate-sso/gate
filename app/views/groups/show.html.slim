@@ -1,75 +1,71 @@
-h4
-  = "Showing Details for '#{@group.name}'"
-hr
-
-.row
-  .col-md-4.text-primary Name
-  .col-md-8
-    = @group.name
-.row
-  .col-md-4.text-primary GID
-  .col-md-8
-    = @group.gid
-.row
-  .col-md-4.text-primary Admin
-  .col-md-8
-    - if @group.group_admin.present?
-      - if @group.group_admin.user.present?
-       = @group.group_admin.user.name
-    - if current_user.admin?
-      = form_tag  add_admin_to_group_path, method: :post do
-        .row
-          .col-sm-8
-            = select_tag "user_id", options_from_collection_for_select(@group.users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
-          .col-sm-4
-            = submit_tag "Change Admin", class: "form-control btn-sm btn-primary"
-
-hr
-.row
-  .col-md-4.text-primary Vpns
-  .col-md-8
-      - if @group.vpns.count > 0
-        .table-responsive
-          table.table.table-striped
-            thead
-              tr
-                th Vpn Details
-                th Vpn name
-                th Vpn Host name
-            tbody
-              - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
-                tr
-                  td
-                    = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
-                  td
-                    = "#{vpn.name}"
-                  td
-                    = "#{vpn.host_name}"
-                  td
-                    - if current_user.admin?
-                      = link_to "Delete", [@group, vpn], method: :delete, data: {confirm: 'Are you sure to remove this vpn from the group?'}
-
-      - else
-        span This group does not have any vpns
+.container.col-md-8
+  h5.mb-3 Group Details
+  hr
+  .row
+    .col 
+      = "Group Name: #{@group.name}"
+    .col
+      = "Group ID: #{@group.gid}"
+  br
+  - if current_user.admin?
+    = form_tag add_admin_to_group_path, method: :post do
       .row
-        - if current_user.admin? 
-          = form_tag  add_vpn_to_group_path, method: :post do
-            .col-sm-8
+        .col
+          | Group Administrator
+        .col
+        .col
+          = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name", @group_admin_id), include_blank: true, class: "form-control"
+        .col
+          = submit_tag "Assign admin", class: "form-control btn-md btn-primary"
+  br
+  .card
+    .card-body
+      h6.card-title VPN Access
+      .table-responsive
+        table.table.table-striped
+          thead
+            tr
+              th Vpn Details
+              th Vpn name
+              th Vpn Host name
+              th
+          tbody
+            - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
+              tr
+                td
+                  = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
+                td
+                  = "#{vpn.name}"
+                td
+                  = "#{vpn.host_name}"
+                td
+                  - if current_user.admin?
+                    = link_to "Delete", [@group, vpn], method: :delete, data: {confirm: 'Are you sure to remove this vpn from the group?'}
+      br
+      = "*This group does not have any VPNs associated with it" if @group.vpns.count == 0
+      br
+      hr
+      - if current_user.admin? 
+        = form_tag  add_vpn_to_group_path, method: :post do
+          .row
+            .col 
+              | Assign VPNs
+            .col
+            .col
               = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), include_blank: true, class: "form-control"
-            .col-sm-4
-              = submit_tag "Add Vpn", class: "form-control btn-sm btn-primary"
-
-hr
-.row
-  .col-md-4.text-primary Group Members
-  .col-md-8
-      - if @group.users.count > 0
+            .col
+              = submit_tag "Add Vpn", class: "form-control btn-md btn-primary"
+  br
+    .card
+      .card-body
+        h6.card-title Groups Members
         .table-responsive
           table.table.table-striped
             thead
               tr
                 th User Details
                 th Email address
+                th
             tbody
               - @group.users.sort_by{ |user| user.email}.each do |user|
                 tr
@@ -80,42 +76,51 @@ hr
                   td
                     = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'}
 
-      - else
-        span This group does not have any users
-      .row
+        br
+        = "*This group does not have any group members" if @group.users.count == 0
+        br
+        hr
         - if current_user.admin? || current_user.group_admin?
           = form_tag  add_user_to_group_path, method: :post do
-            .col-sm-8
-              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
-            .col-sm-4
-              = submit_tag "Add User", class: "form-control btn-sm btn-primary"
-
-hr
-.row
-  .col-md-4.text-primary Group Hosts
-  .col-md-8
-      - if @group.host_machines.count > 0
-        .table-responsive
-          table.table.table-striped
-            thead
+            .row
+              .col
+                | Assign members
+              .col
+              .col
+                = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
+              .col
+                = submit_tag "Add User", class: "form-control btn-md btn-primary"
+  br
+  .card
+    .card-body
+      h6.card-title Group access hosts
+      .table-responsive
+        table.table.table-striped
+          thead
+            tr
+              th Host Name
+              th 
+          tbody
+            - @group.host_machines.each do |machine|
               tr
-                th Host Name
-            tbody
-              - @group.host_machines.each do |machine|
-                tr
-                  td
-                    = link_to "#{machine.name}", host_machine_path(machine)
-                  td
-                    = link_to "Delete", [@group, machine], method: :delete, data: {confirm: 'Are you sure to remove this machine from the group??'} if current_user.admin?
-      - else
-        span This group does not have any hosts
-      .row
-        - if current_user.admin?
-          = form_tag  add_machine_to_group_path, method: :post do
-            .col-sm-8
+                td
+                  = link_to "#{machine.name}", host_machine_path(machine)
+                td
+                  = link_to "Delete", [@group, machine], method: :delete, data: {confirm: 'Are you sure to remove this machine from the group??'} if current_user.admin?
+      br
+      = "*This group does not have any host access" if @group.host_machines.count == 0
+      br
+      hr
+      - if current_user.admin?
+        = form_tag  add_machine_to_group_path, method: :post do
+          .row
+            .col 
+              | Assign Hosts
+            .col
+            .col
               = select_tag "machine_id", options_from_collection_for_select(@host_machines.sort_by { |machine| machine.name}, "id", "name"), class: "form-control"
-            .col-sm-4
-              = submit_tag "Add Host", class: "form-control btn-sm btn-primary"
-hr
+            .col
+              = submit_tag "Add Host", class: "form-control btn-md btn-primary"
 
-= link_to "<< Back to Groups", groups_path
+javascript:
+  $("#group-index").addClass("active");
