@@ -1,4 +1,4 @@
-.container-fluid.col-md-4.col-md-offset-4
+.container-fluid.col-md-6.col-md-offset-2
   = form_tag host_machines_path, method: 'get', class: "p-2" do
     .input-group
       = text_field_tag :host_machine_search, params[:host_machine_search], class: "form-control" , autofocus: true, placeholder: "Search host..."
@@ -8,7 +8,7 @@
 
 
 
-.container-fluid.col-md-4.col-md-offset-4
+.container-fluid.col-md-6.col-md-offset-2
   - if @host_machines.count > 0
     .table-responsive
       table.table.table-striped
