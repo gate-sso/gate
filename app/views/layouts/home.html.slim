@@ -34,9 +34,11 @@ html lang="en"
         br
         .row
           .col
-            a.btn.btn-link-1.btn-link-1-google-plus href="#{url_for  user_google_oauth2_omniauth_authorize_path}"
-              i.fa.fa-google-plus
-              | &nbsp Login with Google
+          .col
+            a.btn.btn-block.btn-social.btn-google
+              span.fa.fa-google  href="#{url_for  user_google_oauth2_omniauth_authorize_path}"
+              | Sign in with Google
+          .col
 
 
        
