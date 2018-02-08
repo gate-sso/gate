@@ -1,5 +1,4 @@
 require 'rails_helper'
-include Devise::TestHelpers
 
 RSpec.describe UsersController, type: :controller do
   let(:product_name) { "product-name"  }
