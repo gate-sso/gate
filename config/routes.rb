@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   post 'profile/:id/vpn' => 'profile#add_vpn_group_association', as: 'add_vpn_group_user_association'
   delete 'profile/:user_id/vpn/:id' => 'profile#delete_vpn_group_association', as: 'delete_vpn_group_association'
 
+  get '/regenerate_authentication' => 'profile#regen_auth', as: 'regenerate_authentication', format: :html
   #Group Functions
 
   post 'profile/:id/group' => 'groups#add_group', as: 'add_group'

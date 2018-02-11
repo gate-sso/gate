@@ -6,6 +6,15 @@ class ProfileController < ApplicationController
   before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
   prepend_before_filter :setup_user if Rails.env.development?
 
+  def regen_auth
+    @user = current_user
+    @user.auth_key = ROTP::Base32.random_base32
+    totp = ROTP::TOTP.new(@user.auth_key)
+    @user.provisioning_uri = totp.provisioning_uri @user.email
+    @user.save!
+    redirect_to profile_path
+  end
+
   def show
 
   end

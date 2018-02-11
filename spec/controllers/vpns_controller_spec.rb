@@ -6,6 +6,10 @@ RSpec.describe VpnsController, type: :controller do
   context "vpn operations" do
     it "should return sorted vpns" do
 
+      #we should choose to stub the authentication with the method given here
+      #https://github.com/plataformatec/devise/wiki/How-To:-Stub-authentication-in-controller-specs
+      #but this requires to hand post create call in users and breaks some old tests.
+      #we need to fix those.
       sign_in user
 
       @vpn01 = Vpn.create(name: "z")
