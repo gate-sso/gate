@@ -10,11 +10,7 @@ class VpnsController < ApplicationController
   end
 
   def create
-    puts params
-    puts vpn_params
-
     @vpn = Vpn.new(vpn_params)
-
     @vpn.uuid = SecureRandom.uuid
     respond_to do |format|
       if @vpn.save
@@ -32,17 +28,8 @@ class VpnsController < ApplicationController
   end
 
   def show
-    @groups_under_current_user = []
-    @group_id = Group.find(params[:id])
-    if current_user.admin?
-      @groups_under_current_user = Group.all
-    else
-      @vpn.groups.each do |vpn_group|
-        if vpn_group.group_admin.try(:user) == current_user
-          @groups_under_current_user << vpn_group
-        end
-      end
-    end
+    @vpn = Vpn.find(params[:id])
+    @groups = Group.order(:name)
   end
 
   def user_associated_groups

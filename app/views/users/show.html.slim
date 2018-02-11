@@ -7,18 +7,17 @@
         label for="Name" 
           b
             = @user.name
-          span.text-muted (Optional)
       .col
         .input-group
           .input-group-prepend
              span.input-group-text @
           input#email.form-control placeholder="you@example.com" readonly="" type="email" value="#{@user.email}"
 
-  .card
-    .card-body
-      h6.card-title Access and Permissions 
-      hr
-      - if current_user.admin?
+  - if current_user.admin?
+    .card
+      .card-body
+        h6.card-title Access and Permissions 
+        hr
         = form_tag user_update_path, method: 'post' do
           .row
             .col
@@ -31,7 +30,7 @@
                 label.custom-control-label for="admin-checkbox"  Adminstrator?
             .col
               = submit_tag "Update", class: "form-control btn-md btn-primary"
-  br
+    br
   .card
     .card-body
       h6.card-title Groups
@@ -97,31 +96,32 @@
           = "#{vpn.name}"
       = "No vpns are associated with this user" if @vpns.count == 0
   
-  br
-  .card
-    .card-body
-      h6.card-title SAML Product Access
-      hr
-      - if @user.product_name.nil?
-        = form_tag  user_path, method: :patch do
-          .col-sm-6
-            = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
-          .col-sm-2
-            = submit_tag "Assign", class: "form-control btn-md btn-primary"
-      - else
-        .row
-          .col-md-4.text-primary
+  - if current_user.admin?
+    br
+    .card
+      .card-body
+        h6.card-title SAML Product Access
+        hr
+        - if @user.product_name.nil?
+          = form_tag  user_path, method: :patch do
             .col-md-6
-              = @user.product_name
-        br
-          .col-md-4
-          .col-md-8
-            .row
-              = form_tag user_path, method: :patch do
-                .col-sm-8
-                  = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
-                .col-sm-4
-                  = submit_tag "Modify", class: "form-control btn-md btn-primary"
+              = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
+            .col-md-2
+              = submit_tag "Assign", class: "form-control btn-md btn-primary"
+        - else
+          .row
+            .col-md-4.text-primary
+              .col-md-6
+                = @user.product_name
+          br
+            .col-md-4
+            .col-md-8
+              .row
+                = form_tag user_path, method: :patch do
+                  .col-sm-8
+                    = select_tag :product_name, options_for_select(Figaro.env.PRODUCT_LIST.split(",")), class: "form-control"
+                  .col-sm-4
+                    = submit_tag "Modify", class: "form-control btn-md btn-primary"
 
 javascript:
   $("#user-index").addClass("active");

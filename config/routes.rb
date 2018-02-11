@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   delete 'profile/:user_id/vpn/:id' => 'profile#delete_vpn_group_association', as: 'delete_vpn_group_association'
 
   get '/regenerate_authentication' => 'profile#regen_auth', as: 'regenerate_authentication', format: :html
-  #Group Functions
+  #Group Function
 
   post 'profile/:id/group' => 'groups#add_group', as: 'add_group'
   delete 'profile/:user_id/group/:id' => 'groups#delete_group', as: 'user_group'
@@ -85,7 +85,10 @@ Rails.application.routes.draw do
 
   resource :ping, only: [:show]
 
-  resources :vpns
+  resources :vpns do
+    resources :vpn_dommain_name_servers
+  end
+
 
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
