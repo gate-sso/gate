@@ -1,6 +1,7 @@
 # gate
 
 ![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
+[![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
 
 Gate is Single Sign On platform for centralised authentication across Linux, OpenVPN and CAS.
 
