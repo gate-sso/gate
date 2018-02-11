@@ -80,7 +80,7 @@
       = form_tag user_public_key_update_path, method: :post do
           .row
             .col
-              = text_field_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:100px;width:100%;"
+              = text_area_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:200px;width:100%;"
           br
           .row
             .col-md-3
@@ -93,7 +93,8 @@
       hr
       - @vpns.each do |vpn|
         .row
-          = "#{vpn.name}"
+          .col
+            = "#{vpn.name}"
       = "No vpns are associated with this user" if @vpns.count == 0
   
   - if current_user.admin?
