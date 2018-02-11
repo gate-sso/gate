@@ -275,6 +275,11 @@ class User < ActiveRecord::Base
     self.groups.map(&:name)
   end
 
+  def reset_login_limit
+     user_key = "#{self.id}:#{Time.now.hour}"
+     REDIS_CACHE.set user_key, 0
+  end
+  
   def within_limits?
     user_key = "#{self.id}:#{Time.now.hour}"
       request_count = REDIS_CACHE.incrby user_key, 1

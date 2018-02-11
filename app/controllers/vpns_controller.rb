@@ -2,11 +2,11 @@ class VpnsController < ApplicationController
   before_action :set_paper_trail_whodunnit
   before_action :authorize_user, except: [:create_group_associated_users, :show, :user_associated_groups, :group_associated_users]
   before_action :set_vpn, only: [:show, :edit, :update, :destroy, :user_associated_groups]
-
+  
   require 'securerandom'
 
   def index
-    @vpns = Vpn.all
+    @vpns = Vpn.order(:name)
   end
 
   def create
