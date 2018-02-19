@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180104081814) do
+ActiveRecord::Schema.define(version: 20180202102206) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -76,6 +76,14 @@ ActiveRecord::Schema.define(version: 20180104081814) do
   add_index "hosts", ["deleted_by"], name: "index_hosts_on_deleted_by", using: :btree
   add_index "hosts", ["host_pattern"], name: "index_hosts_on_host_pattern", using: :btree
   add_index "hosts", ["user_id"], name: "index_hosts_on_user_id", using: :btree
+
+  create_table "saml_service_providers", force: :cascade do |t|
+    t.string   "name",         limit: 255, null: false
+    t.string   "sso_url",      limit: 255, null: false
+    t.string   "metadata_url", limit: 255, null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255,   default: "",    null: false

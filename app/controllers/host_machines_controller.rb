@@ -1,10 +1,19 @@
 class HostMachinesController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :set_host_machine, only: [:show, :edit, :update, :destroy, :delete_group]
+  before_action :set_host_machine, only: [:add_group, :show, :edit, :update, :destroy, :delete_group]
   prepend_before_filter :setup_user if Rails.env.development?
   def index
     @title = "Host"
     @host_machines = HostMachine.all
+    @host_machines = []
+    @host_machine_search = params[:host_machine_search]
+    if @host_machine_search.present?
+      if current_user.admin?
+        @host_machines = HostMachine.where("name LIKE ?", "%#{@host_machine_search}%" )
+      end
+    end
+
+
   end
 
   def create
@@ -22,6 +31,22 @@ class HostMachinesController < ApplicationController
 
   def show
     @machine = @host_machine
+    @groups = Group.all
+  end
+
+  def add_group
+    @machine = @host_machine
+    if current_user.admin?
+      group = Group.find(params[:group_id])
+      @machine.groups << group if @machine.present? and @machine.groups.find_by_id(group.id).blank?
+      @machine.save!
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to host_machine_path @host_machine
+      end
+    end
   end
 
   def delete_group

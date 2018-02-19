@@ -1,33 +1,35 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.8'
+gem 'devise'
 
 gem "paranoia"
 
-gem 'mysql', platform: :ruby
+gem 'mysql2', platform: :ruby
 
 platform :jruby do
+  gem 'activerecord', '4.2.8'
   gem 'jdbc-mysql'
-  gem 'activerecord-jdbc-adapter'
+  gem 'activerecord-jdbc-adapter', '~> 1.3.2', platform: :jruby
   gem 'therubyrhino', platform: :jruby
 end
 
-gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
+gem 'sass-rails'
+gem 'uglifier'
+gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'turbolinks'
-gem 'jbuilder', '~> 2.0'
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'jbuilder'
+gem 'sdoc',  group: :doc
 
 gem 'redis'
 
 group :development, :test do
   gem 'pry'
-  gem 'rspec-rails', '~> 3.0'
-  gem 'factory_girl_rails'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
   gem 'faker'
-  gem 'shoulda-matchers', '~> 3.1', '>= 3.1.1'
+  gem 'shoulda-matchers'
 end
 
 group :development do
@@ -37,10 +39,9 @@ end
 
 gem 'puma'
 gem "slim-rails"
-gem "twitter-bootstrap-rails"
+gem 'bootstrap', '~> 4.0.0'
 gem "font-awesome-rails"
 gem 'rotp'
-gem 'devise', '4.1.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'paper_trail'

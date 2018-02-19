@@ -1,33 +1,38 @@
-h4
-  = "Showing Details for '#{@machine.name}'"
-hr
+.container.col-md-8
+  h5.mb-3 Host Details
+  hr
+  .row
+    .col 
+      = @host_machine.name
+  br
 
-.row
-  .col-md-4.text-primary Name
-  .col-md-8 
-    = @machine.name
-.row
-  .col-md-4.text-primary Groups
-  .col-md-8 
-      - if @machine.groups.count > 0
-        .table-responsive
-          table.table.table-striped
-            thead
+  .card
+    .card-body
+      .table-responsive
+        table.table.table-striped
+          thead
+            tr
+              th Group Name
+              th 
+          tbody
+            - @host_machine.groups.each do |group|
               tr
-                th Group Name 
-                th GID
-            tbody
-              - @machine.groups.each do |group|
-                tr
-                  td
-                    = link_to "#{group.name}", group_path(group)
-                  td
-                    = "#{group.gid}"
-                  td 
-                    = link_to "Delete", [@machine, group], method: :delete, data: {confirm: 'Are you sure to remove this group?'} if current_user.admin?
-
-      - else
-        span This machine does not have any groups! 
-hr
-= link_to "To add, goto Groups >>", groups_path
+                td
+                  = link_to "#{group.name}", group_path(group)
+                td
+                  = link_to "Delete", [@machine, group], method: :delete, data: {confirm: 'Are you sure to remove this machine from the group??'} if current_user.admin?
+      br
+      = "*This host does not have any group" if @host_machine.groups.count == 0
+      br
+      hr
+      - if current_user.admin?
+        = form_tag  add_group_to_machine_path, method: :post do
+          .row
+            .col 
+              | Assign group
+            .col
+            .col
+              = select_tag "group_id", options_from_collection_for_select(@groups.sort_by { |group| group.name}, "id", "name"), class: "form-control"
+            .col
+              = submit_tag "Add group", class: "form-control btn-md btn-primary"
 

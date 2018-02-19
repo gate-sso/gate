@@ -1,10 +1,9 @@
 require 'rails_helper'
-include Devise::TestHelpers
 
 RSpec.describe UsersController, type: :controller do
   let(:product_name) { "product-name"  }
-  let!(:group) { FactoryGirl.create(:group)  }
-  let(:user) { FactoryGirl.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com")  }
+  let!(:group) { FactoryBot.create(:group)  }
+  let(:user) { FactoryBot.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com")  }
 
   context "update user profile" do
     it "should update profile with product name" do
@@ -29,7 +28,7 @@ RSpec.describe UsersController, type: :controller do
 
       patch :update, id: user.id, product_name: product_name
 
-      response.should redirect_to user_path
+      expect(response).to redirect_to(user_path)
     end
 
     context "for invalid request" do

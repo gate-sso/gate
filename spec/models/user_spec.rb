@@ -139,6 +139,7 @@ RSpec.describe User, type: :model do
 
   it "login limits should pass" do
     user = create(:user)
+    user.reset_login_limit
     (RATE_LIMIT - 2).times do
       user.within_limits?
     end

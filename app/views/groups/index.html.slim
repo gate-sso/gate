@@ -1,23 +1,30 @@
-#notice
-  = notice
-- if current_user.admin?
-  = form_tag groups_path, method: 'post' do
-    .row
-      .col-md-8
-        = text_field_tag "group[name]", "", class: "form-control", autofocus:  true
-      .col-md-4
-        = submit_tag "Add Group", class: "form-control btn btn-sm btn-primary", name: nil
+.container-fluid.col-md-4.col-md-offset-4
+  = form_tag groups_path, method: 'get', class: "p-2" do
+    .input-group
+      = text_field_tag :group_search, params[:group_search], class: "form-control" , autofocus: true, placeholder: "Search group name..."
+      .input-group-append
+        = submit_tag "Search", class: "button btn btn-secondary", name: nil
 
 br
-= form_tag profile_group_admin_path, method: 'get' do
-  .row
-    .col-md-8
-      = text_field_tag :group_search, params[:group_search], class: "form-control" , autofocus: true
-    .col-md-4
-      = submit_tag "Search groups", class: "form-control btn btn-sm btn-primary", name: nil
+- if @groups.count > 0
+  .table-responsive
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th Gid
+          th Group Admin
+      tbody
+        - @groups.each do |group|
+          tr
+            td
+              = link_to "#{group.name}", group_path(group)
+            td
+              = "#{group.gid}"
+            td
+              = group.group_admin.present? ? "#{group.group_admin.user.try(:name)}" : "Not present"
 
-hr
 
 javascript:
-  $("#group").addClass("active");
+  $("#group-index").addClass("active");
 

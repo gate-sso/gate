@@ -16,7 +16,6 @@ Rails.application.routes.draw do
   match 'profile/authenticate_ms_chap', to: 'profile#authenticate_ms_chap', via: :get, format: :text
   match 'profile/admin', to: 'profile#admin', via: :get
   match 'profile/user_admin', to: 'profile#user_admin', via: :get
-  match 'profile/group_admin', to: 'profile#group_admin', via: :get
   get 'profile/list' => 'profile#list', as: 'profile_list'
 
   get 'profile/:id' => 'users#index', as: 'user_profile'
@@ -34,11 +33,11 @@ Rails.application.routes.draw do
   post 'profile/:id/vpn' => 'profile#add_vpn_group_association', as: 'add_vpn_group_user_association'
   delete 'profile/:user_id/vpn/:id' => 'profile#delete_vpn_group_association', as: 'delete_vpn_group_association'
 
-  #Group Functions
+  get '/regenerate_authentication' => 'profile#regen_auth', as: 'regenerate_authentication', format: :html
+  #Group Function
 
-  post 'profile/:id/group' => 'group#add_group', as: 'add_group'
-  delete 'profile/:user_id/group/:id' => 'group#delete_group', as: 'user_group'
-  get 'group' => 'group#list', as: 'group_list'
+  post 'profile/:id/group' => 'groups#add_group', as: 'add_group'
+  delete 'profile/:user_id/group/:id' => 'groups#delete_group', as: 'user_group'
   get 'nss/group' => 'nss#group', as: 'nss_group', format: :json
   get 'nss/shadow' => 'nss#shadow', as: 'nss_shadow', format: :json
   get 'nss/passwd' => 'nss#passwd', as: 'nss_passwd', format: :json
@@ -58,6 +57,7 @@ Rails.application.routes.draw do
   post 'groups/:id/add_admin' => 'groups#add_admin', as: 'add_admin_to_group'
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
+  post 'host_machines/:id/add_group' => 'host_machines#add_group', as: 'add_group_to_machine'
 
 
 
@@ -85,7 +85,10 @@ Rails.application.routes.draw do
 
   resource :ping, only: [:show]
 
-  resources :vpns
+  resources :vpns do
+    resources :vpn_dommain_name_servers
+  end
+
 
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
@@ -96,4 +99,6 @@ Rails.application.routes.draw do
   get 'sso/saml/metadata' => 'saml_idp#show', format: :xml
   get '/saml/auth' => 'saml_idp#new'
   post '/saml/auth' => 'saml_idp#create'
+  post '/saml/sp' => 'saml_idp#add_saml_sp'
+  get '/saml/sp/:name' => 'saml_idp#get_saml_sp'
 end

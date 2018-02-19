@@ -15,34 +15,36 @@ html lang="en"
 
   body
     /! Fixed navbar
-    nav.navbar.navbar-default.navbar-fixed-top
-      .container
-        .navbar-header
-          button.navbar-toggle.collopsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-          a.navbar-brand href="/profile" Gate Single Sign-On
-        #navbar.navbar-collapse.collapse
-          ul.nav.navbar-nav
-            li.active
-              - if current_user.admin?
-                = link_to "Users", profile_user_admin_path if current_user.admin?
-            li
-              - if current_user.admin? || current_user.group_admin?
-                = link_to "Groups", groups_path
-            li
-              - if current_user.admin?
-                a href="#contact"  Hosts
-            li
-              - if current_user.admin?
-                = link_to "VPNs", vpns_path
-          ul.nav.navbar-nav.navbar-right
-            li
-               = link_to "Sign out", users_sign_out_path,:method => :delete
-            li.active
-               = link_to current_user.name, user_path(current_user.id)
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand href="/profile"  gate
+      button.navbar-toggler aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label=("Toggle navigation") data-target="#navbarsExampleDefault" data-toggle="collapse" type="button" 
+        span.navbar-toggler-icon
+      #navbarsExampleDefault.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li#user-index.nav-item
+            - if current_user.admin?
+                = link_to("Users", users_path, class: "nav-link")
+          li#group-index.nav-item
+           - if current_user.admin? || current_user.group_admin?
+             = link_to "Groups", groups_path, class: "nav-link"
+          li#hostmachine-index.nav-item
+           - if current_user.admin? || current_user.group_admin?
+             = link_to "Hosts", host_machines_path, class: "nav-link"
+          li#vpn-index.nav-item
+           - if current_user.admin? || current_user.group_admin?
+             = link_to "VPNs", vpns_path, class: "nav-link"
+          li.nav-item.dropdown
+           - if current_user.admin? || current_user.group_admin?
+            a#dropdown01.nav-link.dropdown-toggle aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="http://example.com"  New
+            .dropdown-menu aria-labelledby="dropdown01" 
+              = link_to "Group", new_group_path, class: "dropdown-item"
+              = link_to "VPN", new_vpn_path, class: "dropdown-item"
+
+        ul.nav.navbar-nav.navbar-right
+          li.nav-link
+            = link_to "Sign out", users_sign_out_path,:method => :delete 
+          li.nav-link.active
+            = link_to current_user.name, user_path(current_user.id)
         /! /.nav-collapse
-    .container
+    .container-fluid
       = yield

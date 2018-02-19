@@ -1,26 +1,26 @@
-= render 'host_header'
-#notice 
-  = notice
-= form_tag host_machines_path, method: 'post' do
-  .row 
-    .col-md-8
-      = text_field_tag "host_machine[name]", "", class: "form-control", autofocus:  true
-    .col-md-4
-      = submit_tag "Add Host machine", class: "form-control btn btn-sm btn-primary", name: nil
+.container-fluid.col-md-6.col-md-offset-2
+  = form_tag host_machines_path, method: 'get', class: "p-2" do
+    .input-group
+      = text_field_tag :host_machine_search, params[:host_machine_search], class: "form-control" , autofocus: true, placeholder: "Search host..."
+      .input-group-append
+        = submit_tag "Search", class: "button btn btn-secondary", name: nil
 
 
-- if @host_machines.count > 0
-  .table-responsive
-    table.table.table-striped
-      thead
-        tr
-          th Name
-      tbody
-        - @host_machines.each do |host_machine|
+
+
+.container-fluid.col-md-6.col-md-offset-2
+  - if @host_machines.count > 0
+    .table-responsive
+      table.table.table-striped
+        thead
           tr
-            td
-              = link_to "#{host_machine.name}", host_machine
-br
+            th Name
+        tbody
+          - @host_machines.each do |host_machine|
+            tr
+              td
+                = link_to "#{host_machine.name}", host_machine
+  br
 
 javascript:
-  $("#host_machine").addClass("active");
+  $("#hostmachine-index").addClass("active");

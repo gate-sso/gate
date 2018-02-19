@@ -16,10 +16,19 @@
  *= stub 'general'
  */
 
-@import url(https://fonts.googleapis.com/css?family=Lato);
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(https://fonts.googleapis.com/css?family=Lato:300);
+@import "bootstrap";
+@import "font-awesome";
+
+/*
+ * https://github.com/ladjs/bootstrap-social
+ */
+@import "bootstrap-social";
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Roboto', 'Lato', sans-serif;
 }
 
 .container-profile {

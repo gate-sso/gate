@@ -4,7 +4,17 @@ class GroupsController < ApplicationController
   prepend_before_filter :setup_user if Rails.env.development?
 
   def index
-    @groups = Group.all
+
+    @groups = []
+    @group_search = params[:group_search]
+    if @group_search.present?
+      if current_user.admin?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
+      elsif current_user.group_admin?
+        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
+      end
+    end
+
   end
 
   def create
@@ -12,7 +22,7 @@ class GroupsController < ApplicationController
       @group = Group.new(group_params)
       respond_to do |format|
         if @group.save
-          format.html { redirect_to groups_path, notice: 'Group was successfully created.' }
+          format.html { redirect_to group_path(@group), notice: 'Group was successfully created.' }
           format.json { render status: :created, json: "#{@group.name}host created" }
         else
           format.html { redirect_to groups_path, notice: "Can't save '#{group_params[:name]}'" }
@@ -25,10 +35,18 @@ class GroupsController < ApplicationController
     end
   end
 
+  def new
+    @group = Group.new
+  end
+
   def show
+    #This is set in before_action filter
+    #@group = Group.find(params[:id])
     @vpns = Vpn.all
     @users = User.all
     @host_machines = HostMachine.all
+    @group_admin_id = 0
+    @group_admin_id = @group.group_admin.user_id if @group.group_admin.present?
   end
 
   def delete_machine
@@ -158,6 +176,84 @@ class GroupsController < ApplicationController
       end
     end
   end
+  def add_group    
+    @user = User.find(params[:id])
+    if current_user.admin?
+
+      @group = Group.find(params[:group_id])
+      @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
+      @user.save! 
+      REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
+      REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
+      REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
+
+      @user.groups.each do |group|
+        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
+        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
+      end
+
+
+      @response = Group.get_all_response.to_json
+      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_shadow_response.to_json
+      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+      @response = User.get_all_passwd_response.to_json
+      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
+
+    end
+    redirect_to user_path
+  end
+
+  def delete_group  
+    @user = User.find(params[:user_id])
+    if current_user.admin?
+      group = Group.find(params[:id])
+
+      if @user.email.split('@').first != group.name
+        @user.groups.each do |user_group|
+          REDIS_CACHE.del(GROUP_NAME_RESPONSE + user_group.name)
+          REDIS_CACHE.del(GROUP_GID_RESPONSE + user_group.gid.to_s)
+        end
+        @user.groups.delete(group)
+        REDIS_CACHE.del(PASSWD_NAME_RESPONSE + @user.email.split('@').first)
+        REDIS_CACHE.del(SHADOW_NAME_RESPONSE + @user.email.split('@').first)
+        REDIS_CACHE.del(PASSWD_UID_RESPONSE + @user.uid.to_s)
+
+        @response = Group.get_all_response.to_json
+        REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+        @response = User.get_all_shadow_response.to_json
+        REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+        @response = User.get_all_passwd_response.to_json
+        REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
+        REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
+
+      end
+
+    end
+
+    redirect_to user_path(@user)
+  end
+
+  def list
+    @groups = []
+    @group_search = params[:group_search]
+    if @group_search.present?
+      if current_user.admin?
+        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
+      elsif current_user.group_admin?
+        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
+      end
+    end
+  end
+
+
+
 
   private
   # Use callbacks to share common setup or constraints between actions.

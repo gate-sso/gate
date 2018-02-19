@@ -1,0 +1,7 @@
+.container-fluid.col-md-4.col-md-offset-4
+  = form_tag host_machines_path, method: 'post' do
+    .input-group 
+      = text_field_tag "host_machine[name]", "", class: "form-control", autofocus:  true
+    .input-group
+      = submit_tag "Add Host machine", class: "form-control btn btn-sm btn-primary", name: nil
+

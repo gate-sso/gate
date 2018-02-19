@@ -1,5 +1,5 @@
 default: &default
-  adapter: mysql
+  adapter: mysql2
   pool: 5
   timeout: 5000
   host: <%= Figaro.env.GATE_DB_HOST %>
