@@ -1,14 +1,20 @@
-#notice
-= notice
-
 .container.container-profile
-  h5.mb-3 VPN Details
+  - if notice.present?
+    .alert.alert-primary role="alert"
+      #notice
+        = notice
+  br
+  .row
+    .col
+      h5.mb-3 
+        = @vpn.name
+    .col
+    .col
+      = link_to "Manage this vpn", @vpn.groups.first if @vpn.groups.count > 0
+
+
   hr
     .row
-      .col
-        label for="Name : " 
-          b
-            = @vpn.name
       .col
         label for="VPN Host : " 
           b
@@ -17,7 +23,12 @@
         label for="VPN Host IP : " 
           b
             = @vpn.ip_address
+      .col
+        = link_to "Edit VPN Details", edit_vpn_path, class: "form-control btn-sm btn-primary" if current_user.admin?
 
+  br
+
+  a name="dns_hosts"
   .card
     .card-body
       h6.card-title DNS Hosts
@@ -27,9 +38,22 @@
           .col
             = "#{dns_server.server_address}"
           .col.append
-            = link_to "Remove server", vpn_vpn_dommain_name_server_path(@vpn, dns_server), method: :delete, data: {confirm: 'Are you sure to delete this DNS host?'} if current_user.admin?
+            = link_to "Remove server", remove_dns_from_vpn_path(@vpn, dns_server), method: :delete, data: {confirm: 'Are you sure to delete this DNS host?'} if current_user.admin?
+      br
+      = "*This VPN does not have any domain name servers associated with it" if @vpn.vpn_domain_name_servers.count == 0
+      br
+      hr
+      - if current_user.admin? 
+        = form_tag  add_dns_to_vpn_path, method: :post do
+          .row
+            .col
+              = text_field_tag :server_address, "", class: "form-control", placeholder: 'dns server...', required: true
+            .col
+              = submit_tag "Add DNS Server", class: "form-control btn-md btn-primary"
+  
  
   br
+  a name="search_domains"
   .card
     .card-body
       h6.card-title Search Domains
@@ -38,7 +62,22 @@
         .row
           .col
             = "#{search_domain.search_domain}"
+          .col.append
+            = link_to "Remove search domain", remove_search_domain_from_vpn_path(@vpn, search_domain), method: :delete, data: {confirm: 'Are you sure to delete this search domain string?'} if current_user.admin?
+      br
+      = "*This VPN does not have any search domain strings" if @vpn.vpn_search_domains.count == 0
+      br
+      hr
+      - if current_user.admin? 
+        = form_tag  add_search_domain_to_vpn_path, method: :post do
+          .row
+            .col
+              = text_field_tag :search_domain, "", class: "form-control", placeholder: 'dns search string...', required: true
+            .col
+              = submit_tag "Add search domain", class: "form-control btn-md btn-primary"
+  
   br
+  a name="match_domains"
   .card
     .card-body
       h6.card-title Supplemental match domain
@@ -47,26 +86,37 @@
         .row
           .col
             = "#{match_domain.supplemental_match_domain}"
-  br
-
-
-  .card
-   .card-body
-      h6.card-title Groups
-      hr
-      - @vpn.groups.each do |group|
-        - unless group.deleted?
-        .row
-          .col
-            = link_to group.name, group
-          .col
-            = group.id
-          .col
-            = "Group Admin : #{group.group_admin.user.name}" if group.group_admin.present?
-
+          .col.append
+            = link_to "Remove supplemental search domain", remove_supplemental_match_domain_from_vpn_path(@vpn, match_domain), method: :delete, data: {confirm: 'Are you sure to delete this Supplemental match domain?'} if current_user.admin?
       br
-      = "No groups are associated with this VPN, Goto Groups page to add VPN" if @vpn.groups.count == 0
+      = "*This VPN does not have any search domain strings" if @vpn.vpn_search_domains.count == 0
+      br
+      hr
+      - if current_user.admin? 
+        = form_tag  add_supplemental_match_domain_to_vpn_path, method: :post do
+          .row
+            .col
+              = text_field_tag :supplemental_match_domain, "", class: "form-control", placeholder: 'Supplemental match domain...', required: true
+            .col
+              = submit_tag "Add Supplemental match domain", class: "form-control btn-md btn-primary"
+  
   br
-
+  .card
+    .card-body
+      .row  
+        .col
+          h6.card-title VPN Access Group:
+        - @vpn.groups.each do |group|
+          - unless group.deleted?
+            .col
+              = link_to group.name, group
+      - if current_user.admin?
+        = form_tag assign_group_to_vpn_path, method: :post do
+          .row
+            .col
+              = select_tag "group_id", options_from_collection_for_select(@groups, "id", "name"), include_blank: true, class: "form-control"
+            .col
+              = submit_tag "Assign group", class: "form-control btn-md btn-primary"
+      = "No groups are associated with this VPN, Goto Groups page to add VPN" if @vpn.groups.count == 0
 javascript:
   $("#vpn-index").addClass("active");

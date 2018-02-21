@@ -12,11 +12,11 @@ class User < ActiveRecord::Base
   has_many :group_associations
   has_many :groups, through: :group_associations
 
-  has_many :vpn_group_user_associations
-  has_many :vpns, through: :vpn_group_user_associations
+  #has_many :vpn_group_user_associations
+  #has_many :vpns, through: :vpn_group_user_associations
 
   has_many :group_admin, dependent: :destroy
-  belongs_to :vpn
+  #belongs_to :vpn
 
   has_one :access_token
 

@@ -4,25 +4,40 @@
       #notice
         = notice
 
-  h5 
-    b Listing VPNs
 
-  .row
+  - if Vpn.administrator? current_user
+    h5 Managed VPNs 
     table.table.responsive
       thead
         tr
           th="Name"
           th="Hostname"
           th="IP Address"
-          th
-
-      tbody
-         - @vpns.each do |vpn|
+      - Vpn.managed_vpns(current_user).each do |vpn|
+        tbody
           tr
             td= link_to vpn.name, vpn
             td=vpn.host_name
-            td=vpn.ip_address
             td= link_to "Delete", vpn, method: :delete, data: {confirm: 'Are you sure to remove this vpn from gate?'}
+
+
+  h5 
+    b Listing VPNs
+  table.table.responsive
+    thead
+      tr
+        th="Name"
+        th="Hostname"
+        th="IP Address"
+        th
+
+      tbody
+        - @vpns.each do |vpn|
+          tr
+            td=link_to vpn.name, vpn
+            td=vpn.host_name
+            td=vpn.ip_address
+            td= link_to "Delete", vpn, method: :delete, data: {confirm: 'Are you sure to remove this vpn from gate?'} if current_user.admin?
 
 javascript:
   $("#vpn-index").addClass("active");

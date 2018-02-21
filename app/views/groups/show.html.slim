@@ -7,16 +7,25 @@
     .col
       = "Group ID: #{@group.gid}"
   br
-  - if current_user.admin?
+  - if current_user.admin? or @group.admin?(current_user)
     = form_tag add_admin_to_group_path, method: :post do
       .row
         .col
           | Group Administrator
         .col
-        .col
-          = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name", @group_admin_id), include_blank: true, class: "form-control"
-        .col
-          = submit_tag "Assign admin", class: "form-control btn-md btn-primary"
+          - if @group.group_admins.present?
+            - @group.group_admins.each do |admin| 
+              .row
+                .col
+                  =  "#{admin.user.try(:name)}"
+                .col 
+                  - if (current_user.admin? or @group.admin?(current_user) ) and current_user.id != admin.user.id
+                    = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.name} ?"} 
+          .row
+            .col
+              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name", @group_admin_id), include_blank: true, class: "form-control"
+            .col
+              = submit_tag "Assign admin", class: "form-control btn-md btn-primary"
   br
   .card
     .card-body
@@ -33,7 +42,7 @@
             - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
               tr
                 td
-                  = link_to "#{vpn.name}", controller: "vpns", action: "user_associated_groups", id: vpn, group_id: @group.id
+                  = link_to "#{vpn.name}", vpn_path(vpn)
                 td
                   = "#{vpn.name}"
                 td
@@ -44,7 +53,6 @@
       br
       = "*This group does not have any VPNs associated with it" if @group.vpns.count == 0
       br
-      hr
       - if current_user.admin? 
         = form_tag  add_vpn_to_group_path, method: :post do
           .row
@@ -55,6 +63,7 @@
               = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), include_blank: true, class: "form-control"
             .col
               = submit_tag "Add Vpn", class: "form-control btn-md btn-primary"
+  a name="group_members"
   br
     .card
       .card-body
@@ -79,7 +88,6 @@
         br
         = "*This group does not have any group members" if @group.users.count == 0
         br
-        hr
         - if current_user.admin? || current_user.group_admin?
           = form_tag  add_user_to_group_path, method: :post do
             .row

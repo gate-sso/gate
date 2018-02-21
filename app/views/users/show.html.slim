@@ -1,4 +1,4 @@
-.container.container-profile
+.container.col-md-8
   h5.mb-3 User Profile 
   hr
   form.needs-validation novalidate="" 
@@ -49,30 +49,11 @@
               .col
                 = select_tag "group_id", options_from_collection_for_select(@groups.sort_by {|group| group.name}, "id", "name"), class: "form-control"
               .col
-                = submit_tag "Add Group", class: "form-control btn-md btn-primary pull-right"
+                .row
+                  .col
+                   = submit_tag "Add Group", class: "form-control btn-md btn-primary pull-right"
+                  .col
       = "No groups are associated with this user" if @user.groups.count == 0
-  br
-  .card
-    .card-body
-      h6.card-title Pattern based host access
-      hr
-      - @user.hosts.each do |host|
-        - unless host.deleted?
-        .row
-          .col
-            = host.host_pattern
-          .col.pull-right
-            = link_to "Remove host pattern", [host.user, host], method: :delete, data: {confirm: 'Are you sure to delete this pattern?'} if current_user.admin?
-      br
-      - if current_user.admin?
-        = form_tag  add_host_path, method: :post do
-          .row
-            .col-sm-8
-              = text_field_tag :host_pattern, "", class: "form-control"
-            .col-sm-4
-              = submit_tag "Add host pattern", class: "form-control btn-md btn-primary"
-      = "No host patterns are associated with this user" if @user.hosts.count == 0
-
   br
   .card
     .card-body
@@ -80,7 +61,7 @@
       = form_tag user_public_key_update_path, method: :post do
           .row
             .col
-              = text_area_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:200px;width:100%;"
+              = text_area_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:200px;width:100%;", placeholder: "Your public key here..."
           br
           .row
             .col-md-3
@@ -90,11 +71,22 @@
   .card
     .card-body
       h6.card-title VPN Access
-      hr
-      - @vpns.each do |vpn|
-        .row
-          .col
-            = "#{vpn.name}"
+      table.table.responsive
+        thead
+          tr
+            th="Name"
+            th="Hostname"
+            th="IP Address"
+            th
+
+          tbody
+            - @vpns.each do |vpn|
+              tr
+                td=link_to vpn.name, vpn
+                td=vpn.host_name
+                td=vpn.ip_address
+
+
       = "No vpns are associated with this user" if @vpns.count == 0
   
   - if current_user.admin?

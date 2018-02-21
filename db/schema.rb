@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202102206) do
+ActiveRecord::Schema.define(version: 20180219150818) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -40,12 +40,13 @@ ActiveRecord::Schema.define(version: 20180202102206) do
   end
 
   create_table "groups", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.integer  "gid",        limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "deleted_by", limit: 4
+    t.string   "name",        limit: 255
+    t.integer  "gid",         limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "deleted_by",  limit: 4
     t.datetime "deleted_at"
+    t.string   "description", limit: 255
   end
 
   add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
@@ -61,6 +62,7 @@ ActiveRecord::Schema.define(version: 20180202102206) do
     t.string   "name",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "api_key",    limit: 255
   end
 
   create_table "hosts", force: :cascade do |t|
@@ -76,6 +78,18 @@ ActiveRecord::Schema.define(version: 20180202102206) do
   add_index "hosts", ["deleted_by"], name: "index_hosts_on_deleted_by", using: :btree
   add_index "hosts", ["host_pattern"], name: "index_hosts_on_host_pattern", using: :btree
   add_index "hosts", ["user_id"], name: "index_hosts_on_user_id", using: :btree
+
+  create_table "ip_addresses", force: :cascade do |t|
+    t.string   "address",         limit: 255
+    t.string   "mac_address",     limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "host_machine_id", limit: 4
+  end
+
+  add_index "ip_addresses", ["address"], name: "index_ip_addresses_on_address", using: :btree
+  add_index "ip_addresses", ["host_machine_id"], name: "index_ip_addresses_on_host_machine_id", using: :btree
+  add_index "ip_addresses", ["mac_address"], name: "index_ip_addresses_on_mac_address", using: :btree
 
   create_table "saml_service_providers", force: :cascade do |t|
     t.string   "name",         limit: 255, null: false
@@ -184,6 +198,7 @@ ActiveRecord::Schema.define(version: 20180202102206) do
   add_foreign_key "group_admins", "groups"
   add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"
+  add_foreign_key "ip_addresses", "host_machines"
   add_foreign_key "vpn_group_associations", "groups"
   add_foreign_key "vpn_group_associations", "vpns"
   add_foreign_key "vpn_group_user_associations", "groups"

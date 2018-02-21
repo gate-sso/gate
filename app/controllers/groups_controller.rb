@@ -1,20 +1,16 @@
 class GroupsController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_vpn, :add_admin, :delete_user, :delete_vpn, :delete_machine]
+  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_vpn, :add_admin, :remove_admin, :delete_user, :delete_vpn, :delete_machine]
   prepend_before_filter :setup_user if Rails.env.development?
 
   def index
-
     @groups = []
     @group_search = params[:group_search]
-    if @group_search.present?
-      if current_user.admin?
+    if current_user.admin && @group_search.present?
         @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
-      elsif current_user.group_admin?
+    elsif current_user.group_admin?
         @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
-      end
     end
-
   end
 
   def create
@@ -42,11 +38,9 @@ class GroupsController < ApplicationController
   def show
     #This is set in before_action filter
     #@group = Group.find(params[:id])
-    @vpns = Vpn.all
+    @vpns = Vpn.all.select {|vpn| vpn.groups.count == 0}
     @users = User.all
     @host_machines = HostMachine.all
-    @group_admin_id = 0
-    @group_admin_id = @group.group_admin.user_id if @group.group_admin.present?
   end
 
   def delete_machine
@@ -59,7 +53,7 @@ class GroupsController < ApplicationController
   end
 
   def delete_user
-    if current_user.admin? || @group.group_admin.user == current_user
+    if current_user.admin? || @group.admin?(current_user)
       @user = User.find(params[:user_id])
 
       if @user.email.split('@').first != @group.name
@@ -85,11 +79,11 @@ class GroupsController < ApplicationController
 
       VpnGroupUserAssociation.where(group_id: @group.id, user_id: params[:user_id]).destroy_all
     end
-    redirect_to group_path @group
+    redirect_to group_path(@group, anchor: "group_members")
   end
 
   def add_user
-    if current_user.admin? || @group.group_admin.user == current_user
+    if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
       user.groups << @group if user.present? and user.groups.find_by_id(@group.id).blank?
       user.save!
@@ -115,7 +109,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_path @group
+        redirect_to group_path(@group, anchor: "group_members")
       end
     end
   end
@@ -135,14 +129,8 @@ class GroupsController < ApplicationController
   end
 
   def add_admin
-    if current_user.admin?
-      current_group_admin = GroupAdmin.find_by_group_id(@group.id)
-      if current_group_admin.present?
-        current_group_admin.user_id = params[:user_id]
-        current_group_admin.save!
-      else
-        GroupAdmin.create(group_id: @group.id, user_id: params[:user_id])
-      end
+    if current_user.admin? or @group.admin?(current_user)
+      GroupAdmin.find_or_create_by(group_id: @group.id, user_id: params[:user_id])
     end
 
     respond_to do |format|
@@ -151,6 +139,19 @@ class GroupsController < ApplicationController
       end
     end
   end
+
+  def remove_admin
+    if current_user.admin? or  @group.admin?(current_user)
+      GroupAdmin.delete(params[:group_admin_id])
+    end
+
+    respond_to do |format|
+      format.html do
+        redirect_to group_path @group
+      end
+    end
+  end
+
 
   def add_vpn
     if current_user.admin?
@@ -265,6 +266,5 @@ class GroupsController < ApplicationController
   def group_params
     params.require(:group).permit(:name)
   end
-
 
 end

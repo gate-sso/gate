@@ -25,7 +25,7 @@ RSpec.describe Group, type: :model do
     user = create(:user)
     group_response = Group.get_gid_response group.gid
     expect(group_response.count).to eq(4)
-    expect(group_response[:gr_name]).to eq("people")
+    expect(group_response[:gr_name]).to eq(group.name)
   end
 
   it "should provide correct gid response even if we add a machine to grouo" do
@@ -34,7 +34,7 @@ RSpec.describe Group, type: :model do
     host_machine = create(:host_machine)
     host_machine.groups << group
     host_machine.save!
-    group_response = Group.get_name_response "people"
+    group_response = Group.get_name_response group.name
     expect(group.host_machines.count).to eq(1)
     expect(group_response.count).to eq(4)
     expect(group_response[:gr_mem].count).to eq(1)

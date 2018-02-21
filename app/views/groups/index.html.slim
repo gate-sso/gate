@@ -1,29 +1,33 @@
-.container-fluid.col-md-4.col-md-offset-4
-  = form_tag groups_path, method: 'get', class: "p-2" do
-    .input-group
-      = text_field_tag :group_search, params[:group_search], class: "form-control" , autofocus: true, placeholder: "Search group name..."
-      .input-group-append
-        = submit_tag "Search", class: "button btn btn-secondary", name: nil
-
-br
-- if @groups.count > 0
-  .table-responsive
-    table.table.table-striped
-      thead
-        tr
-          th Name
-          th Gid
-          th Group Admin
-      tbody
-        - @groups.each do |group|
+.container-fluid.col.container-profile
+  - if @groups.count > 0
+    h5 Your managed groups
+    .table-responsive
+      table.table.table-striped
+        thead
           tr
-            td
-              = link_to "#{group.name}", group_path(group)
-            td
-              = "#{group.gid}"
-            td
-              = group.group_admin.present? ? "#{group.group_admin.user.try(:name)}" : "Not present"
+            th Name
+            th Gid
+            th Group Admin
+        tbody
+          - @groups.each do |group|
+            tr
+              td
+                = link_to "#{group.name}", group_path(group)
+              td
+                = "#{group.gid}"
+              td
+                - if group.group_admins.present?
+                  - group.group_admins.each do |admin| 
+                    .row
+                      =  "#{admin.user.try(:name)}"
+  - if current_user.admin?
+    = form_tag groups_path, method: 'get', class: "p-2" do
+      .input-group
+        = text_field_tag :group_search, params[:group_search], class: "form-control" , autofocus: true, placeholder: "Search group name..."
+        .input-group-append
+          = submit_tag "Search", class: "button btn btn-secondary", name: nil
 
+    
 
 javascript:
   $("#group-index").addClass("active");
