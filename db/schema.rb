@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180219150818) do
+ActiveRecord::Schema.define(version: 20180222140000) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20180219150818) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "api_key",    limit: 255
+    t.string   "access_key", limit: 255
   end
 
   create_table "hosts", force: :cascade do |t|
@@ -124,6 +125,7 @@ ActiveRecord::Schema.define(version: 20180219150818) do
     t.text     "public_key",             limit: 65535
     t.string   "user_login_id",          limit: 255
     t.string   "product_name",           limit: 255
+    t.string   "access_key",             limit: 255
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
