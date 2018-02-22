@@ -142,7 +142,7 @@ class User < ActiveRecord::Base
 
   def permitted_vpns? address_array
     address_array.each do |host_address|
-      vpns.each do |vpn|
+      Vpn.user_vpns(self).each do |vpn|
         return true if vpn.ip_address == host_address
       end
     end
@@ -300,7 +300,7 @@ class User < ActiveRecord::Base
     address_array = addresses.split
 
     user = User.get_user user_name
-    if user.permitted_hosts?(address_array) || user.permitted_vpns?(address_array)
+    if user.permitted_vpns?(address_array)
       drift_interval = 30
       t = Time.now
       otps = []

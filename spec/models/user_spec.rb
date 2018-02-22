@@ -183,10 +183,8 @@ RSpec.describe User, type: :model do
 
   it "should authenticate ms chap" do
     user = create(:user)
-    host = Host.new
-    host.user = user
-    host.host_pattern = ".*"
-    host.save!
+    vpn = Vpn.create(name: :"X", ip_address: "10.240.0.1" )
+    user.groups.first.vpns << vpn
     params = {}
     params[:addresses] = "10.240.0.1"
     params[:user] = user.user_login_id
