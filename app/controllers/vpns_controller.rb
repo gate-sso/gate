@@ -4,7 +4,8 @@ class VpnsController < ApplicationController
   before_action :set_vpn, only: [:show, :edit, :update, :destroy, \
                                  :user_associated_groups, :add_dns_server, :remove_dns_server, \
                                  :add_search_domain, :remove_search_domain, \
-                                 :add_supplemental_match_domain, :remove_supplemental_match_domain, :assign_group]
+                                 :add_supplemental_match_domain, :remove_supplemental_match_domain, \
+                                 :migrate_to_new_group, :assign_group]
 
   require 'securerandom'
 
@@ -113,6 +114,11 @@ class VpnsController < ApplicationController
     end
 
     render "show"
+  end
+
+  def migrate_to_new_group
+    @vpn.migrate_to_new_group
+    redirect_to vpn_path @vpn
   end
 
   def group_associated_users

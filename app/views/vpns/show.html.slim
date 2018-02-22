@@ -11,6 +11,8 @@
     .col
     .col
       = link_to "Manage this vpn", @vpn.groups.first if @vpn.groups.count > 0
+    .col
+      = link_to "Migrate", migrate_to_new_group_path
 
 
   hr

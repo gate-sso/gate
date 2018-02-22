@@ -57,4 +57,29 @@ class Vpn < ActiveRecord::Base
     end
     return vpns
   end
+
+  def migrate_to_new_group
+    group_name = "#{name}_vpn_group".downcase.squish.gsub(" ", "_")
+    group = Group.where(name: group_name).first
+    if group.blank?
+    #create a new group for VPN
+    group = Group.create(name: group_name, description: "#{name} VPN Access group")
+    #Assign VPN to group
+    #get all vpn administrators
+    admins = []
+    groups.each do |admin_group|
+      admin_group.group_admins.each do |group_admin|
+        group.add_admin group_admin.user
+      end
+    end
+
+    #get all vpn users
+    #add all vpn users to new group
+    users.each do |user|
+      user.groups << group
+    end
+    group.save!
+    group.vpns << self
+    end
+  end
 end
