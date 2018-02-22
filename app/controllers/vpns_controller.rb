@@ -116,11 +116,6 @@ class VpnsController < ApplicationController
     render "show"
   end
 
-  def migrate_to_new_group
-    @vpn.migrate_to_new_group
-    redirect_to vpn_path @vpn
-  end
-
   def group_associated_users
     @group = Group.find(params[:group_id])
     if current_user.admin? || @group.group_admin.try(:user) == current_user

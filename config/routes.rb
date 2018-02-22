@@ -100,7 +100,6 @@ Rails.application.routes.draw do
   delete 'vpns/:id/supplemental_match_domain/:vpn_supplemental_match_domain_id' => 'vpns#remove_supplemental_match_domain', as: 'remove_supplemental_match_domain_from_vpn'
 
   post 'vpns/:id/group' => 'vpns#assign_group', as: 'assign_group_to_vpn'
-  get 'vpns/:id/migrate' => 'vpns#migrate_to_new_group', as: 'migrate_to_new_group'
 
 
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json

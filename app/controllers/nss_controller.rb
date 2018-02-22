@@ -10,21 +10,6 @@ class NssController < ApplicationController
       @response.groups << @group  if @response.present? and @response.groups.find_by_id(@group.id).blank?
       @response.save!
 
-      @response.groups.each do |group|
-        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
-      end
-
-      @response = Group.get_all_response.to_json
-      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-      @response = User.get_all_shadow_response.to_json
-      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-      @response = User.get_all_passwd_response.to_json
-      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-
       result = true
     end
     render json: { success: result }
@@ -40,21 +25,6 @@ class NssController < ApplicationController
         @response.groups.delete(@group)
       end
       @response.save!
-
-      @response.groups.each do |group|
-        REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-        REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
-      end
-
-      @response = Group.get_all_response.to_json
-      REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-      @response = User.get_all_shadow_response.to_json
-      REDIS_CACHE.set(SHADOW_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(SHADOW_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-      @response = User.get_all_passwd_response.to_json
-      REDIS_CACHE.set(PASSWD_ALL_RESPONSE, @response)
-      REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
 
       result = true
     end
@@ -74,10 +44,10 @@ class NssController < ApplicationController
     token =  AccessToken.valid_token params[:token]
     if token
       @response = HostMachine.find_or_create_by(name: params[:name]) if params[:name].present?
+      @response.access_key = ROTP::Base32.random_base32
       @group = Group.find_or_create_by(name: params[:group_name] ) if params[:group_name].present?
       @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
       @response.save!
-
     end
     render json: @response
 

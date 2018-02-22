@@ -83,7 +83,7 @@
                   td
                     = "#{user.email}"
                   td
-                    = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'}
+                    = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin or @group.admin?(current_user)
 
         br
         = "*This group does not have any group members" if @group.users.count == 0
