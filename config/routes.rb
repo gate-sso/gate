@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   delete 'groups/:id/vpn/:vpn_id' => 'groups#delete_vpn', as: 'group_vpn'
   post 'groups/:id/add_machine' => 'groups#add_machine', as: 'add_machine_to_group'
   post 'groups/:id/add_admin' => 'groups#add_admin', as: 'add_admin_to_group'
+  delete 'groups/:id/remove_admin/:group_admin_id' => 'groups#remove_admin', as: 'group_group_admin'
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
   post 'host_machines/:id/add_group' => 'host_machines#add_group', as: 'add_group_to_machine'
@@ -81,14 +82,24 @@ Rails.application.routes.draw do
 
   resources :host_machines
   resources :groups
+  #resources :groups do
+  #  resources :members
+  #  resources :group_admins
+  #end
   resources :users
 
   resource :ping, only: [:show]
 
-  resources :vpns do
-    resources :vpn_dommain_name_servers
-  end
+  resources :vpns
 
+  post 'vpns/:id/dns_server' => 'vpns#add_dns_server', as: 'add_dns_to_vpn'
+  post 'vpns/:id/search_domain' => 'vpns#add_search_domain', as: 'add_search_domain_to_vpn'
+  post 'vpns/:id/supplemental_match_domain' => 'vpns#add_supplemental_match_domain', as: 'add_supplemental_match_domain_to_vpn'
+  delete 'vpns/:id/dns_server/:vpn_domain_name_server_id' => 'vpns#remove_dns_server', as: 'remove_dns_from_vpn'
+  delete 'vpns/:id/search_domain/:vpn_search_domain_id' => 'vpns#remove_search_domain', as: 'remove_search_domain_from_vpn'
+  delete 'vpns/:id/supplemental_match_domain/:vpn_supplemental_match_domain_id' => 'vpns#remove_supplemental_match_domain', as: 'remove_supplemental_match_domain_from_vpn'
+
+  post 'vpns/:id/group' => 'vpns#assign_group', as: 'assign_group_to_vpn'
 
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json

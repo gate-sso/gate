@@ -1,12 +1,26 @@
 class VpnsController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :authorize_user, except: [:create_group_associated_users, :show, :user_associated_groups, :group_associated_users]
-  before_action :set_vpn, only: [:show, :edit, :update, :destroy, :user_associated_groups]
-  
+  before_action :authorize_user, except: [:create_group_associated_users, :show, :index, :user_associated_groups, :group_associated_users]
+  before_action :set_vpn, only: [:show, :edit, :update, :destroy, \
+                                 :user_associated_groups, :add_dns_server, :remove_dns_server, \
+                                 :add_search_domain, :remove_search_domain, \
+                                 :add_supplemental_match_domain, :remove_supplemental_match_domain, :assign_group]
+
   require 'securerandom'
 
   def index
     @vpns = Vpn.order(:name)
+  end
+
+  def update
+    if current_user.admin?
+      @vpn = Vpn.find(params[:id])
+      if @vpn.update(vpn_params)
+        redirect_to vpn_path(@vpn), notice: 'Vpn was successfully updated.' 
+      end
+    else
+      redirect_to vpn_path(@vpn), notice: 'You can not update, not sufficient privileges.' 
+    end
   end
 
   def create
@@ -25,6 +39,58 @@ class VpnsController < ApplicationController
 
   def new
     @vpn = Vpn.new
+  end
+
+  def add_dns_server
+    if current_user.admin?
+      domain_name_server = VpnDomainNameServer.find_or_create_by(server_address: params[:server_address], vpn: @vpn) if  params[:server_address].present?
+    end
+    redirect_to vpn_path(@vpn, anchor: "dns_hosts")
+  end
+
+  def add_search_domain
+    if current_user.admin?
+      search_domain = VpnSearchDomain.find_or_create_by(search_domain: params[:search_domain], vpn: @vpn) if params[:search_domain].present?
+    end
+    redirect_to vpn_path(@vpn, anchor: "search_domains")
+  end
+
+  def add_supplemental_match_domain
+    if current_user.admin?
+      search_domain = VpnSupplementalMatchDomain.find_or_create_by(supplemental_match_domain: params[:supplemental_match_domain], vpn: @vpn) if  params[:supplemental_match_domain].present?
+    end
+    redirect_to vpn_path(@vpn, anchor: "match_domains")
+
+  end
+
+  def remove_dns_server
+    if current_user.admin?
+      vpn_domain_name_server = VpnDomainNameServer.delete(params[:vpn_domain_name_server_id])
+    end
+    redirect_to vpn_path(@vpn, anchor: "dns_hosts")
+  end
+
+  def remove_search_domain
+    if current_user.admin?
+      search_domain = VpnSearchDomain.delete(params[:vpn_search_domain_id])
+    end
+    redirect_to vpn_path(@vpn, anchor: "search_domains")
+
+  end
+
+  def remove_supplemental_match_domain
+    if current_user.admin?
+      search_domain = VpnSupplementalMatchDomain.delete(params[:vpn_supplemental_match_domain_id])
+    end
+    redirect_to vpn_path(@vpn, anchor: "match_domains")
+  end
+
+  def assign_group
+    if current_user.admin?
+      @vpn.groups.delete_all
+      @vpn.groups << Group.where(id: params[:group_id]).first
+    end
+    redirect_to vpn_path(@vpn, anchor: "match_domains")
   end
 
   def show

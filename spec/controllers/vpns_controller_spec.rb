@@ -37,6 +37,31 @@ RSpec.describe VpnsController, type: :controller do
       expect(assigns(:vpns)).to eq(vpns)
 
     end
+
+    it "should add or remove properties" do
+      sign_in user
+
+      @vpn01 = Vpn.create(name: "z")
+
+      post :add_dns_server, { id: @vpn01.id, server_address: '1.1.1.1'} 
+      expect(@vpn01.vpn_domain_name_servers.count).to eq(1)
+
+      post :remove_dns_server, { id: @vpn01.id, vpn_domain_name_server_id: @vpn01.vpn_domain_name_servers.first.id} 
+      expect(@vpn01.vpn_domain_name_servers.count).to eq(0)
+
+      post :add_search_domain, { id: @vpn01.id, search_domain: 'xyz.com'} 
+      expect(@vpn01.vpn_search_domains.count).to eq(1)
+
+      post :remove_search_domain, { id: @vpn01.id, vpn_search_domain_id: @vpn01.vpn_search_domains.first.id} 
+      expect(@vpn01.vpn_search_domains.count).to eq(0)
+
+      post :add_supplemental_match_domain, { id: @vpn01.id, supplemental_match_domain: 'abc.co.id'} 
+      expect(@vpn01.vpn_supplemental_match_domains.count).to eq(1)
+
+      post :remove_supplemental_match_domain, { id: @vpn01.id, vpn_supplemental_match_domain_id: @vpn01.vpn_supplemental_match_domains.first.id} 
+      expect(@vpn01.vpn_supplemental_match_domains.count).to eq(0)
+
+    end
   end
 end
 

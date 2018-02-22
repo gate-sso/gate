@@ -80,7 +80,7 @@ class ProfileController < ApplicationController
 
   def download_vpn_for_ios_and_mac
     mobileconfig = Mobileconfig.new
-    vpns = current_user.vpns.distinct
+    vpns = Vpn.user_vpns current_user
 
     render plain: "you don't have access to any vpns" and return unless vpns.present?
 

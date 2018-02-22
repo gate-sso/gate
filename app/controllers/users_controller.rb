@@ -11,13 +11,11 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
-    @vpns = @user.vpns
+    @vpns = Vpn.user_vpns @user
     if current_user.admin? || current_user == @user
       @groups = Group.all
       render_404 if @user.blank?
       if @user.present? && ( current_user.admin? || current_user.id == @user.id)
-        #hack add blank text to public_key
-        @user.public_key = "Add public key" if @user.public_key.blank?
         respond_to do |format|
           format.html
         end

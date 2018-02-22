@@ -20,4 +20,12 @@ class HostMachine < ActiveRecord::Base
     response
   end
 
+  def sysadmins
+    users = []
+    groups.each do |group|
+      users = users + group.users.collect{|u| u.id}
+    end
+    users.uniq
+  end
+
 end

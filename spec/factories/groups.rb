@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :group do
-    name "people"
+    sequence(:name) { |n| "People#{n}" }
   end
 end

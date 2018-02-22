@@ -1,8 +1,7 @@
 class Group < ActiveRecord::Base
   has_paper_trail
 
-  has_one :group_admin, dependent: :destroy
-
+  has_many :group_admins, dependent: :destroy
   has_many :group_associations
   has_many :users, through: :group_associations
 
@@ -21,6 +20,10 @@ class Group < ActiveRecord::Base
   after_create :add_gid
 
   GID_CONSTANT = 9000
+
+  def add_admin user
+      GroupAdmin.find_or_create_by(group_id: id, user: user)
+  end
 
   def set_lower_case_name
     self.name = self.name.downcase
@@ -56,6 +59,14 @@ class Group < ActiveRecord::Base
     group = Group.where(gid: gid).first
     return [] if group.blank?
     group.group_response
+  end
+
+  def admin? user
+    GroupAdmin.where(group_id: self, user_id: user).first.present?
+  end
+
+  def member? user
+    users.exists? user.id
   end
 
   def group_response
