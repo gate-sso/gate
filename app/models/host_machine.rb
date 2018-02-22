@@ -23,9 +23,9 @@ class HostMachine < ActiveRecord::Base
   def sysadmins
     users = []
     groups.each do |group|
-      users << group.users
+      users = users + group.users.collect{|u| u.id}
     end
-    users.unique.order
+    users.uniq
   end
 
 end
