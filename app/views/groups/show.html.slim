@@ -67,8 +67,7 @@
   br
     .card
       .card-body
-        h6.card-title Groups Members
-          = "(#{@group.count})"
+        h6.card-title Groups Members (#{@group.users.count})
         .table-responsive
           table.table.table-striped
             thead
