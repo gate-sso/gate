@@ -102,11 +102,12 @@ class Group < ActiveRecord::Base
     sysadmin_group = {}
 
     group = Group.find_by(name: "sysadmins")
+    sysadmins_login_ids = sysadmins_login_ids + group.users.collect {|u| u.user_login_id} if group.present?
     group_id = group.blank? ? 8999 : group.id
 
 
     sysadmin_group[:gr_gid] = group_id
-    sysadmin_group[:gr_mem] = sysadmins_login_ids
+    sysadmin_group[:gr_mem] = sysadmins_login_ids.uniq
     sysadmin_group[:gr_name] = "sysadmins"
     sysadmin_group[:gr_passwd] = "x"
 

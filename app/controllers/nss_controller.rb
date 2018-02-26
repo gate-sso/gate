@@ -25,6 +25,8 @@ class NssController < ApplicationController
     token =  AccessToken.valid_token params[:token]
     if token
       @response = HostMachine.find_or_create_by(name: params[:name]) if params[:name].present?
+      @group = Group.find_or_create_by(name: (params[:name] + "_host_group").downcase.squish ) if params[:group_name].present?
+      @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
       @group = Group.find_or_create_by(name: params[:group_name] ) if params[:group_name].present?
       @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
       @response.save!
