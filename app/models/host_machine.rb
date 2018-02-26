@@ -7,9 +7,10 @@ class HostMachine < ActiveRecord::Base
 
   before_create :set_lower_case_name
   before_save :set_host_access_key
+  before_create :set_host_access_key
 
   def set_host_access_key
-    access_key = ROTP::Base32.random_base32 
+    self.access_key = ROTP::Base32.random_base32 
   end
 
   def set_lower_case_name

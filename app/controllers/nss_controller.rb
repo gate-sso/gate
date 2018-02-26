@@ -6,8 +6,19 @@ class NssController < ApplicationController
     @response = nil
     if token
       @response = HostMachine.get_group_response(params[:name]) if params[:name].present?
+      render json: @response
+      return
+    end
+
+    host_machine = HostMachine.find_by(access_key: params[:token])
+    sysadmins = host_machine.sysadmins if host_machine.present?
+
+    if sysadmins.count > 0
+      @response = Group.get_sysadmins_and_groups sysadmins
     end
     render json: @response
+    return
+
   end
 
   def add_host
@@ -19,7 +30,6 @@ class NssController < ApplicationController
       @response.save!
     end
     render json: @response
-
   end
 
   def group
@@ -50,10 +60,12 @@ class NssController < ApplicationController
       return
     end
 
-    sysadmins = HostMachine.sysamins params[:token]
+    host_machine = HostMachine.find_by(access_key: params[:token])
+    sysadmins = host_machine.sysadmins if host_machine.present?
+
 
     if sysadmins.count > 0
-      @response = Group.get_sysadmins_and_groups
+      @response = Group.get_sysadmins_and_groups sysadmins
     end
 
     render json: @response
