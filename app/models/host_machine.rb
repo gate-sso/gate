@@ -6,6 +6,11 @@ class HostMachine < ActiveRecord::Base
   validates_uniqueness_of :name, case_sensitive: false
 
   before_create :set_lower_case_name
+  before_save :set_host_access_key
+
+  def set_host_access_key
+    access_key = ROTP::Base32.random_base32 
+  end
 
   def set_lower_case_name
     self.name = self.name.downcase

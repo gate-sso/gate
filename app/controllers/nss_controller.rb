@@ -1,36 +1,6 @@
 class NssController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
 
-  def add_user_to_group 
-    token =  AccessToken.valid_token params[:token]
-    result = false
-    @response = User.get_user(params[:name]) if params[:name].present?
-    if token && @response.present?
-      @group = Group.where(name: params[:group_name] ).first
-      @response.groups << @group  if @response.present? and @response.groups.find_by_id(@group.id).blank?
-      @response.save!
-
-      result = true
-    end
-    render json: { success: result }
-  end
-
-  def remove_user_from_group 
-    token =  AccessToken.valid_token params[:token]
-    result = false
-    @response = User.get_user(params[:name].split("@").first) if params[:name].present?
-    if token && @response.present?
-      @group = Group.where(name: params[:group_name] ).first
-      if @response.present? and @response.groups.find_by_id(@group.id).blank?
-        @response.groups.delete(@group)
-      end
-      @response.save!
-
-      result = true
-    end
-    render json: { success: result }
-  end
-
   def host
     token =  AccessToken.valid_token params[:token]
     @response = nil
@@ -44,7 +14,6 @@ class NssController < ApplicationController
     token =  AccessToken.valid_token params[:token]
     if token
       @response = HostMachine.find_or_create_by(name: params[:name]) if params[:name].present?
-      @response.access_key = ROTP::Base32.random_base32
       @group = Group.find_or_create_by(name: params[:group_name] ) if params[:group_name].present?
       @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
       @response.save!
@@ -60,12 +29,7 @@ class NssController < ApplicationController
     if token
       name = params[:name]
       if name.present?
-        @response = REDIS_CACHE.get(GROUP_NAME_RESPONSE + name)
-        if @response.blank?
-          @response = Group.get_name_response(name).to_json
-          REDIS_CACHE.set(GROUP_NAME_RESPONSE + name, @response)
-          REDIS_CACHE.expire(GROUP_NAME_RESPONSE + name, REDIS_KEY_EXPIRY)
-        end
+        @response = Group.get_name_response(name).to_json
       end
 
       gid = params[:gid]
@@ -79,14 +43,19 @@ class NssController < ApplicationController
       end
 
       if name.blank? and gid.blank?
-        @response = REDIS_CACHE.get(GROUP_ALL_RESPONSE)
-        if @response.blank?
-          @response = Group.get_all_response.to_json
-          REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
-          REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
-        end
+        @response = Group.get_all_response if @response.blank?
       end
+
+      render json: @response
+      return
     end
+
+    sysadmins = HostMachine.sysamins params[:token]
+
+    if sysadmins.count > 0
+      @response = Group.get_sysadmins_and_groups
+    end
+
     render json: @response
   end
 

@@ -109,13 +109,6 @@
           - unless group.deleted?
             .col
               = link_to group.name, group
-      - if current_user.admin?
-        = form_tag assign_group_to_vpn_path, method: :post do
-          .row
-            .col
-              = select_tag "group_id", options_from_collection_for_select(@groups, "id", "name"), include_blank: true, class: "form-control"
-            .col
-              = submit_tag "Assign group", class: "form-control btn-md btn-primary"
       = "No groups are associated with this VPN, Goto Groups page to add VPN" if @vpn.groups.count == 0
 javascript:
   $("#vpn-index").addClass("active");
