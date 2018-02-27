@@ -105,4 +105,27 @@ RSpec.describe NssController, type: :controller do
    
   end
 
+  it "should return all the users for the host" do
+
+    access_token = create(:access_token)
+    group = create(:group, name: "sysadmins")
+    user = create(:user)
+    user.groups << group
+
+    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
+    host = HostMachine.first
+    expect(host.name).to eq "random_host_01"
+    host.groups << group
+
+    host.reload
+    group.reload
+    user.reload
+
+
+    get "passwd", { token: host.access_key, format: :json }
+    body = JSON.parse(response.body)
+    expect(body.count).to eq 1
+  end
+
+
 end

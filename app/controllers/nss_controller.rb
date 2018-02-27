@@ -132,8 +132,19 @@ class NssController < ApplicationController
           REDIS_CACHE.expire(PASSWD_ALL_RESPONSE, REDIS_KEY_EXPIRY)
         end
       end
+      render json: @response
+      return
     end
+    host_machine = HostMachine.find_by(access_key: params[:token])
+    sysadmins = host_machine.sysadmins if host_machine.present?
+
+    if sysadmins.count > 0
+      @response = User.get_sysadmins sysadmins
+    end
+
     render json: @response
+
+
   end
 
   def groups_list
