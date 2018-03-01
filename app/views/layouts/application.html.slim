@@ -30,14 +30,17 @@ html lang="en"
           li#hostmachine-index.nav-item
            - if current_user.admin? 
              = link_to "Hosts", host_machines_path, class: "nav-link"
+          li#apiresource-index.nav-item
+           = link_to "APIs", api_resources_path, class: "nav-link"
           li#vpn-index.nav-item
            = link_to "VPNs", vpns_path, class: "nav-link"
           li.nav-item.dropdown
-           - if current_user.admin? 
             a#dropdown01.nav-link.dropdown-toggle aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="http://example.com"  New
             .dropdown-menu aria-labelledby="dropdown01" 
-              = link_to "Group", new_group_path, class: "dropdown-item"
-              = link_to "VPN", new_vpn_path, class: "dropdown-item"
+              = link_to "API", new_api_resource_path, class: "dropdown-item"
+              - if current_user.admin? 
+                = link_to "Group", new_group_path, class: "dropdown-item"
+                = link_to "VPN", new_vpn_path, class: "dropdown-item"
 
         ul.nav.navbar-nav.navbar-right
           li.nav-link

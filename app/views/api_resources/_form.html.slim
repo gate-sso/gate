@@ -1,4 +1,4 @@
-= form_for @api_resource do |f|
+= form_for @api_resource, :class => 'form-horizontal' do |f|
   - if @api_resource.errors.any?
     #error_explanation
       h2 = "#{pluralize(@api_resource.errors.count, "error")} prohibited this api_resource from being saved:"
@@ -6,13 +6,20 @@
         - @api_resource.errors.full_messages.each do |message|
           li = message
 
-  .field
-    = f.label :name
-    = f.text_field :name
-  .field
-    = f.label :description
-    = f.text_field :description
-  .field
-    = f.label :access_key
-    = f.text_field :access_key
-  .actions = f.submit
+  hr
+    .mb-3
+      label for="name"
+        | API Name
+      = f.text_field :name, required: true, class: "form-control", placeholder: "API Name"
+    .mb-3
+      label for="description" 
+        | Description
+      = f.text_field :description, required: true, class: "form-control", placeholder: "Description"
+      .invalid-feedback
+        | Please enter description
+    .mb-3
+      label for="access_key" 
+        | Access Key
+      = f.text_field :access_key, required: true, class: 'form-control', readonly: ""
+    .mb-4
+      = f.submit "Save", class: "btn btn-primary pull-right"

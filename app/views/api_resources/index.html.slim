@@ -1,25 +1,33 @@
-h1 Listing api_resources
+.container-fluid.col-md-8
+  - if notice.present?
+    .alert.alert-primary role="alert"
+      #notice
+        = notice
 
-table
-  thead
-    tr
-      th Name
-      th Description
-      th Access key
-      th
-      th
-      th
 
-  tbody
-    - @api_resources.each do |api_resource|
+  h4 API Keys
+
+  table.table.responsive
+    thead
       tr
-        td = api_resource.name
-        td = api_resource.description
-        td = api_resource.access_key
-        td = link_to 'Show', api_resource
-        td = link_to 'Edit', edit_api_resource_path(api_resource)
-        td = link_to 'Destroy', api_resource, data: { confirm: 'Are you sure?' }, method: :delete
+        th Name
+        th Description
+        th Access key
+        th Owner
+        th Access Group
+        th
 
-br
+    tbody
+      - @api_resources.each do |api_resource|
+        tr
+          td = api_resource.name
+          td = api_resource.description
+          td = api_resource.access_key
+          td = link_to api_resource.user.name, api_resource.user
+          td = link_to api_resource.group.name, api_resource.group
+          td = link_to 'Destroy', api_resource, data: { confirm: 'Are you sure?' }, method: :delete
 
-= link_to 'New Api resource', new_api_resource_path
+  br
+
+javascript:
+  $("#apiresource-index").addClass("active");

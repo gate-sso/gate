@@ -1,5 +1,15 @@
-h1 New api_resource
+.container-fluid.col-md-4.col-md-offset-4
+  - if notice.present?
+    .alert.alert-primary role="alert"
+      #notice
+        = notice
+  br
+  h5 Create new API
 
-== render 'form'
+  == render 'form'
 
-= link_to 'Back', api_resources_path
+  = link_to 'Back', api_resources_path
+
+
+javascript:
+  $("#apiresource-index").addClass("active");

@@ -16,6 +16,7 @@ class ApiResourcesController < ApplicationController
   # GET /api_resources/new
   def new
     @api_resource = ApiResource.new
+    @api_resource.access_key = ROTP::Base32.random_base32 
   end
 
   # GET /api_resources/1/edit
@@ -25,9 +26,13 @@ class ApiResourcesController < ApplicationController
   # POST /api_resources
   # POST /api_resources.json
   def create
-    
-    @api_resource = ApiResource.new(api_resource_params)
 
+    @api_resource = ApiResource.new(api_resource_params)
+    @api_resource.user = current_user
+    group = Group.create name: "#{@api_resource.name}_api_group"
+    @api_resource.group = group
+    group.add_admin current_user
+    group.save!
     respond_to do |format|
       if @api_resource.save
         format.html { redirect_to @api_resource, notice: 'Api resource was successfully created.' }

@@ -4,18 +4,17 @@
       .col-lg-6
          img src="http://chart.apis.google.com/chart?cht=qr&chs=250x250&chl=#{current_user.provisioning_uri}"
       .col-lg-6
-        Please Scan QR Code using Google Authenticator or enter manually
+        Please Scan QR Code 
         br
         pre
           h5 #{current_user.auth_key}
+        If you can't see QR Code, please logout and login again.
         br
-          If you can't see QR Code, please logout and login again.
+          a.btn.btn-success.btn-sm href="/regenerate_authentication" role="button"  data-turbolinks="false" Generate Auth Token
         br
           a.btn.btn-success.btn-sm href="/download_vpn" role="button"  data-turbolinks="false" Download your OpenVPN profile
         br
           a.btn.btn-success.btn-sm href="/download_vpn_for_ios_and_mac" role="button"  data-turbolinks="false" Download IPSec profile for iOS/Mac
-        br
-          a.btn.btn-success.btn-sm href="/regenerate_authentication" role="button"  data-turbolinks="false" Regenerate Auth
   .row.marketing
     .col-lg-6
       h6 Step 1
