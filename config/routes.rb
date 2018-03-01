@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   resource :ping, only: [:show]
 
   resources :vpns
+  resources :api_resources
 
   post 'vpns/:id/dns_server' => 'vpns#add_dns_server', as: 'add_dns_to_vpn'
   post 'vpns/:id/search_domain' => 'vpns#add_search_domain', as: 'add_search_domain_to_vpn'

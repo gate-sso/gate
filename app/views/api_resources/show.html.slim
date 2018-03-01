@@ -1,0 +1,15 @@
+p#notice = notice
+
+p
+  strong Name:
+  = @api_resource.name
+p
+  strong Description:
+  = @api_resource.description
+p
+  strong Access key:
+  = @api_resource.access_key
+
+=> link_to 'Edit', edit_api_resource_path(@api_resource)
+'|
+=< link_to 'Back', api_resources_path

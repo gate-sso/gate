@@ -1,0 +1,25 @@
+h1 Listing api_resources
+
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Access key
+      th
+      th
+      th
+
+  tbody
+    - @api_resources.each do |api_resource|
+      tr
+        td = api_resource.name
+        td = api_resource.description
+        td = api_resource.access_key
+        td = link_to 'Show', api_resource
+        td = link_to 'Edit', edit_api_resource_path(api_resource)
+        td = link_to 'Destroy', api_resource, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Api resource', new_api_resource_path

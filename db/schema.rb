@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180222140000) do
+ActiveRecord::Schema.define(version: 20180301010035) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -21,6 +21,19 @@ ActiveRecord::Schema.define(version: 20180222140000) do
   end
 
   add_index "access_tokens", ["user_id"], name: "fk_rails_96fc070778", using: :btree
+
+  create_table "api_resources", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.string   "description", limit: 255
+    t.string   "access_key",  limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "user_id",     limit: 4
+    t.integer  "group_id",    limit: 4
+  end
+
+  add_index "api_resources", ["group_id"], name: "index_api_resources_on_group_id", using: :btree
+  add_index "api_resources", ["user_id"], name: "index_api_resources_on_user_id", using: :btree
 
   create_table "group_admins", force: :cascade do |t|
     t.integer  "group_id",   limit: 4
@@ -197,6 +210,8 @@ ActiveRecord::Schema.define(version: 20180222140000) do
   end
 
   add_foreign_key "access_tokens", "users"
+  add_foreign_key "api_resources", "groups"
+  add_foreign_key "api_resources", "users"
   add_foreign_key "group_admins", "groups"
   add_foreign_key "group_admins", "users"
   add_foreign_key "hosts", "users"

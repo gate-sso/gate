@@ -1,0 +1,2 @@
+module ApiResourcesHelper
+end

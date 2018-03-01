@@ -1,0 +1,18 @@
+= form_for @api_resource do |f|
+  - if @api_resource.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@api_resource.errors.count, "error")} prohibited this api_resource from being saved:"
+      ul
+        - @api_resource.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :description
+    = f.text_field :description
+  .field
+    = f.label :access_key
+    = f.text_field :access_key
+  .actions = f.submit
