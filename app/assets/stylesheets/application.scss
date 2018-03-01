@@ -36,6 +36,13 @@ body {
   min-width: 768px;
 }
 
-
+a:visited { 
+    color: blue;
+}
+/* mouse over link */
+a:hover {
+    color: blue;
+    background: none;
+}
 
 

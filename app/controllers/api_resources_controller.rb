@@ -35,7 +35,7 @@ class ApiResourcesController < ApplicationController
     group.save!
     respond_to do |format|
       if @api_resource.save
-        format.html { redirect_to @api_resource, notice: 'Api resource was successfully created.' }
+        format.html { redirect_to api_resources_path, notice: 'Api resource was successfully created.' }
         format.json { render :show, status: :created, location: @api_resource }
       else
         format.html { render :new }
@@ -49,7 +49,7 @@ class ApiResourcesController < ApplicationController
   def update
     respond_to do |format|
       if @api_resource.update(api_resource_params)
-        format.html { redirect_to @api_resource, notice: 'Api resource was successfully updated.' }
+        format.html { redirect_to api_resources_path, notice: 'Api resource was successfully updated.' }
         format.json { render :show, status: :ok, location: @api_resource }
       else
         format.html { render :edit }
