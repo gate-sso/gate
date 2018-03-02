@@ -9,7 +9,7 @@ RSpec.describe "api_resources/index", type: :view do
         :access_key => "Access Key"
       ),
       ApiResource.create!(
-        :name => "Name",
+        :name => "Name2",
         :description => "Description",
         :access_key => "Access Key"
       )
@@ -18,7 +18,7 @@ RSpec.describe "api_resources/index", type: :view do
 
   it "renders a list of api_resources" do
     render
-    assert_select "tr>td", :text => "Name".to_s, :count => 2
+    assert_select "tr>td", :text => "Name".to_s, :count => 1
     assert_select "tr>td", :text => "Description".to_s, :count => 2
     assert_select "tr>td", :text => "Access Key".to_s, :count => 2
   end

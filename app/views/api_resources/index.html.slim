@@ -23,8 +23,8 @@
           td = api_resource.name
           td = api_resource.description
           td = api_resource.access_key
-          td = link_to api_resource.user.name, api_resource.user
-          td = link_to api_resource.group.name, api_resource.group
+          td = link_to api_resource.user.name, api_resource.user if api_resource.user.present?
+          td = link_to api_resource.group.name, api_resource.group if api_resource.group.present?
           td = link_to 'Destroy', api_resource, data: { confirm: 'Are you sure?' }, method: :delete
 
   br
