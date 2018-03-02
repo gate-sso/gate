@@ -13,6 +13,15 @@ class ApiResourcesController < ApplicationController
   def show
   end
 
+  def authenticate
+    #this authenticates and tells whether users is able to access this api or not
+    if (ApiResource.authenticate(params[:access_key], params[:access_token]))
+      render  json: {result: 0}, status: :ok
+    else
+      render  json: {result: 1}, status: 401
+    end
+  end
+
   # GET /api_resources/new
   def new
     @api_resource = ApiResource.new
@@ -61,6 +70,7 @@ class ApiResourcesController < ApplicationController
   # DELETE /api_resources/1
   # DELETE /api_resources/1.json
   def destroy
+    @api_resource.group.destroy if @api_resource.group.present?
     @api_resource.destroy
     respond_to do |format|
       format.html { redirect_to api_resources_url, notice: 'Api resource was successfully destroyed.' }

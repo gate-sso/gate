@@ -69,7 +69,7 @@ RSpec.describe ApiResourcesController, type: :controller do
 
       it "redirects to the created api_resource" do
         post :create, {:api_resource => valid_attributes}, valid_session
-        expect(response).to redirect_to(ApiResource.last)
+        expect(response).to redirect_to(api_resources_url)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe ApiResourcesController, type: :controller do
       it "redirects to the api_resource" do
         api_resource = ApiResource.create! valid_attributes
         put :update, {:id => api_resource.to_param, :api_resource => valid_attributes}, valid_session
-        expect(response).to redirect_to(api_resource)
+        expect(response).to redirect_to(api_resources_url)
       end
     end
 
@@ -122,6 +122,45 @@ RSpec.describe ApiResourcesController, type: :controller do
       api_resource = ApiResource.create! valid_attributes
       delete :destroy, {:id => api_resource.to_param}, valid_session
       expect(response).to redirect_to(api_resources_url)
+    end
+  end
+
+  describe "Authenticate" do
+    it "should not authenticate if a user is member of API group" do
+      user = create :user
+      access_token = create :access_token
+      user.access_token = access_token
+      user.save!
+      user.reload
+      access_token.reload
+      group = create :group
+      api_resource = ApiResource.create! valid_attributes
+      api_resource.group = group
+      api_resource.save!
+      get :authenticate, { access_key: api_resource.access_key, access_token: user.access_token.token }, valid_session
+      expect(response).not_to be_success
+      body = JSON.parse(response.body)
+      expect(body["result"]).to eq 1
+    end
+
+    it "should not authenticate if a user is NOT a member of API group" do
+
+      user = create :user
+      access_token = create :access_token
+      user.access_token = access_token
+      user.save!
+      user.reload
+      access_token.reload
+      group = create :group
+      api_resource = ApiResource.create! valid_attributes
+      api_resource.group = group
+      group.users << user
+      api_resource.save!
+      get :authenticate, { access_key: api_resource.access_key, access_token: user.access_token.token }, valid_session
+      expect(response).to be_success
+      body = JSON.parse(response.body)
+      expect(body["result"]).to eq 0
+
     end
   end
 

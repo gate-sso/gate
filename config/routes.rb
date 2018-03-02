@@ -91,6 +91,7 @@ Rails.application.routes.draw do
   resources :vpns
   resources :api_resources
 
+  get "api_resource/authenticate/:access_key/:access_token" => "api_resources#authenticate", as: "api_resource_authenticate"
   post 'vpns/:id/dns_server' => 'vpns#add_dns_server', as: 'add_dns_to_vpn'
   post 'vpns/:id/search_domain' => 'vpns#add_search_domain', as: 'add_search_domain_to_vpn'
   post 'vpns/:id/supplemental_match_domain' => 'vpns#add_supplemental_match_domain', as: 'add_supplemental_match_domain_to_vpn'
