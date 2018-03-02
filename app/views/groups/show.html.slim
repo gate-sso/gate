@@ -58,7 +58,7 @@
               | Assign members
             .col
             .col
-              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
+              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", :name_email), include_blank: true, class: "form-control"
             .col
               = submit_tag "Add User", class: "form-control btn-md btn-primary"
 
