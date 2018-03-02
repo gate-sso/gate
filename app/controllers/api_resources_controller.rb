@@ -5,7 +5,8 @@ class ApiResourcesController < ApplicationController
   # GET /api_resources
   # GET /api_resources.json
   def index
-    @api_resources = ApiResource.all
+    @api_resources = ApiResource.find_by(user: current_user) if !current_user.admin
+    @api_resources = ApiResource.all if current_user.admin
   end
 
   # GET /api_resources/1
@@ -70,8 +71,10 @@ class ApiResourcesController < ApplicationController
   # DELETE /api_resources/1
   # DELETE /api_resources/1.json
   def destroy
-    @api_resource.group.destroy if @api_resource.group.present?
-    @api_resource.destroy
+    if current_user == @api_resource.user or current_user.admin
+      @api_resource.group.destroy if @api_resource.group.present?
+      @api_resource.destroy
+    end
     respond_to do |format|
       format.html { redirect_to api_resources_url, notice: 'Api resource was successfully destroyed.' }
       format.json { head :no_content }
@@ -79,13 +82,13 @@ class ApiResourcesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_api_resource
-      @api_resource = ApiResource.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_api_resource
+    @api_resource = ApiResource.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def api_resource_params
-      params.require(:api_resource).permit(:name, :access_key, :description, :user_id, :group_id)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def api_resource_params
+    params.require(:api_resource).permit(:name, :access_key, :description, :user_id, :group_id)
+  end
 end
