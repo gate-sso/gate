@@ -5,7 +5,7 @@ class ApiResourcesController < ApplicationController
   # GET /api_resources
   # GET /api_resources.json
   def index
-    @api_resources = ApiResource.find_by(user: current_user) if !current_user.admin
+    @api_resources = ApiResource.where(user: current_user) if !current_user.admin
     @api_resources = ApiResource.all if current_user.admin
   end
 

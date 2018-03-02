@@ -13,6 +13,15 @@
              span.input-group-text @
           input#email.form-control placeholder="you@example.com" readonly="" type="email" value="#{@user.email}"
 
+  form.needs-validation novalidate="" 
+    .form-row.mb-3
+      .col
+        b Your Access Token
+      .col
+        pre
+          = "#{@user.access_token.token}"
+  
+
   - if current_user.admin?
     .card
       .card-body

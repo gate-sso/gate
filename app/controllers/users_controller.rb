@@ -11,6 +11,13 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
+
+    if @user.access_token.blank?
+      access_token = AccessToken.new
+      access_token.token = ROTP::Base32.random_base32 
+      access_token.user = @user
+      access_token.save!
+    end
     @vpns = Vpn.user_vpns @user
     if current_user.admin? || current_user == @user
       @groups = Group.all
