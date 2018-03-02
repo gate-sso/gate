@@ -23,7 +23,7 @@
                     = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.name} ?"} 
           .row
             .col
-              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name", @group_admin_id), include_blank: true, class: "form-control"
+              = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
             .col
               = submit_tag "Assign admin", class: "form-control btn-md btn-primary"
   a name="group_members"
@@ -58,7 +58,7 @@
               | Assign members
             .col
             .col
-              = select_tag "user_id", options_from_collection_for_select(@users.sort_by { |user| user.name }, "id", "name"), include_blank: true, class: "form-control"
+              = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
             .col
               = submit_tag "Add User", class: "form-control btn-md btn-primary"
 
@@ -96,7 +96,7 @@
               | Assign VPNs
             .col
             .col
-              = select_tag "vpn_id", options_from_collection_for_select(@vpns.sort_by { |vpn| vpn.name }, "id", "name"), include_blank: true, class: "form-control"
+              = text_field_tag "vpn_id", "", id: "add_vpn_vpn_id", class: "form-control"
             .col
               = submit_tag "Add Vpn", class: "form-control btn-md btn-primary"
   br
@@ -127,7 +127,7 @@
               | Assign Hosts
             .col
             .col
-              = select_tag "machine_id", options_from_collection_for_select(@host_machines.sort_by { |machine| machine.name}, "id", "name"), class: "form-control"
+              = text_field_tag "machine_id", "", id: "add_machine_machine_id", class: "form-control"
             .col
               = submit_tag "Add Host", class: "form-control btn-md btn-primary"
 
