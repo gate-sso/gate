@@ -48,14 +48,12 @@ class Vpn < ActiveRecord::Base
       if vpn.groups.present?
         vpn.groups.each do |group|
           if group.users.present?
-            group.users.each do |member|
-              vpns << vpn if member == user
-            end
+            vpns << vpn if group.member? user
           end
         end
       end
     end
-    return vpns
+    return vpns.uniq {|vpn| vpn.id}
   end
 
   def migrate_to_new_group
