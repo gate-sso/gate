@@ -1,6 +1,6 @@
 class ::Api::V1::VpnsController < ApiController
   before_action :set_paper_trail_whodunnit
-  skip_before_filter :authenticate_user_from_token!
+  skip_before_filter :authenticate_user_from_token!, only: [:add_users_list, :add_properties]
 
   def add_users_list
     render plain: "api only authorized for super admins" and return unless current_user.admin?
@@ -66,5 +66,14 @@ class ::Api::V1::VpnsController < ApiController
     end
 
     render plain: "Properties added to vpn"
+  end
+
+  def search
+    @vpns = Vpn.
+      where("name LIKE ?", "%#{params[:q]}%").
+      order("name ASC").
+      limit(20)
+    data = @vpns.map{ |vpn| {id: vpn.id, name: vpn.name} }
+    render json: data
   end
 end
