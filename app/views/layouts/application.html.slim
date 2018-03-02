@@ -52,3 +52,4 @@ html lang="en"
         /! /.nav-collapse
     .container-fluid
       = yield
+    #server-vars data-email=current_user.email data-token=current_user.access_token.token
