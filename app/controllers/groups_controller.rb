@@ -39,7 +39,7 @@ class GroupsController < ApplicationController
     #This is set in before_action filter
     #@group = Group.find(params[:id])
     @vpns = Vpn.all.select {|vpn| vpn.groups.count == 0}
-    @users = User.all
+    @users = User.where(active: true)
     @host_machines = HostMachine.all
   end
 

@@ -46,9 +46,9 @@ html lang="en"
 
         ul.nav.navbar-nav.navbar-right
           li.nav-link
-            = link_to "Sign out", users_sign_out_path,:method => :delete 
+            = link_to "Sign out", users_sign_out_path,:method => :delete , class: "nav-link"
           li.nav-link.active
-            = link_to current_user.name, user_path(current_user.id)
+            = link_to current_user.name, user_path(current_user.id), class: "nav-link"
         /! /.nav-collapse
     .container-fluid
       = yield

@@ -28,6 +28,10 @@ class User < ActiveRecord::Base
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
+  def name_email
+    "#{name} (#{email})"
+  end
+
   def self.get_sysadmins uids
     user_list = []
     uids.each do |uid|

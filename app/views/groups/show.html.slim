@@ -39,7 +39,7 @@
               th Email address
               th
           tbody
-            - @group.users.sort_by{ |user| user.email}.each do |user|
+            - @group.users.sort_by{ |user| user.email}.select{|user| user.active}.each do |user|
               tr
                 td
                   = link_to "#{user.name}", user_path(user)
@@ -75,7 +75,7 @@
               th Vpn Host name
               th
           tbody
-            - @group.vpns.sort_by{ |vpn| vpn.name}.each do |vpn|
+            - @group.vpns.sort_by{ |vpn| vpn.name}.uniq{|vpn| vpn.id}.each do |vpn|
               tr
                 td
                   = link_to "#{vpn.name}", vpn_path(vpn)
