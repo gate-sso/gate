@@ -7,10 +7,10 @@ group_ready = ->
     maxItems: 1
     valueField: 'id'
     labelField: 'name'
-    searchField: 'name'
+    searchField: 'name_email'
     create: false
     render: option: (item, escape) ->
-      '<div>' + escape(item.name) + '</div>'
+      '<div>' + escape(item.name) + '<br /><span class=\'small\'>' + escape(item.email) + '</span></div>'
     load: (query, callback) ->
       if !query.length
         return callback()
@@ -33,10 +33,10 @@ group_ready = ->
     maxItems: 1
     valueField: 'id'
     labelField: 'name'
-    searchField: 'name'
+    searchField: 'name_email'
     create: false
     render: option: (item, escape) ->
-      '<div>' + escape(item.name) + '</div>'
+      '<div>' + escape(item.name) + '<br /><span class=\'small\'>' + escape(item.email) + '</span></div>'
     load: (query, callback) ->
       if !query.length
         return callback()
