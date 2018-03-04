@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-jQuery ->
+group_ready = ->
   $('#assign_admin_user_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -106,3 +106,5 @@ jQuery ->
           callback res
           return
       return
+
+$(document).on('turbolinks:load', group_ready)
