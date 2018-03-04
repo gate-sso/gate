@@ -37,6 +37,7 @@ class ::Api::V1::UsersController < ApiController
   def search
     @users = User.
       where("name LIKE :q OR email LIKE :q", q: "%#{params[:q]}%").
+      where(active: true).
       order("name ASC").
       limit(20)
     data = @users.map{ |user| {
