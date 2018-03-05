@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_paper_trail_whodunnit
 
-  before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key] unless Rails.env.development?
+  before_filter :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key, :search] unless Rails.env.development?
 
   def index
     @user_search = params[:user_search]
@@ -43,6 +43,21 @@ class UsersController < ApplicationController
     end
 
     form_response(response_message)
+  end
+
+  def search
+    @users = User.
+      where("name LIKE :q OR email LIKE :q", q: "%#{params[:q]}%").
+      where(active: true).
+      order("name ASC").
+      limit(20)
+    data = @users.map{ |user| {
+      id: user.id, 
+      name: user.name, 
+      email: user.email,
+      name_email: "#{user.name} - #{user.email}"
+    }}
+    render json: data
   end
 
   private

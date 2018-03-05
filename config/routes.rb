@@ -57,8 +57,7 @@ Rails.application.routes.draw do
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
   post 'host_machines/:id/add_group' => 'host_machines#add_group', as: 'add_group_to_machine'
-
-
+  get 'groups/search' => 'groups#search', format: :json
 
   # api routes
   namespace :api do
@@ -78,17 +77,30 @@ Rails.application.routes.draw do
 
   get '/admin' => 'admin#index'
 
-  resources :host_machines
+  resources :host_machines do
+    collection do
+      get 'search', format: :json
+    end
+  end
+
   resources :groups
   #resources :groups do
   #  resources :members
   #  resources :group_admins
   #end
-  resources :users
+  resources :users do
+    collection do
+      get 'search', format: :json
+    end
+  end
 
   resource :ping, only: [:show]
 
-  resources :vpns
+  resources :vpns do
+    collection do
+      get 'search', format: :json
+    end
+  end
   resources :api_resources
 
   get "api_resource/authenticate/:access_key/:access_token" => "api_resources#authenticate", as: "api_resource_authenticate"
@@ -98,10 +110,7 @@ Rails.application.routes.draw do
   delete 'vpns/:id/dns_server/:vpn_domain_name_server_id' => 'vpns#remove_dns_server', as: 'remove_dns_from_vpn'
   delete 'vpns/:id/search_domain/:vpn_search_domain_id' => 'vpns#remove_search_domain', as: 'remove_search_domain_from_vpn'
   delete 'vpns/:id/supplemental_match_domain/:vpn_supplemental_match_domain_id' => 'vpns#remove_supplemental_match_domain', as: 'remove_supplemental_match_domain_from_vpn'
-
   post 'vpns/:id/group' => 'vpns#assign_group', as: 'assign_group_to_vpn'
-
-
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
   post 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#create_group_associated_users', format: :json

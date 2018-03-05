@@ -56,7 +56,7 @@
           = form_tag  add_group_path, method: :post do
             .row
               .col
-                = select_tag "group_id", options_from_collection_for_select(@groups.sort_by {|group| group.name}, "id", "name"), class: "form-control"
+                = text_field_tag "group_id", "", class: "form-control"
               .col
                 .row
                   .col

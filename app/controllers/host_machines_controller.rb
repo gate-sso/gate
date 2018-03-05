@@ -56,6 +56,15 @@ class HostMachinesController < ApplicationController
     redirect_to host_machine_path @host_machine
   end
 
+  def search
+    @host_machines = HostMachine.
+      where("name LIKE ?", "%#{params[:q]}%").
+      order("name ASC").
+      limit(20)
+    data = @host_machines.map{ |host_machine| {id: host_machine.id, name: host_machine.name} }
+    render json: data
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_host_machine
