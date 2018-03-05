@@ -19,7 +19,7 @@ group_ready = ->
       email = $('#server-vars').data('email')
       access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/api/v1/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -45,7 +45,7 @@ group_ready = ->
       email = $('#server-vars').data('email')
       access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/api/v1/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -71,7 +71,7 @@ group_ready = ->
       email = $('#server-vars').data('email')
       access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/api/v1/vpns/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/vpns/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -97,7 +97,7 @@ group_ready = ->
       email = $('#server-vars').data('email')
       access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/api/v1/hosts/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/hosts/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
