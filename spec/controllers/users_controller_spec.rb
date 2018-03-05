@@ -43,8 +43,10 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe 'Search for Users' do
-    it "should return users according to supplied search string" do
+    it "should return active users according to supplied search string" do
       users = create_list(:user, 3)
+      users.last.update(active: false)
+      users.pop
       get :search, { q: "TestUser" }
       returned_ids = JSON.parse(response.body).collect{|c| c['id']}
       expect(returned_ids).to eq(users.collect(&:id))
