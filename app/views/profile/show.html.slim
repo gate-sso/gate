@@ -5,17 +5,17 @@
       .col-lg-6
         .row
           .col-lg-12 
-            strong Please Scan this QR Code
+            strong Use Google Authenticator to scan this QR Code
         .row.mt-2
         .row
           .col-lg-12
             img src="http://chart.apis.google.com/chart?cht=qr&chs=250x250&chl=#{current_user.provisioning_uri}"
         .row
           .col-lg-12
-            small Note: If you can't see QR Code, please logout and login again.
+            small Note: If you can't see the QR Code, please logout and login again.
       .col-lg-6
         .row
-          .col-lg-12 Or use this token for your authenticator
+          .col-lg-12 Or use this token for the authenticator
         .row.mt-2
         .row
           .col-lg-12
@@ -35,20 +35,42 @@
         .row
           .col-lg-12
             a.btn.btn-success.btn-sm href="/download_vpn_for_ios_and_mac" role="button"  data-turbolinks="false" Download IPSec profile for iOS/Mac
+        .row.mt-4
+        .row
+          .col-lg-12 Google Authenticator
+        .row
+          .col-lg-12
+            a href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="_blank"
+              = image_tag "app_store_en_badge.png", width: 120, alt: "Apple App Store"
+            a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en" target="_blank"
+              = image_tag "google_play_en_badge.png", width: 120, alt: "Google Play Store"
   .row.marketing
     .col-lg-6
-      h5 
+      h4
+        strong OpenVPN
+      h5
         strong Step 1
-      p Download Google Authenticator from Apple App Store or Google Play Store. Use steps above to create a new profile.
-      h5 
-        strong Step 2
       p
-        | Download OpenVPN client - for Mac, use 
-        a href="https://tunnelblick.net/" TunnelBlick
-    .col-lg-6
-      h5 
+        | Download OpenVPN client. For Mac, use 
+        a href="https://tunnelblick.net/" target="_blank" TunnelBlick.
+      h5
+        strong Step 2
+      p Download your OpenVPN profile and install to OpenVPN client.
+      h5
         strong Step 3
-      p Install your VPN profile, to Download click above button
-      h5 
-        strong Step 4
-      p Launch TunnelBlick, connect to your profile and enter token code shown on Google Authenticator.
+      p Launch OpenVPN client, connect to your profile and enter token code shown on Google Authenticator.
+    .col-lg-6
+      h4
+        strong IPSec VPN
+      h5
+        strong Step 1
+      p Download your IPSec VPN profile and install by double-clicking on it.
+      h5
+        strong Step 2
+      p 
+        | Open 
+        code System Preferences >> Network 
+        | , you will see list of VPNs that you can connect to.
+      h5
+        strong Step 3
+      p Connect to any VPN and enter token code shown on Google Authenticator.
