@@ -93,4 +93,14 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       end
     end
   end
+
+  describe 'Search for Users' do
+    it "should return users according to supplied search string" do
+      users = [@user]
+      users += create_list(:user, 3)
+      get :search, { email: @user.email, access_token: @token, q: "TestUser" }
+      returned_ids = JSON.parse(response.body).collect{|c| c['id']}
+      expect(returned_ids).to eq(users.collect(&:id))
+    end
+  end
 end

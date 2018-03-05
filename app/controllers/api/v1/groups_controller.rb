@@ -1,6 +1,6 @@
 class ::Api::V1::GroupsController < ApiController
   before_action :set_paper_trail_whodunnit
-  skip_before_filter :authenticate_user_from_token!
+  skip_before_filter :authenticate_user_from_token!, only: [:add_users_list, :add_vpns_list]
 
   def add_users_list
     render plain: "api only authorized for super admins" and return unless current_user.admin?
@@ -36,5 +36,14 @@ class ::Api::V1::GroupsController < ApiController
     end
 
     render plain: "Group has access to list of vpns"
+  end
+
+  def search
+    @groups = Group.
+      where("name LIKE ?", "%#{params[:q]}%").
+      order("name ASC").
+      limit(20)
+    data = @groups.map{ |group| {id: group.id, name: group.name} }
+    render json: data
   end
 end

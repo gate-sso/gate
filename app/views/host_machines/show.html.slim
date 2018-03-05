@@ -32,7 +32,7 @@
               | Assign group
             .col
             .col
-              = select_tag "group_id", options_from_collection_for_select(@groups.sort_by { |group| group.name}, "id", "name"), class: "form-control"
+              = text_field_tag "group_id", "", class: "form-control"
             .col
               = submit_tag "Add group", class: "form-control btn-md btn-primary"
 
