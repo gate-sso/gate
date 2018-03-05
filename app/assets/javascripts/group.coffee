@@ -16,10 +16,8 @@ group_ready = ->
         return callback()
 
       # Use remote as source
-      email = $('#server-vars').data('email')
-      access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/users/search?q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -42,10 +40,8 @@ group_ready = ->
         return callback()
 
       # Use remote as source
-      email = $('#server-vars').data('email')
-      access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/users/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/users/search?q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -68,10 +64,8 @@ group_ready = ->
         return callback()
 
       # Use remote as source
-      email = $('#server-vars').data('email')
-      access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/vpns/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/vpns/search?q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
@@ -94,10 +88,8 @@ group_ready = ->
         return callback()
 
       # Use remote as source
-      email = $('#server-vars').data('email')
-      access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/hosts/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/host_machines/search?q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()

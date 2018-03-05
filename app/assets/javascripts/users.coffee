@@ -16,10 +16,8 @@ users_ready = ->
         return callback()
 
       # Use remote as source
-      email = $('#server-vars').data('email')
-      access_token = $('#server-vars').data('token')
       $.ajax
-        url: '/groups/search?email=' + encodeURIComponent(email) + '&access_token=' + encodeURIComponent(access_token) + '&q=' + encodeURIComponent(query) 
+        url: '/groups/search?q=' + encodeURIComponent(query) 
         type: 'GET'
         error: ->
           callback()
