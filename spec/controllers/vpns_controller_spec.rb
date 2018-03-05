@@ -63,5 +63,13 @@ RSpec.describe VpnsController, type: :controller do
 
     end
   end
+
+  describe 'Search for Vpns' do
+    it "should return vpns according to supplied search string" do
+      vpns = create_list(:vpn, 3)
+      get :search, { q: "VPN" }
+      expect(JSON.parse(response.body)).to eq(vpns.map{|m| {"id" => m.id, "name" => m.name}})
+    end
+  end
 end
 

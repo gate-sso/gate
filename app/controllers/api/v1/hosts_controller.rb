@@ -1,6 +1,6 @@
 class ::Api::V1::HostsController < ApiController
   before_action :set_paper_trail_whodunnit
-  skip_before_filter :authenticate_user_from_token!, only: [:add_users_list]
+  skip_before_filter :authenticate_user_from_token!
 
   def add_users_list
     render plain: "api only authorized for super admins" and return unless current_user.admin?
@@ -14,14 +14,5 @@ class ::Api::V1::HostsController < ApiController
     end
 
     render plain: "List of users given access"
-  end
-
-  def search
-    @host_machines = HostMachine.
-      where("name LIKE ?", "%#{params[:q]}%").
-      order("name ASC").
-      limit(20)
-    data = @host_machines.map{ |host_machine| {id: host_machine.id, name: host_machine.name} }
-    render json: data
   end
 end

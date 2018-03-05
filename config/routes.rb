@@ -57,8 +57,7 @@ Rails.application.routes.draw do
   delete 'groups/:id/host_machine/:host_machine_id' => 'groups#delete_machine', as: 'group_host_machine'
   delete 'host_machines/:id/groups/:group_id' => 'host_machines#delete_group', as: 'host_machine_group'
   post 'host_machines/:id/add_group' => 'host_machines#add_group', as: 'add_group_to_machine'
-
-
+  get 'groups/search' => 'groups#search', format: :json
 
   # api routes
   namespace :api do
@@ -66,15 +65,11 @@ Rails.application.routes.draw do
       post 'users' => 'users#create', as: 'add_users_api', format: :json
       post 'add_user_list_to_group' => 'groups#add_users_list', format: :json
       post 'add_vpn_list_to_a_group' => 'groups#add_vpns_list', format: :json
-      get 'groups/search' => 'groups#search', format: :json
       post 'give_hostname_pattern_access_to_user_list' => 'hosts#add_users_list', format: :json
-      get 'hosts/search' => 'hosts#search', format: :json
       post 'add_user_list_to_a_vpn' => 'vpns#add_users_list', format: :json
       post 'add_properties_to_vpn' => 'vpns#add_properties', format: :json
       get 'users/profile' => 'users#show', format: :json, :constraints => { format: 'json' }
       post 'users/profile' => 'users#update', format: :json, :constraints => { format: 'json' }
-      get 'users/search' => 'users#search', format: :json
-      get 'vpns/search' => 'vpns#search', format: :json
     end
   end
 
@@ -83,12 +78,15 @@ Rails.application.routes.draw do
   get '/admin' => 'admin#index'
 
   resources :host_machines
+  get 'host_machines/search' => 'host_machines#search', format: :json
+
   resources :groups
   #resources :groups do
   #  resources :members
   #  resources :group_admins
   #end
   resources :users
+  get 'users/search' => 'users#search', format: :json
 
   resource :ping, only: [:show]
 
@@ -102,13 +100,11 @@ Rails.application.routes.draw do
   delete 'vpns/:id/dns_server/:vpn_domain_name_server_id' => 'vpns#remove_dns_server', as: 'remove_dns_from_vpn'
   delete 'vpns/:id/search_domain/:vpn_search_domain_id' => 'vpns#remove_search_domain', as: 'remove_search_domain_from_vpn'
   delete 'vpns/:id/supplemental_match_domain/:vpn_supplemental_match_domain_id' => 'vpns#remove_supplemental_match_domain', as: 'remove_supplemental_match_domain_from_vpn'
-
   post 'vpns/:id/group' => 'vpns#assign_group', as: 'assign_group_to_vpn'
-
-
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
   post 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#create_group_associated_users', format: :json
+  get 'vpns/search' => 'vpns#search', format: :json
 
   # SAML routes
 

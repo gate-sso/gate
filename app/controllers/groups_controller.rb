@@ -180,8 +180,14 @@ class GroupsController < ApplicationController
     end
   end
 
-
-
+  def search
+    @groups = Group.
+      where("name LIKE ?", "%#{params[:q]}%").
+      order("name ASC").
+      limit(20)
+    data = @groups.map{ |group| {id: group.id, name: group.name} }
+    render json: data
+  end
 
   private
   # Use callbacks to share common setup or constraints between actions.
