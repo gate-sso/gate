@@ -77,20 +77,30 @@ Rails.application.routes.draw do
 
   get '/admin' => 'admin#index'
 
-  resources :host_machines
-  get 'host_machines/search' => 'host_machines#search', format: :json
+  resources :host_machines do
+    collection do
+      get 'search', format: :json
+    end
+  end
 
   resources :groups
   #resources :groups do
   #  resources :members
   #  resources :group_admins
   #end
-  resources :users
-  get 'users/search' => 'users#search', format: :json
+  resources :users do
+    collection do
+      get 'search', format: :json
+    end
+  end
 
   resource :ping, only: [:show]
 
-  resources :vpns
+  resources :vpns do
+    collection do
+      get 'search', format: :json
+    end
+  end
   resources :api_resources
 
   get "api_resource/authenticate/:access_key/:access_token" => "api_resources#authenticate", as: "api_resource_authenticate"
@@ -104,7 +114,6 @@ Rails.application.routes.draw do
   get 'vpns/:id/groups/:group_id/groups' => 'vpns#user_associated_groups', format: :json
   get 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#group_associated_users', format: :json
   post 'vpns/:vpn_id/groups/:group_id/users' => 'vpns#create_group_associated_users', format: :json
-  get 'vpns/search' => 'vpns#search', format: :json
 
   # SAML routes
 
