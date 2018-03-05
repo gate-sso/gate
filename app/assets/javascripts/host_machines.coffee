@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-users_ready = ->
+host_machines_ready = ->
   $('#group_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -29,4 +29,4 @@ users_ready = ->
           return
       return
 
-$(document).on('turbolinks:load', users_ready)
+$(document).on('turbolinks:load', host_machines_ready)

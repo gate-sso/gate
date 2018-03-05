@@ -33,4 +33,19 @@ class ::Api::V1::UsersController < ApiController
   def user_params
     params.require(:user).permit(:name, :email, :public_key, :product_name)
   end
+
+  def search
+    @users = User.
+      where("name LIKE :q OR email LIKE :q", q: "%#{params[:q]}%").
+      where(active: true).
+      order("name ASC").
+      limit(20)
+    data = @users.map{ |user| {
+      id: user.id, 
+      name: user.name, 
+      email: user.email,
+      name_email: "#{user.name} - #{user.email}"
+    }}
+    render json: data
+  end
 end
