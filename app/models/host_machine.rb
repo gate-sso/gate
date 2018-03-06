@@ -31,8 +31,6 @@ class HostMachine < ActiveRecord::Base
     groups.each do |group|
       users = users + group.users.collect{|u| u.id}
     end
-    group = Group.find_by(name: "sysadmins")
-    users = users + group.users.collect{|u| u.id} if group.present?
     users.uniq
   end
 

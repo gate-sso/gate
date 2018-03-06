@@ -52,11 +52,6 @@ RSpec.describe HostMachine, type: :model do
   context "sysadmin_group" do
     it "should return sysadmins, their groups and sysadmin group container sysadmins" do
 
-      group = create(:group, name: "sysadmins")
-      user = create(:user)
-      user.groups << group
-      user.reload
-      group.reload
       host_machine = create(:host_machine)
       group = create(:group)
       user = create(:user)
@@ -76,11 +71,11 @@ RSpec.describe HostMachine, type: :model do
       host_machine.reload
       group.reload
 
-      expect(host_machine.sysadmins.count).to eq 3
+      expect(host_machine.sysadmins.count).to eq 2
       response = Group.get_sysadmins_and_groups host_machine.sysadmins
       sysadmins_and_groups = JSON.parse(response)
 
-      expect(sysadmins_and_groups.count).to eq 4
+      expect(sysadmins_and_groups.count).to eq 3
 
     end
   end
