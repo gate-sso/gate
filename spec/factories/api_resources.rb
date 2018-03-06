@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :api_resource do
-    name "MyString"
+    sequence(:name, 1000) { |n| "API#{n}" }
     description "MyString"
     access_key "MyString"
   end

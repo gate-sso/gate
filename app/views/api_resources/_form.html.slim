@@ -1,4 +1,4 @@
-= form_for @api_resource, :class => 'form-horizontal' do |f|
+= form_for @api_resource, :class => 'form-horizontal', html: {novalidate: 'true'} do |f|
   - if @api_resource.errors.any?
     #error_explanation
       h2 = "#{pluralize(@api_resource.errors.count, "error")} prohibited this api_resource from being saved:"
@@ -11,12 +11,12 @@
       label for="name"
         | API Name
       = f.text_field :name, required: true, class: "form-control", placeholder: "API Name"
+      .invalid-feedback
     .mb-3
       label for="description" 
         | Description
       = f.text_field :description, required: true, class: "form-control", placeholder: "Description"
       .invalid-feedback
-        | Please enter description
     .mb-3
       label for="access_key" 
         | Access Key
