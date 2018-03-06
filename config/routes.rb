@@ -101,7 +101,11 @@ Rails.application.routes.draw do
       get 'search', format: :json
     end
   end
-  resources :api_resources
+  resources :api_resources do
+    collection do
+      get 'search', format: :json
+    end
+  end
 
   get "api_resource/authenticate/:access_key/:access_token" => "api_resources#authenticate", as: "api_resource_authenticate"
   post 'vpns/:id/dns_server' => 'vpns#add_dns_server', as: 'add_dns_to_vpn'

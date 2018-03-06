@@ -81,6 +81,18 @@ class ApiResourcesController < ApplicationController
     end
   end
 
+  # GET /api_resources/q=.json
+  def search
+    if params[:exact]
+      @api_resources = ApiResource.where("name LIKE ?", "#{params[:q]}")
+    else
+      @api_resources = ApiResource.where("name LIKE ?", "%#{params[:q]}%")
+    end
+    @api_resources = @api_resources.order("name ASC").limit(20)
+    data = @api_resources.map{ |group| {id: group.id, name: group.name} }
+    render json: data
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_api_resource

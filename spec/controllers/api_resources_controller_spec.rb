@@ -125,6 +125,14 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
+  describe 'Search for API Resources' do
+    it "should return API Resources according to supplied search string" do
+      api_resources = create_list(:api_resource, 3)
+      get :search, { q: "API" }
+      expect(JSON.parse(response.body)).to eq(api_resources.map{|m| {"id" => m.id, "name" => m.name}})
+    end
+  end
+
   describe "Authenticate" do
     it "should not authenticate if a user is member of API group" do
       user = create :user
