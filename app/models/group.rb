@@ -95,8 +95,6 @@ class Group < ActiveRecord::Base
     sysadmins.each do |sysadmin|
       user = User.find(sysadmin)
       sysadmins_login_ids << user.user_login_id
-      group = Group.find_by(name: user.user_login_id)
-      groups << group.group_response if group.present?
     end
 
     sysadmin_group = {}
@@ -112,6 +110,11 @@ class Group < ActiveRecord::Base
     sysadmin_group[:gr_passwd] = "x"
 
     groups << sysadmin_group
+
+    sysadmin_group[:gr_mem].each do |sysadmin_login_id|
+      group = Group.find_by(name: sysadmin_login_id)
+      groups << group
+    end
     groups.to_json
   end
 end
