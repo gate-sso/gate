@@ -27,4 +27,7 @@ host_machines_ready = ->
           return
       return
 
+  $('#group_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
+
 $(document).on('turbolinks:load', host_machines_ready)

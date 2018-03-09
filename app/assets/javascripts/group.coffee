@@ -27,6 +27,9 @@ group_ready = ->
           return
       return
 
+  $('#assign_admin_user_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
+
   $('#add_user_user_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -50,6 +53,9 @@ group_ready = ->
           callback res
           return
       return
+
+  $('#add_user_user_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
 
   $('#add_vpn_vpn_id').selectize
     maxItems: 1
@@ -75,6 +81,9 @@ group_ready = ->
           return
       return
 
+  $('#add_vpn_vpn_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
+
   $('#add_machine_machine_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -98,5 +107,8 @@ group_ready = ->
           callback res
           return
       return
+
+  $('#add_machine_machine_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
 
 $(document).on('turbolinks:load', group_ready)
