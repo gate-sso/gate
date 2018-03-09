@@ -19,8 +19,8 @@
                 .col
                   =  "#{admin.user.try(:name)}"
                 .col 
-                  - if (current_user.admin? or @group.admin?(current_user) ) and current_user.id != admin.user.id
-                    = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.name} ?"} 
+                  - if (current_user.admin? or @group.admin?(current_user) ) and current_user.id != admin.user.try(:id)
+                    = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.try(:name)} ?"} 
           .row
             .col
               = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
