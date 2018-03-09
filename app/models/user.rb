@@ -28,6 +28,8 @@ class User < ActiveRecord::Base
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
+  after_save :stamp_deactivation_time
+
   def name_email
     "#{name} (#{email})"
   end
@@ -348,5 +350,15 @@ class User < ActiveRecord::Base
 
   def group_admin?
     GroupAdmin.find_by_user_id(self.id).present?
+  end
+
+  private 
+
+  def stamp_deactivation_time
+    if self.active
+      self.update_column(:deactivated_at, nil)
+    else
+      self.update_column(:deactivated_at, DateTime.current) unless self.deactivated_at
+    end
   end
 end

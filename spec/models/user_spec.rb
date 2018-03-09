@@ -35,6 +35,12 @@ RSpec.describe User, type: :model do
     end
   end
 
+  it "should set deactivation time when user is deactivated" do
+    user = create(:user)
+    user.update!(active: false)
+    expect(user.deactivated_at).not_to be nil
+  end
+
   it "should check valid email address" do
     #email address always has 2 parts
     email_address = "satrya@gmail.com"
