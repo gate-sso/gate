@@ -55,6 +55,12 @@ class User < ActiveRecord::Base
     self.save!
   end
 
+  def purge!
+    if !self.active
+      self.group_associations.each{ |g| g.destroy }
+    end
+  end
+
   def self.includes_restricted_characters? input_string
     return false if input_string.include?('@') == false
     restricted_characters = [ ' ', '-', '*']

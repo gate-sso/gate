@@ -41,6 +41,16 @@ RSpec.describe User, type: :model do
     expect(user.deactivated_at).not_to be nil
   end
 
+  describe ".purge!" do
+    it "should remove group associations for inactive user" do
+      user = create(:user)
+      user.update!(active: false)
+      user.purge!
+      user.reload
+      expect(user.group_associations.length).to eq 0
+    end
+  end
+
   it "should check valid email address" do
     #email address always has 2 parts
     email_address = "satrya@gmail.com"
