@@ -49,6 +49,13 @@ RSpec.describe User, type: :model do
       user.reload
       expect(user.group_associations.length).to eq 0
     end
+
+    it "should NOT remove group associations for active user" do
+      user = create(:user)
+      user.purge!
+      user.reload
+      expect(user.group_associations.length).not_to eq 0
+    end
   end
 
   it "should check valid email address" do
