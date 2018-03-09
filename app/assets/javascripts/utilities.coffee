@@ -30,3 +30,11 @@
     success: (res) ->
       append_error_msg(elem, $.isEmptyObject(res), msg)
       return
+
+@set_allow_submit = (cond, elem) ->
+  curSubmit = $("input[type=submit]", $(elem).parents('form'))
+  if !!cond
+    curSubmit.prop("disabled", false)
+  else
+    curSubmit.prop('disabled', true)
+  return

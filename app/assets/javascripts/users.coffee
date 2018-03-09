@@ -27,4 +27,7 @@ users_ready = ->
           return
       return
 
+  $('#group_id').on 'change', ->
+    set_allow_submit($(this).val(), $(this))
+
 $(document).on('turbolinks:load', users_ready)
