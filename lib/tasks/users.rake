@@ -20,6 +20,23 @@ namespace :users do
     end
   end
 
+  desc "purge users whom have been deactivated for more than certain time"
+  task :purge_inactive, [:ignore_time] => :environment do |t, args|
+    users = User.
+      joins(:group_associations).
+      where(active: false).
+      where("group_associations.id IS NOT NULL")
+
+    if args[:ignore_time] != 'true'
+      users = users.where('deactivated_at <= :time_ago', time_ago: Time.now - 15.days)
+    end
+
+    users.each do |user|
+      puts "Purging #{user.name} - #{user.email}"
+      user.purge!
+    end
+  end
+
   task add_level1: :environment do
     require 'csv'
     group = Group.where(name: "gopay_kyc_lvl_1").first

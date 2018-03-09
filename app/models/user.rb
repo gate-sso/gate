@@ -28,6 +28,8 @@ class User < ActiveRecord::Base
   HOME_DIR = "/home"
   USER_SHELL = "/bin/bash"
 
+  after_save :stamp_deactivation_time
+
   def name_email
     "#{name} (#{email})"
   end
@@ -51,6 +53,12 @@ class User < ActiveRecord::Base
     self.uid = id + UID_CONSTANT
     self.user_login_id = self.email.split("@").first
     self.save!
+  end
+
+  def purge!
+    if !self.active
+      self.group_associations.each{ |g| g.destroy }
+    end
   end
 
   def self.includes_restricted_characters? input_string
@@ -348,5 +356,15 @@ class User < ActiveRecord::Base
 
   def group_admin?
     GroupAdmin.find_by_user_id(self.id).present?
+  end
+
+  private 
+
+  def stamp_deactivation_time
+    if self.active
+      self.update_column(:deactivated_at, nil)
+    else
+      self.update_column(:deactivated_at, DateTime.current) unless self.deactivated_at
+    end
   end
 end

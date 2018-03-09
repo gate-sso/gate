@@ -49,3 +49,4 @@ gem 'paper_trail'
 gem 'saml_idp', :git => "https://github.com/gate-sso/saml_idp.git"
 
 gem 'figaro'
+gem 'whenever', require: false
