@@ -25,7 +25,7 @@
             .col
               = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
             .col
-              = submit_tag "Assign admin", class: "form-control btn-md btn-primary"
+              = submit_tag "Assign admin", class: "form-control btn btn-md btn-primary", disabled: true
   a name="group_members"
   br
   .card
@@ -60,7 +60,7 @@
             .col
               = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
             .col
-              = submit_tag "Add User", class: "form-control btn-md btn-primary"
+              = submit_tag "Add User", class: "form-control btn-md btn-primary", disabled: true
 
   br
   .card
@@ -98,7 +98,7 @@
             .col
               = text_field_tag "vpn_id", "", id: "add_vpn_vpn_id", class: "form-control"
             .col
-              = submit_tag "Add Vpn", class: "form-control btn-md btn-primary"
+              = submit_tag "Add Vpn", class: "form-control btn-md btn-primary", disabled: true
   br
   .card
     .card-body
@@ -129,7 +129,7 @@
             .col
               = text_field_tag "machine_id", "", id: "add_machine_machine_id", class: "form-control"
             .col
-              = submit_tag "Add Host", class: "form-control btn-md btn-primary"
+              = submit_tag "Add Host", class: "form-control btn-md btn-primary", disabled: true
 
 javascript:
   $("#group-index").addClass("active");

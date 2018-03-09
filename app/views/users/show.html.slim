@@ -60,7 +60,7 @@
               .col
                 .row
                   .col
-                   = submit_tag "Add Group", class: "form-control btn-md btn-primary pull-right"
+                   = submit_tag "Add Group", class: "form-control btn-md btn-primary pull-right", disabled: true
                   .col
       = "No groups are associated with this user" if @user.groups.count == 0
   br
