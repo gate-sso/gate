@@ -13,6 +13,6 @@ RSpec.describe "api_resources/show", type: :view do
     render
     expect(rendered).to match(/Name/)
     expect(rendered).to match(/Description/)
-    expect(rendered).to match(/Access Key/)
+    expect(rendered).to match(/\*\*\*\*\*\*\*\*/)
   end
 end

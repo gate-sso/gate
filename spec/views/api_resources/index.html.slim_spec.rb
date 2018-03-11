@@ -20,6 +20,6 @@ RSpec.describe "api_resources/index", type: :view do
     render
     assert_select "tr>td", :text => "Name".to_s, :count => 1
     assert_select "tr>td", :text => "Description".to_s, :count => 2
-    assert_select "tr>td", :text => "Access Key".to_s, :count => 2
+    assert_select "tr>td", :text => "********".to_s, :count => 2
   end
 end
