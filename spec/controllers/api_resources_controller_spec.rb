@@ -160,12 +160,11 @@ RSpec.describe ApiResourcesController, type: :controller do
       user.access_token = access_token
       user.save!
       user.reload
-      access_token.reload
       group = create :group
       api_resource = ApiResource.create! valid_attributes
       api_resource.group = group
       api_resource.save!
-      get :authenticate, { access_key: valid_attributes[:access_key], access_token: user.access_token.token }, valid_session
+      get :authenticate, { access_key: valid_attributes[:access_key], access_token: access_token.token }, valid_session
       expect(response).not_to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 1
@@ -177,13 +176,12 @@ RSpec.describe ApiResourcesController, type: :controller do
       user.access_token = access_token
       user.save!
       user.reload
-      access_token.reload
       group = create :group
       api_resource = ApiResource.create! valid_attributes
       api_resource.group = group
       group.users << user
       api_resource.save!
-      get :authenticate, { access_key: valid_attributes[:access_key], access_token: user.access_token.token }, valid_session
+      get :authenticate, { access_key: valid_attributes[:access_key], access_token: access_token.token }, valid_session
       expect(response).to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 0
