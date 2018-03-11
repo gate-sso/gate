@@ -63,6 +63,22 @@ class UsersController < ApplicationController
     render json: data
   end
 
+  # GET /users/:id/regenerate_token
+  def regenerate_token
+    @user = User.find(params[:id])
+    @access_token = @user.access_token
+    @access_token.token = ROTP::Base32.random_base32
+    respond_to do |format|
+      if @access_token.save
+        format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: {token: @access_token.token} }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
   def form_response(message)
     respond_to do |format|

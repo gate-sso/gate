@@ -137,7 +137,7 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
+  describe "GET #regenerate_access_key" do
     it "regenerates access_key of the requested api_resource" do
       api_resource = ApiResource.create! valid_attributes
       old_hashed_access_key = api_resource.hashed_access_key
