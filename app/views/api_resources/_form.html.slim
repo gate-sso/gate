@@ -17,12 +17,5 @@
         | Description
       = f.text_field :description, required: true, class: "form-control", placeholder: "Description"
       .invalid-feedback
-    - if @api_resource.access_key
-      .mb-3
-        label for="access_key"
-          | Access Key
-        .alert.alert-warning role="alert"
-          | Important! please make note of this access key, you will only see it once.
-        = f.text_field :access_key, class: 'form-control', readonly: ""
     .mb-4
       = f.submit "Save", class: "btn btn-primary pull-right"

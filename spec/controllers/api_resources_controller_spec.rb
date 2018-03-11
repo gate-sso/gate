@@ -73,7 +73,7 @@ RSpec.describe ApiResourcesController, type: :controller do
 
       it "redirects to the created api_resource" do
         post :create, {:api_resource => valid_attributes}, valid_session
-        expect(response).to redirect_to(api_resources_url)
+        expect(response).to redirect_to(api_resource_path(assigns[:api_resource]))
       end
     end
 
