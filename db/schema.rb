@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180306231200) do
+ActiveRecord::Schema.define(version: 20180311082600) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "token",      limit: 255
@@ -23,13 +23,13 @@ ActiveRecord::Schema.define(version: 20180306231200) do
   add_index "access_tokens", ["user_id"], name: "fk_rails_96fc070778", using: :btree
 
   create_table "api_resources", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.string   "description", limit: 255
-    t.string   "access_key",  limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "user_id",     limit: 4
-    t.integer  "group_id",    limit: 4
+    t.string   "name",              limit: 255
+    t.string   "description",       limit: 255
+    t.string   "hashed_access_key", limit: 255
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "user_id",           limit: 4
+    t.integer  "group_id",          limit: 4
   end
 
   add_index "api_resources", ["group_id"], name: "index_api_resources_on_group_id", using: :btree
