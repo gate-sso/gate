@@ -9,14 +9,18 @@ RSpec.describe ApiResourcesController, type: :controller do
   let(:user) { FactoryBot.create(:user, name: "foobar", admin: true, user_login_id: "foobar", email: "foobar@foobar.com")  }
   let(:group) { FactoryBot.create(:group, name: "foobar_group") }
   let(:valid_attributes) do
-    {name: "sample_api", description: "sample_api_description",access_key: "xcz" , user_id: user, group_id: group}
+    {
+      name: "sample_api",
+      description: "sample_api_description",
+      access_key: "xcz",
+      user_id: user,
+      group_id: group
+    }
   end
-
 
   let(:invalid_attributes) {
     { name: "non sample api", description: 100}
   }
-
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -134,7 +138,7 @@ RSpec.describe ApiResourcesController, type: :controller do
   end
 
   describe "Authenticate" do
-    it "should not authenticate if a user is member of API group" do
+    it "should not authenticate if a user is NOT a member of API group" do
       user = create :user
       access_token = create :access_token
       user.access_token = access_token
@@ -151,8 +155,7 @@ RSpec.describe ApiResourcesController, type: :controller do
       expect(body["result"]).to eq 1
     end
 
-    it "should not authenticate if a user is NOT a member of API group" do
-
+    it "should authenticate if a user is member of API group" do
       user = create :user
       access_token = create :access_token
       user.access_token = access_token

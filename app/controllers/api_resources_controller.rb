@@ -1,6 +1,6 @@
 class ApiResourcesController < ApplicationController
   before_action :set_api_resource, only: [:show, :edit, :update, :destroy]
-  before_filter :authenticate_user!, :except => [:authenticate] 
+  before_filter :authenticate_user!, :except => [:authenticate]
 
   # GET /api_resources
   # GET /api_resources.json
@@ -26,7 +26,7 @@ class ApiResourcesController < ApplicationController
   # GET /api_resources/new
   def new
     @api_resource = ApiResource.new
-    @api_resource.access_key = ROTP::Base32.random_base32 
+    @api_resource.access_key = ROTP::Base32.random_base32
   end
 
   # GET /api_resources/1/edit
@@ -36,7 +36,6 @@ class ApiResourcesController < ApplicationController
   # POST /api_resources
   # POST /api_resources.json
   def create
-
     @api_resource = ApiResource.new(api_resource_params)
     @api_resource.user = current_user
     group = Group.create name: "#{@api_resource.name}_api_group"
