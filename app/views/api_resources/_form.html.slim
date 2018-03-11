@@ -17,9 +17,5 @@
         | Description
       = f.text_field :description, required: true, class: "form-control", placeholder: "Description"
       .invalid-feedback
-    .mb-3
-      label for="access_key" 
-        | Access Key
-      = f.text_field :access_key, required: true, class: 'form-control', readonly: ""
     .mb-4
       = f.submit "Save", class: "btn btn-primary pull-right"

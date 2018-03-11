@@ -1,6 +1,6 @@
 class ApiResourcesController < ApplicationController
-  before_action :set_api_resource, only: [:show, :edit, :update, :destroy]
-  before_filter :authenticate_user!, :except => [:authenticate] 
+  before_action :set_api_resource, only: [:show, :edit, :update, :destroy, :regenerate_access_key]
+  before_filter :authenticate_user!, :except => [:authenticate]
 
   # GET /api_resources
   # GET /api_resources.json
@@ -26,7 +26,6 @@ class ApiResourcesController < ApplicationController
   # GET /api_resources/new
   def new
     @api_resource = ApiResource.new
-    @api_resource.access_key = ROTP::Base32.random_base32 
   end
 
   # GET /api_resources/1/edit
@@ -36,8 +35,8 @@ class ApiResourcesController < ApplicationController
   # POST /api_resources
   # POST /api_resources.json
   def create
-
     @api_resource = ApiResource.new(api_resource_params)
+    @api_resource.access_key = ROTP::Base32.random_base32
     @api_resource.user = current_user
     group = Group.create name: "#{@api_resource.name}_api_group"
     @api_resource.group = group
@@ -45,7 +44,7 @@ class ApiResourcesController < ApplicationController
     group.save!
     respond_to do |format|
       if @api_resource.save
-        format.html { redirect_to api_resources_path, notice: 'Api resource was successfully created.' }
+        format.html { redirect_to api_resource_path(@api_resource.id), notice: 'Api resource was successfully created.', flash: {access_key: @api_resource.access_key} }
         format.json { render :show, status: :created, location: @api_resource }
       else
         format.html { render :new }
@@ -91,6 +90,20 @@ class ApiResourcesController < ApplicationController
     @api_resources = @api_resources.order("name ASC").limit(20)
     data = @api_resources.map{ |group| {id: group.id, name: group.name} }
     render json: data
+  end
+
+  # GET /api_resources/:id/regenerate_access_key
+  def regenerate_access_key
+    @api_resource.access_key = ROTP::Base32.random_base32
+    respond_to do |format|
+      if @api_resource.save
+        format.html { redirect_to api_resource_path(@api_resource.id), notice: 'Access key regenerated.', flash: {access_key: @api_resource.access_key} }
+        format.json { render :show, status: :ok, location: @api_resource }
+      else
+        format.html { redirect_to api_resource_path(@api_resource.id), notice: 'Access key failed to regenerate.' }
+        format.json { render json: @api_resource.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

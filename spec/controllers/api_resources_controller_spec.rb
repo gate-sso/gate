@@ -9,14 +9,18 @@ RSpec.describe ApiResourcesController, type: :controller do
   let(:user) { FactoryBot.create(:user, name: "foobar", admin: true, user_login_id: "foobar", email: "foobar@foobar.com")  }
   let(:group) { FactoryBot.create(:group, name: "foobar_group") }
   let(:valid_attributes) do
-    {name: "sample_api", description: "sample_api_description",access_key: "xcz" , user_id: user, group_id: group}
+    {
+      name: "sample_api",
+      description: "sample_api_description",
+      access_key: "xcz",
+      user_id: user,
+      group_id: group
+    }
   end
-
 
   let(:invalid_attributes) {
     { name: "non sample api", description: 100}
   }
-
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -69,7 +73,7 @@ RSpec.describe ApiResourcesController, type: :controller do
 
       it "redirects to the created api_resource" do
         post :create, {:api_resource => valid_attributes}, valid_session
-        expect(response).to redirect_to(api_resources_url)
+        expect(response).to redirect_to(api_resource_path(assigns[:api_resource]))
       end
     end
 
@@ -133,8 +137,24 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
+  describe "PUT #update" do
+    it "regenerates access_key of the requested api_resource" do
+      api_resource = ApiResource.create! valid_attributes
+      old_hashed_access_key = api_resource.hashed_access_key
+      get :regenerate_access_key, {:id => api_resource.to_param}, valid_session
+      api_resource.reload
+      expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+    end
+
+    it "redirects to the api_resource" do
+      api_resource = ApiResource.create! valid_attributes
+      get :regenerate_access_key, {:id => api_resource.to_param}
+      expect(response).to redirect_to(api_resource_path(api_resource.id))
+    end
+  end
+
   describe "Authenticate" do
-    it "should not authenticate if a user is member of API group" do
+    it "should not authenticate if a user is NOT a member of API group" do
       user = create :user
       access_token = create :access_token
       user.access_token = access_token
@@ -145,14 +165,13 @@ RSpec.describe ApiResourcesController, type: :controller do
       api_resource = ApiResource.create! valid_attributes
       api_resource.group = group
       api_resource.save!
-      get :authenticate, { access_key: api_resource.access_key, access_token: user.access_token.token }, valid_session
+      get :authenticate, { access_key: valid_attributes[:access_key], access_token: user.access_token.token }, valid_session
       expect(response).not_to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 1
     end
 
-    it "should not authenticate if a user is NOT a member of API group" do
-
+    it "should authenticate if a user is member of API group" do
       user = create :user
       access_token = create :access_token
       user.access_token = access_token
@@ -164,7 +183,7 @@ RSpec.describe ApiResourcesController, type: :controller do
       api_resource.group = group
       group.users << user
       api_resource.save!
-      get :authenticate, { access_key: api_resource.access_key, access_token: user.access_token.token }, valid_session
+      get :authenticate, { access_key: valid_attributes[:access_key], access_token: user.access_token.token }, valid_session
       expect(response).to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 0

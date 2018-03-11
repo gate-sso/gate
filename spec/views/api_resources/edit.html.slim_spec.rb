@@ -17,8 +17,6 @@ RSpec.describe "api_resources/edit", type: :view do
       assert_select "input#api_resource_name[name=?]", "api_resource[name]"
 
       assert_select "input#api_resource_description[name=?]", "api_resource[description]"
-
-      assert_select "input#api_resource_access_key[name=?]", "api_resource[access_key]"
     end
   end
 end

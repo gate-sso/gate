@@ -1,15 +1,32 @@
-p#notice = notice
+.container-fluid.col-md-4.col-md-offset-4
+  - if notice.present?
+    .alert.alert-primary role="alert"
+      #notice
+        = notice
+  br
+  h5 Show API
 
-p
-  strong Name:
-  = @api_resource.name
-p
-  strong Description:
-  = @api_resource.description
-p
-  strong Access key:
-  = @api_resource.access_key
-
-=> link_to 'Edit', edit_api_resource_path(@api_resource)
-'|
-=< link_to 'Back', api_resources_path
+  hr
+    .mb-3
+      label for="name"
+        | API Name
+      p.form-control-static
+        = @api_resource.name
+    .mb-3
+      label for="description"
+        | Description
+      p.form-control-static
+        = @api_resource.description
+    - if flash[:access_key]
+      .mb-3
+        label for="access_key"
+          | Access Key
+        .alert.alert-warning role="alert"
+          | Important! please make note of this access key, you will see it only this once.
+        = text_field_tag :access_key, flash[:access_key], class: 'form-control', readonly: ""
+    .mb-4
+      => link_to 'Edit', edit_api_resource_path(@api_resource)
+      '|
+      => link_to 'Regenerate Access Key', regenerate_access_key_api_resource_path(@api_resource), :data => {:confirm => 'Are you sure?'}
+      '|
+      =< link_to 'Back', api_resources_path
