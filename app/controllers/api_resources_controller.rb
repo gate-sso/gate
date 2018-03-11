@@ -1,5 +1,5 @@
 class ApiResourcesController < ApplicationController
-  before_action :set_api_resource, only: [:show, :edit, :update, :destroy]
+  before_action :set_api_resource, only: [:show, :edit, :update, :destroy, :regenerate_access_key]
   before_filter :authenticate_user!, :except => [:authenticate]
 
   # GET /api_resources
@@ -90,6 +90,20 @@ class ApiResourcesController < ApplicationController
     @api_resources = @api_resources.order("name ASC").limit(20)
     data = @api_resources.map{ |group| {id: group.id, name: group.name} }
     render json: data
+  end
+
+  # GET /api_resources/:id/regenerate_access_key
+  def regenerate_access_key
+    @api_resource.access_key = ROTP::Base32.random_base32
+    respond_to do |format|
+      if @api_resource.save
+        format.html { redirect_to api_resource_path(@api_resource.id), notice: 'Access key regenerated.', flash: {access_key: @api_resource.access_key} }
+        format.json { render :show, status: :ok, location: @api_resource }
+      else
+        format.html { redirect_to api_resource_path(@api_resource.id), notice: 'Access key failed to regenerate.' }
+        format.json { render json: @api_resource.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

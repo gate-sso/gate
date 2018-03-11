@@ -27,4 +27,6 @@
     .mb-4
       => link_to 'Edit', edit_api_resource_path(@api_resource)
       '|
+      => link_to 'Regenerate Access Key', regenerate_access_key_api_resource_path(@api_resource), :data => {:confirm => 'Are you sure?'}
+      '|
       =< link_to 'Back', api_resources_path

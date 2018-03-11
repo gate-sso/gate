@@ -105,6 +105,9 @@ Rails.application.routes.draw do
     collection do
       get 'search', format: :json
     end
+    member do
+      get 'regenerate_access_key'
+    end
   end
 
   get "api_resource/authenticate/:access_key/:access_token" => "api_resources#authenticate", as: "api_resource_authenticate"
