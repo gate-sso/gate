@@ -18,9 +18,11 @@
       .col
         b Your Access Token
       .col
-        pre
-          = "#{@user.access_token.token}"
-  
+        - if flash[:token]
+          .alert.alert-warning role="alert"
+            | Important! please make note of this token, you will see it only this once.
+          pre
+            = flash[:token]
 
   - if current_user.admin?
     .card

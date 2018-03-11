@@ -14,17 +14,20 @@ class UsersController < ApplicationController
 
     if @user.access_token.blank?
       access_token = AccessToken.new
-      access_token.token = ROTP::Base32.random_base32 
+      access_token.token = ROTP::Base32.random_base32
       access_token.user = @user
       access_token.save!
     end
+
     @vpns = Vpn.user_vpns @user
+
     if current_user.admin? || current_user == @user
       @groups = Group.all
       render_404 if @user.blank?
+
       if @user.present? && ( current_user.admin? || current_user.id == @user.id)
         respond_to do |format|
-          format.html
+          format.html { render :show, flash: {token: access_token.try(:token)} }
         end
       end
     end
@@ -52,8 +55,8 @@ class UsersController < ApplicationController
       order("name ASC").
       limit(20)
     data = @users.map{ |user| {
-      id: user.id, 
-      name: user.name, 
+      id: user.id,
+      name: user.name,
       email: user.email,
       name_email: "#{user.name} - #{user.email}"
     }}
