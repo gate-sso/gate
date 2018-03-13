@@ -92,6 +92,9 @@ Rails.application.routes.draw do
     collection do
       get 'search', format: :json
     end
+    member do
+      get 'regenerate_token'
+    end
   end
 
   resource :ping, only: [:show]

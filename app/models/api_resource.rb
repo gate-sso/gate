@@ -10,7 +10,7 @@ class ApiResource < ActiveRecord::Base
 
   def self.authenticate access_key, access_token
     api_resource = ApiResource.find_by(hashed_access_key: Digest::SHA512.hexdigest(access_key))
-    user = AccessToken.find_by(token: access_token).user
+    user = AccessToken.find_by(hashed_token: Digest::SHA512.hexdigest(access_token)).user
     api_resource.group.member? user
   end
 
