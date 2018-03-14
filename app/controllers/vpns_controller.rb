@@ -7,6 +7,8 @@ class VpnsController < ApplicationController
                                  :add_supplemental_match_domain, :remove_supplemental_match_domain, \
                                  :migrate_to_new_group, :assign_group]
 
+  before_filter :authenticate_user!
+
   require 'securerandom'
 
   def index

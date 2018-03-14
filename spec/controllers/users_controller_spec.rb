@@ -44,6 +44,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'Search for Users' do
     it "should return active users according to supplied search string" do
+      sign_in user
       users = create_list(:user, 3)
       users.last.update(active: false)
       users.pop

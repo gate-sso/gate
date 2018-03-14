@@ -32,7 +32,7 @@ namespace :users do
     end
 
     users.each do |user|
-      puts "Purging #{user.name} - #{user.email}"
+      puts "Purging #{user.name} - #{user.email}" if !Rails.env.test?
       user.purge!
     end
   end
