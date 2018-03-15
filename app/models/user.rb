@@ -320,7 +320,7 @@ class User < ActiveRecord::Base
     address_array = addresses.split
 
     user = User.get_user user_name
-    if user.permitted_vpns?(address_array)
+    if user.present? && user.permitted_vpns?(address_array)
       drift_interval = 30
       t = Time.now
       otps = []
