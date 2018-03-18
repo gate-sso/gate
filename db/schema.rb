@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180311161200) do
+ActiveRecord::Schema.define(version: 20180318083000) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "hashed_token", limit: 255
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20180311161200) do
     t.integer  "user_id",      limit: 4
   end
 
+  add_index "access_tokens", ["hashed_token"], name: "index_access_tokens_on_hashed_token", using: :btree
   add_index "access_tokens", ["user_id"], name: "fk_rails_96fc070778", using: :btree
 
   create_table "api_resources", force: :cascade do |t|
@@ -52,6 +53,8 @@ ActiveRecord::Schema.define(version: 20180311161200) do
     t.datetime "updated_at",           null: false
   end
 
+  add_index "group_associations", ["group_id", "user_id"], name: "index_group_associations_on_group_id_and_user_id", using: :btree
+
   create_table "groups", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.integer  "gid",         limit: 4
@@ -62,6 +65,7 @@ ActiveRecord::Schema.define(version: 20180311161200) do
     t.string   "description", limit: 255
   end
 
+  add_index "groups", ["gid"], name: "index_groups_on_gid", using: :btree
   add_index "groups", ["name"], name: "index_groups_on_name", unique: true, using: :btree
 
   create_table "host_access_groups", force: :cascade do |t|
@@ -71,6 +75,8 @@ ActiveRecord::Schema.define(version: 20180311161200) do
     t.datetime "updated_at",                null: false
   end
 
+  add_index "host_access_groups", ["host_machine_id", "group_id"], name: "index_host_access_groups_on_host_machine_id_and_group_id", using: :btree
+
   create_table "host_machines", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.datetime "created_at",             null: false
@@ -78,6 +84,8 @@ ActiveRecord::Schema.define(version: 20180311161200) do
     t.string   "api_key",    limit: 255
     t.string   "access_key", limit: 255
   end
+
+  add_index "host_machines", ["access_key"], name: "index_host_machines_on_access_key", using: :btree
 
   create_table "hosts", force: :cascade do |t|
     t.string   "host_pattern", limit: 255
@@ -144,6 +152,7 @@ ActiveRecord::Schema.define(version: 20180311161200) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["uid"], name: "index_users_on_uid", using: :btree
   add_index "users", ["user_login_id"], name: "index_users_on_user_login_id", using: :btree
 
   create_table "versions", force: :cascade do |t|
