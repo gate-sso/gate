@@ -13,7 +13,7 @@ class NssController < ApplicationController
     host_machine = HostMachine.find_by(access_key: params[:token])
     sysadmins = host_machine.sysadmins if host_machine.present?
 
-    if sysadmins.count > 0
+    if sysadmins.present? && sysadmins.count > 0
       @response = Group.get_sysadmins_and_groups sysadmins
     end
     render json: @response
@@ -66,7 +66,7 @@ class NssController < ApplicationController
     sysadmins = host_machine.sysadmins if host_machine.present?
 
 
-    if sysadmins.count > 0
+    if sysadmins.present? && sysadmins.count > 0
       @response = Group.get_sysadmins_and_groups sysadmins
     end
 
@@ -138,7 +138,7 @@ class NssController < ApplicationController
     host_machine = HostMachine.find_by(access_key: params[:token])
     sysadmins = host_machine.sysadmins if host_machine.present?
 
-    if sysadmins.count > 0
+    if sysadmins.present? && sysadmins.count > 0
       @response = User.get_sysadmins sysadmins
     end
 

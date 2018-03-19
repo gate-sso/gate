@@ -26,4 +26,5 @@ integration:
 
 production:
   <<: *default
+  pool: 16
   database: <%= Figaro.env.GATE_DB_NAME %>
