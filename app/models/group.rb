@@ -50,7 +50,7 @@ class Group < ActiveRecord::Base
     response = REDIS_CACHE.get(GROUP_ALL_RESPONSE)
     if response.blank?
       response_array = []
-      Group.all.each do |group|
+      Group.all.includes(:users).each do |group|
         response_array << group.group_response
       end
       response = response_array.to_json

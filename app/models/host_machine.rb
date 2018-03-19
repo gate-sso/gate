@@ -27,10 +27,10 @@ class HostMachine < ActiveRecord::Base
   end
 
   def sysadmins
-    users = []
-    groups.each do |group|
-      users = users + group.users.collect{|u| u.id}
-    end
+    users = GroupAssociation.
+      joins(:user).
+      where("group_id IN (?)", groups.collect(&:id)).
+      collect(&:user_id)
     users.uniq
   end
 
