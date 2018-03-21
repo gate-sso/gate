@@ -181,6 +181,16 @@ You might have to open rails console and give one user admin privileges by setti
 
 The puma logs are in `shared/log/puma.stdout.log`  and `shared/log/puma.stderr.log` and the app logs are in `log/<env>.log`, some errors may be being written directly to stdout/stderr and may not be available in the application's log file
 
+#### Newrelic Support
+
+If you want to enable Newrelic monitoring on your Gate deployment, you just have to create these additional keys on your environment variables:
+
+```
+NEWRELIC_LICENSE_KEY                - Your Newrelic license key
+NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
+NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to runs
+```
+
 #### Scheduler
 
 Gate has several tasks that can be scheduled for maintenance purpose. Please see `config/scheduler.rb` to see the list of tasks. 
