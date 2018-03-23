@@ -1,0 +1,29 @@
+common: &default_settings
+  # Required license key associated with your New Relic account.
+  license_key: <%= Figaro.env.NEWRELIC_LICENSE_KEY %>
+
+  # Your application name. Renaming here affects where data displays in New
+  # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
+  app_name: <%= Figaro.env.NEWRELIC_APP_NAME %>
+
+  # To disable the agent regardless of other settings, uncomment the following:
+  agent_enabled: <%= Figaro.env.NEWRELIC_AGENT_ENABLED || false %>
+
+  # Logging level for log/newrelic_agent.log
+  log_level: info
+
+
+# Environment-specific settings are in this section.
+# RAILS_ENV or RACK_ENV (as appropriate) is used to determine the environment.
+# If your application has other named environments, configure them here.
+development:
+  <<: *default_settings
+  app_name: <%= Figaro.env.NEWRELIC_APP_NAME + "(Development)" %>
+
+test:
+  <<: *default_settings
+  # It doesn't make sense to report to New Relic from automated test runs.
+  monitor_mode: false
+
+production:
+  <<: *default_settings

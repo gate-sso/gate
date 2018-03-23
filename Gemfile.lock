@@ -123,6 +123,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     mysql2 (0.4.10)
+    newrelic_rpm (4.8.0.341)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     nokogiri (1.8.2-java)
@@ -290,6 +291,7 @@ DEPENDENCIES
   jdbc-mysql
   jquery-rails
   mysql2
+  newrelic_rpm
   omniauth
   omniauth-google-oauth2
   paper_trail
