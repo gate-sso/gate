@@ -126,7 +126,6 @@ RSpec.describe NssController, type: :controller do
     body = JSON.parse(response.body)
     expect(body.count).to eq 1
     get "passwd", { token: host.access_key, format: :json }
-    require 'pry'; binding.pry
     body = JSON.parse(response.body)
     expect(body.count).to eq 1
   end
