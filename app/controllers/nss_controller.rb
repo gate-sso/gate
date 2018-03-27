@@ -36,12 +36,13 @@ class NssController < ApplicationController
 
   def group
     @response = REDIS_CACHE.get( "G:" + params[:token])
+    @response = JSON.parse(@response) if @response.present?
     if @response.blank?
       host_machine = HostMachine.find_by(access_key: params[:token])
       sysadmins = host_machine.sysadmins if host_machine.present?
       if sysadmins.present? && sysadmins.count > 0
         @response = Group.get_sysadmins_and_groups sysadmins
-        REDIS_CACHE.set( "G:" + params[:token], @response)
+        REDIS_CACHE.set( "G:" + params[:token], @response.to_json)
         REDIS_CACHE.expire( "G:" + params[:token], REDIS_KEY_EXPIRY * 60)
       end
     end
@@ -51,6 +52,7 @@ class NssController < ApplicationController
 
   def passwd
     @response = REDIS_CACHE.get( "P:" + params[:token])
+    @response = JSON.parse(@response) if @response.present?
     if @response.blank?
 
       host_machine = HostMachine.find_by(access_key: params[:token])
@@ -58,7 +60,7 @@ class NssController < ApplicationController
 
       if sysadmins.present? && sysadmins.count > 0
         @response = User.get_sysadmins sysadmins
-        REDIS_CACHE.set( "P:" + params[:token], @response)
+        REDIS_CACHE.set( "P:" + params[:token], @response.to_json)
         REDIS_CACHE.expire( "P:" + params[:token], REDIS_KEY_EXPIRY * 60)
       end
     end
