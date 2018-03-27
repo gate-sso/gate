@@ -36,7 +36,20 @@ class NssController < ApplicationController
 
   def group
     token = AccessToken.valid_token params[:token]
-    @reponse = nil
+    @response = REDIS_CACHE.get(HOST_GROUP_RESPONSE + params[:token])
+    if @response.blank?
+      host_machine = HostMachine.find_by(access_key: params[:token])
+      sysadmins = host_machine.sysadmins if host_machine.present?
+      if sysadmins.present? && sysadmins.count > 0
+        @response = Group.get_sysadmins_and_groups sysadmins
+        REDIS_CACHE.set(HOST_GROUP_RESPONSE + params[:token])
+        REDIS_CACHE.expire(HOST_GROUP_RESPONSE + params[:token], REDIS_KEY_EXPIRY * 60)
+      end
+    end
+    if @response.present?
+      render json: @response
+      return
+    end
 
     if token
       name = params[:name]
@@ -57,17 +70,6 @@ class NssController < ApplicationController
       if name.blank? and gid.blank?
         @response = Group.get_all_response if @response.blank?
       end
-
-      render json: @response
-      return
-    end
-
-    host_machine = HostMachine.find_by(access_key: params[:token])
-    sysadmins = host_machine.sysadmins if host_machine.present?
-
-
-    if sysadmins.present? && sysadmins.count > 0
-      @response = Group.get_sysadmins_and_groups sysadmins
     end
 
     render json: @response
