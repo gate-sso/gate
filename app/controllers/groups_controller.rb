@@ -60,6 +60,7 @@ class GroupsController < ApplicationController
 
       if @user.email.split('@').first != @group.name
         @user.groups.delete(@group)
+        @group.burst_host_cache
       end
 
     end
@@ -71,7 +72,7 @@ class GroupsController < ApplicationController
       user = User.find(params[:user_id])
       user.groups << @group if user.present? and user.groups.find_by_id(@group.id).blank?
       user.save!
-
+      @group.burst_host_cache
     end
 
     respond_to do |format|

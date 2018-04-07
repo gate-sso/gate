@@ -73,7 +73,7 @@ RSpec.describe NssController, type: :controller do
     expect(body[0]["gr_mem"].count).to eq 1
     expect(body[1]["gr_mem"].count).to eq 1
     expect(body[2]["gr_mem"].count).to eq 2
-   
+
     expect(Group.find_by(name: "random_group_01")).not_to eq nil
     expect(Group.find_by(name: "random_host_01_host_group")).not_to eq nil
 
@@ -98,11 +98,11 @@ RSpec.describe NssController, type: :controller do
     expect(body.count).to eq 2
     expect(body[0]["gr_mem"].count).to eq 1
     expect(body[1]["gr_mem"].count).to eq 1
-    
+
     expect(body[0]["gr_mem"][0]).to eq user.user_login_id
     expect(body[1]["gr_mem"][0]).to eq user.user_login_id
-    
-   
+
+
   end
 
   it "should return all the users for the host" do
@@ -128,6 +128,32 @@ RSpec.describe NssController, type: :controller do
     get "passwd", { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
     expect(body.count).to eq 1
+  end
+
+  it "should burst host machine cache if member is added or removed" do
+    group = create(:group)
+    user = create(:user)
+    host_machine = create(:host_machine)
+    host_machine.groups << group
+    user.groups << group
+    host_machine.save!
+
+    Group.all.each do |group|
+      group.burst_host_cache
+    end
+
+
+    cache_count_bfr = REDIS_CACHE.keys("*").count
+
+    get "group", { token: host_machine.access_key, format: :json }
+    cache_count_aft = REDIS_CACHE.keys("*").count
+
+    expect(cache_count_aft).to eq cache_count_bfr + 1
+    group.burst_host_cache
+
+    cache_count_aft = REDIS_CACHE.keys("*").count
+    expect(cache_count_aft).to eq cache_count_bfr 
+
   end
 
 

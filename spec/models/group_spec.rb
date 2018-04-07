@@ -46,4 +46,5 @@ RSpec.describe Group, type: :model do
     expect(host_response[:groups].count).to eq(1)
     expect(host_response[:groups][0]).to eq(group.name)
   end
+
 end
