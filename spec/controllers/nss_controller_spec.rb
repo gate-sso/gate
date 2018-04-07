@@ -142,7 +142,6 @@ RSpec.describe NssController, type: :controller do
       group.burst_host_cache
     end
 
-
     cache_count_bfr = REDIS_CACHE.keys("*").count
 
     get "group", { token: host_machine.access_key, format: :json }

@@ -5,7 +5,7 @@ gem 'devise'
 
 gem "paranoia"
 
-gem 'mysql2', platform: :ruby
+gem 'mysql2', '~> 0.3.18', platform: :ruby
 
 platform :jruby do
   gem 'activerecord', '4.2.8'
