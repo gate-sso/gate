@@ -31,8 +31,9 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS gate_test;'
   - gem install bundler
 script:
-  - bundle install --path .local
-  - bundle install --deployment
+  - bundle install --binstubs --path .local
+  - bundle install --deployment --binstubs
+  - bundle package --all-platforms
   - bundle exec rake db:migrate
   - bundle exec rake spec
   - bundle exec rake assets:precompile RAILS_ENV=production
