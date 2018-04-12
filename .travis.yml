@@ -46,6 +46,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: VWDGnrtrECoeJBATfe71HdpvnD15IKTkHWq/cQDfo9FTrm005ngTusQpW0eim76tSTMcJ1OBLoE9aAkd4Szi00TWenNPaAWHtgodcvNXxjqyZEtznRmtZW/vSk2H+iwJxJZoPDMZqStjmmSoD0dA1t2GLGltFzeJ5Y409YeroLUsVdRcTJY0mvQYbuLt1aZCu76gY5nB01yH7ib4ykZllJQbkyX57TKBYSLoQVUQ3hqo9BLUoROknHSfFGBHjSN9D3zIqKoh0XDOuTnyMHB+zMGmjjJbHMx5Z2eW1NW1HvpqDUOPl8uRnUEoCCfujA7OUlGgdadRBeUJObzpNkpQUNLEh5zIIr9NAZzjunzYkMiMZIseTNflJ6HOajld2Bcgz3PcbzM8hcIFog5loE7CBLWEzDoOIY/B75NYuHPIzRzTbgw7jf8XdfypCNMm0RLWiCXiDmuDMcNPZT9NrrheNGFz1CDmWkwpJmUTIv8J13J2Ux9ex1NY9iSRD8rgJ+bLOfp/u1nJWjACki8zq2/vffm2oUWz/R7q23Keq5Itddpe3mJUyFjokTUZPNSAlC45rF+rgK4ka7yJb+ZZAOaq/N8iIfVkgnfviWtaPQzAWRkO8J8Wzt1GrfQpNlo2BMM6Cpy0iV9ANYqAVYerImAopMWlzQmjbtt8P+xmmYA0FIw=
-  file: ./**/* 
+  file_glob: true  
+  file: ./**/*
   on:
     repo: gate-sso/gate
