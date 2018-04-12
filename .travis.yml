@@ -33,7 +33,7 @@ before_install:
 script:
   - bundle install --binstubs --path .local
   - bundle install --deployment --binstubs
-  - bundle package --all-platforms
+  - bundle package --all-platforms --all
   - bundle exec rake db:migrate
   - bundle exec rake spec
   - bundle exec rake assets:precompile RAILS_ENV=production
