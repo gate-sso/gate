@@ -2,7 +2,6 @@ sudo: required
 language: ruby
 rvm:
   - ruby-2.4.4
-  - jruby-9.1.7.0
 services:
   - redis-server
   - mysql
@@ -33,7 +32,7 @@ before_install:
 script:
   - bundle install --binstubs --path .local
   - bundle install --deployment --binstubs
-  - bundle package --all-platforms --all
+  - bundle package 
   - bundle exec rake db:migrate
   - bundle exec rake spec
   - bundle exec rake assets:precompile RAILS_ENV=production
