@@ -1,10 +1,11 @@
 sudo: required
 language: ruby
 rvm:
-- ruby-2.4.4
-- jruby-9.1.7.0
+  - ruby-2.4.4
+  - jruby-9.1.7.0
 services:
-- redis-server
+  - redis-server
+  - mysql
 env:
   global:
   - GATE_OAUTH_CLIENT_ID=totally_secret_client_id
@@ -27,24 +28,14 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - DOCKER_COMPOSE_VERSION=1.11.2
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS gate_test;'
 script:
   - bundle install --path .local
   - bundle install --deployment
-  - bundle exec rake db:drop db:create db:migrate
-  - bundle exec rake spec DB_NAME=gate_test
+  - bundle exec rake db:migrate
+  - bundle exec rake spec
   - bundle exec rake assets:precompile RAILS_ENV=production
 after_success:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - export REPO=sankalpsingh/gate
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
 before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "ajeygore"
