@@ -42,7 +42,7 @@ before_deploy:
   - git config --local user.email "ajeygore@gmail.com"
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
   - "rm -rf $TRAVIS_BUILD_DIR/*.tar.gz"
-  - "tar zcvf $TRAVIS_BUILD_DIR/$(git log --format=%h -1)-release.tar.gz $TRAVIS_BUILD_DIR/*"
+  - "tar zcvf release-$(git log --format=%h -1).tar.gz -C $TRAVIS_BUILD_DIR ."
 deploy:
   provider: releases
   skip_cleanup: true
