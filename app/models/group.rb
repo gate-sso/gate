@@ -24,9 +24,11 @@ class Group < ActiveRecord::Base
   def burst_host_cache
     if host_machines.count > 0
       host_machines.each do |host|
-        REDIS_CACHE.del ("G:" + host.access_key)
-        REDIS_CACHE.del ("P:" + host.access_key)
-        Rails.logger.info "hello #{host.name} #{host.access_key}"
+        if host.access_key.present?
+          REDIS_CACHE.del ("G:" + host.access_key)
+          REDIS_CACHE.del ("P:" + host.access_key)
+          Rails.logger.info "hello #{host.name} #{host.access_key}"
+        end
       end
     end
   end
