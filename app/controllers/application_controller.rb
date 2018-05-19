@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
       render json: {
         success: false,
         errors: ['Unauthorized']
-      }, status: 403
+      }, status: :unauthorized
     end
   end
 end
