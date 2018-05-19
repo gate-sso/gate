@@ -13,6 +13,7 @@ class Group < ActiveRecord::Base
   belongs_to :vpn
 
   validates_uniqueness_of :name, case_sensitive: false
+  validates :name, presence: true
 
   before_create :set_lower_case_name
   acts_as_paranoid

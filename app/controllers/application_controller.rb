@@ -16,6 +16,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_access_token!
-    head :unauthorized if !(AccessToken.valid_token params[:token])
+    unless AccessToken.valid_token(params[:token])
+      render json: {
+        success: false,
+        errors: ['Unauthorized']
+      }, status: 403
+    end
   end
 end

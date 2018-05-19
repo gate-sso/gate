@@ -79,4 +79,30 @@ RSpec.describe HostMachine, type: :model do
 
     end
   end
+
+  context 'add_group' do
+    let(:host_machine) { HostMachine.find_or_create_by(name: 'machine')  }
+    it 'should create groups given valid name and group_name' do
+      name = host_machine.name; group_name = "#{name}_group"
+      host_machine.add_groups(name, group_name)
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?("#{name}_host_group")).to eq(true)
+      expect(groups.include?(group_name)).to eq(true)
+      expect(host_machine.errors.blank?).to eq(true)
+    end
+
+    it 'shouldn\'t create group if name is blank' do
+      name = ''; group_name = "#{host_machine.name}_group"
+      expect {
+        host_machine.add_groups(name, group_name)
+      }.to raise_error { ActiveRecord::RecordInvalid }
+    end
+
+    it 'shouldn\'t create group if group name is blank' do
+      name = host_machine.name; group_name = ''
+      expect {
+        host_machine.add_groups(name, group_name)
+      }.to raise_error { ActiveRecord::RecordInvalid }
+    end
+  end
 end
