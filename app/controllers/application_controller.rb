@@ -17,10 +17,12 @@ class ApplicationController < ActionController::Base
 
   def authenticate_access_token!
     unless AccessToken.valid_token(params[:token])
-      render json: {
-        success: false,
-        errors: ['Unauthorized']
-      }, status: :unauthorized
+      render_error(['Unauthorized'], :unauthorized)
     end
+  end
+
+  def render_error(errors, status = 400)
+    render 'common/errors', locals: { errors: errors }, status: status
+    return
   end
 end

@@ -30,6 +30,13 @@ RSpec.describe NssController, type: :controller do
     expect(data["success"]).to eq(true)
   end
 
+  it 'it shouldn\'t return sysadmins for invalid token' do
+    json = { token: '', name: 'random_host', group_name: '', format: :json }
+    post 'add_host', json
+    body = response.body
+    expect(JSON.parse(body)['success']).to eq(false)
+  end
+
   it "should return sysadmins for that host" do
     sign_in user
     access_token = create(:access_token)

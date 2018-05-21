@@ -35,10 +35,17 @@ class HostMachine < ActiveRecord::Base
     users.uniq
   end
 
-  def add_groups(name, group_name)
-    host_group_name = name.blank? ? '' : "#{name}_host_group".downcase.squish
-    self.groups <<  Group.find_or_create_by(name: host_group_name)
-    self.groups <<  Group.find_or_create_by(name: group_name)
-    self.save
+  def add_host_group(name)
+    if name.squish.present?
+      name = "#{name.squish}_host_group"
+      self.add_group(name.squish.downcase)
+    end
+  end
+
+  def add_group(name)
+    if name.squish.present?
+      self.groups << Group.find_or_initialize_by(name: name.squish.downcase)
+      self.save
+    end
   end
 end

@@ -23,20 +23,17 @@ class NssController < ApplicationController
   end
 
   def add_host
-    begin
+    if params[:name].present?
       host = HostMachine.find_or_create_by(name: params[:name])
-      host.add_groups(params[:name], params[:group_name])
-      render json: {
-        success: true,
-        access_key: host.access_key,
-        host: host.name,
-        groups: host.groups.map(&:name)
-      }
-    rescue ActiveRecord::RecordInvalid
-      render json: {
-        success: false,
-        errors: host.errors
-      }
+      host.add_host_group(params[:name])
+      host.add_group(params[:group_name])
+      render 'add_host', locals: { host: host }, format: :json
+    else
+      errors = ['Name can\'t be blank']
+      if params.key?(:group_name) && params[:group_name].blank?
+        errors << 'Group Name can\'t be blank'
+      end
+      render_error(errors)
     end
   end
 
