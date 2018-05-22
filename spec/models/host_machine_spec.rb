@@ -79,4 +79,50 @@ RSpec.describe HostMachine, type: :model do
 
     end
   end
+
+  context 'add_host_group' do
+    let(:host_machine) { HostMachine.find_or_create_by(name: 'machine')  }
+    it 'should create host group given valid name' do
+      host_machine.add_host_group(host_machine.name)
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?("#{host_machine.name}_host_group")).to eq(true)
+      expect(host_machine.valid?).to eq(true)
+    end
+
+    it 'should create the group with all downcase' do
+      host_machine.add_host_group(host_machine.name.upcase)
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?("#{host_machine.name.downcase}_host_group")).to eq(true)
+    end
+
+    it 'shouldn\'t add the group if the name is invalid' do
+      host_machine.add_host_group('')
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?("")).to eq(false)
+      expect(groups.include?("_host_group")).to eq(false)
+    end
+  end
+
+  context 'add_group' do
+    let(:host_machine) { HostMachine.find_or_create_by(name: 'machine')  }
+    let(:group_name) { 'machine_group'  }
+    it 'should create host group given valid name' do
+      host_machine.add_group(group_name)
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?(group_name)).to eq(true)
+      expect(host_machine.valid?).to eq(true)
+    end
+
+    it 'should create the group with all downcase' do
+      host_machine.add_group(group_name.upcase)
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?(group_name.downcase)).to eq(true)
+    end
+
+    it 'shouldn\'t add the group if the name is invalid' do
+      host_machine.add_group('')
+      groups = host_machine.groups.map(&:name)
+      expect(groups.include?("")).to eq(false)
+    end
+  end
 end

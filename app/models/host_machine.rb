@@ -4,13 +4,14 @@ class HostMachine < ActiveRecord::Base
   has_many :host_access_groups
   has_many :groups, through: :host_access_groups
   validates_uniqueness_of :name, case_sensitive: false
+  validates :name, presence: true
 
   before_create :set_lower_case_name
   before_save :set_host_access_key
   before_create :set_host_access_key
 
   def set_host_access_key
-    self.access_key = ROTP::Base32.random_base32 
+    self.access_key = ROTP::Base32.random_base32
   end
 
   def set_lower_case_name
@@ -34,4 +35,17 @@ class HostMachine < ActiveRecord::Base
     users.uniq
   end
 
+  def add_host_group(name)
+    if name.squish.present?
+      name = "#{name.squish}_host_group"
+      self.add_group(name.squish.downcase)
+    end
+  end
+
+  def add_group(name)
+    if name.squish.present?
+      self.groups << Group.find_or_initialize_by(name: name.squish.downcase)
+      self.save
+    end
+  end
 end

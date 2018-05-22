@@ -1,5 +1,6 @@
 class NssController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
+  before_filter :authenticate_access_token!, only: %i[add_host]
 
   def host
     token =  AccessToken.valid_token params[:token]
@@ -22,16 +23,18 @@ class NssController < ApplicationController
   end
 
   def add_host
-    token =  AccessToken.valid_token params[:token]
-    if token
-      @response = HostMachine.find_or_create_by(name: params[:name]) if params[:name].present?
-      @group = Group.find_or_create_by(name: (params[:name] + "_host_group").downcase.squish ) if params[:group_name].present?
-      @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
-      @group = Group.find_or_create_by(name: params[:group_name] ) if params[:group_name].present?
-      @response.groups << @group  if @response.present? and @group.present? and @response.groups.find_by_id(@group.id).blank?
-      @response.save!
+    if params[:name].present?
+      host = HostMachine.find_or_create_by(name: params[:name])
+      host.add_host_group(params[:name])
+      host.add_group(params[:group_name])
+      render 'add_host', locals: { host: host }, format: :json
+    else
+      errors = ['Name can\'t be blank']
+      if params.key?(:group_name) && params[:group_name].blank?
+        errors << 'Group Name can\'t be blank'
+      end
+      render_error(errors)
     end
-    render json: @response
   end
 
   def group

@@ -30,11 +30,16 @@ RSpec.describe NssController, type: :controller do
     expect(data["success"]).to eq(true)
   end
 
-  it "should return sysadmins for that host" do 
+  it 'it shouldn\'t return sysadmins for invalid token' do
+    json = { token: '', name: 'random_host', group_name: '', format: :json }
+    post 'add_host', json
+    body = response.body
+    expect(JSON.parse(body)['success']).to eq(false)
+  end
 
+  it "should return sysadmins for that host" do
     sign_in user
     access_token = create(:access_token)
-
     json =  { token: access_token.token, name: "random_host_01" }
     post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
     body = response.body
@@ -151,7 +156,7 @@ RSpec.describe NssController, type: :controller do
     group.burst_host_cache
 
     cache_count_aft = REDIS_CACHE.keys("*").count
-    expect(cache_count_aft).to eq cache_count_bfr 
+    expect(cache_count_aft).to eq cache_count_bfr
 
   end
 
