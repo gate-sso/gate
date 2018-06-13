@@ -26,7 +26,9 @@
  * https://github.com/ladjs/bootstrap-social
  */
 @import "bootstrap-social";
-
+a.btn { color: white!important;  }
+.form-group .field_with_errors { display: block; background: none;  }
+.form-group .field_with_errors label::after { content: ' *'; color: red;  }
 body {
   font-family: 'Roboto', 'Lato', sans-serif;
 }
@@ -36,7 +38,7 @@ body {
   min-width: 768px;
 }
 
-a:visited { 
+a:visited {
     color: blue;
 }
 /* mouse over link */

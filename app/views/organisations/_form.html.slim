@@ -1,0 +1,16 @@
+- if flash.key?(:errors)
+  .alert.alert-danger#organisation_form_errors
+    b Issue creating application
+    br
+    - flash[:errors].each do |msg|
+      = "- #{msg}"
+      br
+.form-group
+  = f.label :name
+  = f.text_field :name, class: 'form-control'
+.form-group
+  = f.label :url
+  = f.text_field :url, class: 'form-control'
+.form-group
+  = f.label :email_domain
+  = f.text_field :email_domain, class: 'form-control'
