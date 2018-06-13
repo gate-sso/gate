@@ -1,16 +1,20 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+# Add additional requires below this line. Rails is not loaded until this point!
 require 'support/controller_helpers'
 require 'helpers/factory_girl'
-# Add additional requires below this line. Rails is not loaded until this point!
-
 require 'helpers/x509_certificate_helper'
-
+require 'webmock/rspec'
+require 'database_cleaner'
+require 'coveralls'
+require 'simplecov'
+require 'simplecov-console'
+require 'pry'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -84,6 +88,24 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+  Coveralls.wear!
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::Console])
+  SimpleCov.start
 end
 
 Shoulda::Matchers.configure do |config|
