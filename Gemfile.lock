@@ -1,13 +1,3 @@
-GIT
-  remote: https://github.com/gate-sso/saml_idp.git
-  revision: cd646cbb9baf9af05df87af33d5368c74713f46c
-  specs:
-    saml_idp (0.7.2)
-      activesupport (>= 3.2)
-      builder (>= 3.0)
-      nokogiri (>= 1.6.2)
-      uuid (>= 2.3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -130,8 +120,6 @@ GEM
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    macaddr (1.7.1)
-      systemu (~> 2.6.2)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
@@ -291,7 +279,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    systemu (2.6.5)
     temple (0.8.0)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -308,8 +295,6 @@ GEM
     uglifier (4.1.11)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.0)
-    uuid (2.3.9)
-      macaddr (~> 1.0)
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.3.0)
@@ -355,7 +340,6 @@ DEPENDENCIES
   rspec-rails
   rubocop
   rubocop-rspec
-  saml_idp!
   sass-rails
   sdoc
   shoulda-matchers
