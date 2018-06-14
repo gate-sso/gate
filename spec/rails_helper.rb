@@ -15,6 +15,9 @@ require 'simplecov'
 require 'simplecov-console'
 require 'pry'
 require 'capybara/rspec'
+require 'pry'
+require 'redis'
+require 'mock_redis'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -67,6 +70,10 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+  config.before(:each) do
+    mock_redis = MockRedis.new
+    allow(Redis).to receive(:new).and_return(mock_redis)
   end
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)

@@ -7,11 +7,7 @@ class ProfileController < ApplicationController
   prepend_before_filter :setup_user if Rails.env.development?
 
   def regen_auth
-    @user = current_user
-    @user.auth_key = ROTP::Base32.random_base32
-    totp = ROTP::TOTP.new(@user.auth_key)
-    @user.provisioning_uri = totp.provisioning_uri @user.email
-    @user.save!
+    current_user.generate_two_factor_auth
     redirect_to profile_path
   end
 

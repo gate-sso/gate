@@ -47,10 +47,9 @@ RSpec.describe UsersController, type: :controller do
       sign_in user
       users = create_list(:user, 3)
       users.last.update(active: false)
-      users.pop
-      get :search, { q: "TestUser" }
+      get :search, { q: users.first.name }
       returned_ids = JSON.parse(response.body).collect{|c| c['id']}
-      expect(returned_ids).to eq(users.collect(&:id))
+      expect(returned_ids).to eq([users.first.id])
     end
   end
 

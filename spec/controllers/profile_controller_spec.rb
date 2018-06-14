@@ -19,7 +19,6 @@ RSpec.describe ProfileController, type: :controller do
       user.reload
 
       expect(response.status).to eq(302)
-      expect(assigns(:user)).to eq(user)
       expect(auth_key).to_not eq(user.auth_key)
 
     end

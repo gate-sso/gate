@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe "users:purge_inactive" do
   before(:each) do
+    create(:user)
     @user = create(:user)
     @user.update!(active: false)
   end
