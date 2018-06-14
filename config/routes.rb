@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }, :path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
   devise_scope :user do
+    authenticated :user do
+      resources :organisations, except: %i(destroy)
+    end
+
     delete "/users/sign_out" => "devise/sessions#destroy"
     match 'download_vpn', to: 'profile#download_vpn', via: :get, format: :html
     match 'download_vpn_for_ios_and_mac', to: 'profile#download_vpn_for_ios_and_mac', via: :get, format: :html

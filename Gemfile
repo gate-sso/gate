@@ -17,7 +17,6 @@ gem 'puma'
 gem 'rails', '4.2.8'
 gem 'redis'
 gem 'rotp'
-gem 'saml_idp', git: 'https://github.com/gate-sso/saml_idp.git'
 gem 'sass-rails'
 gem 'sdoc', group: :doc
 gem 'slim-rails'
