@@ -1,6 +1,166 @@
 require 'rails_helper'
-UID_CONSTANT = 5000
 
+RSpec.describe User, type: :model do
+  let(:uid_constant) { 5000 }
+  describe 'generate_login_id' do
+    it 'should generate login id' do
+      user = build(:user)
+      expect(user.generate_login_id).to eq(user.email.split('@').first)
+    end
+  end
+
+  describe 'generate_uid' do
+    let(:user) { build(:user) }
+    it 'should generate uid' do
+      expect(user.generate_uid).to eq(uid_constant)
+    end
+
+    it 'should generate uid as the uid buffer if there are no records' do
+      user_new = create(:user)
+      expect(user_new.generate_uid).to eq(User.last.id + uid_constant)
+    end
+
+    it 'should use configured uid buffer rather than the default value' do
+      allow(Figaro.env).to receive(:uid_buffer).and_return(6000)
+      expect(user.generate_uid).to eq(6000)
+    end
+  end
+
+  describe 'initialize_host_and_group' do
+    let(:user) { build(:user) }
+    it 'should initialize host for the user' do
+      user.initialise_host_and_group
+      expect(user.hosts.size).to eq(1)
+    end
+
+    it 'should initialize group for the user' do
+      user.initialise_host_and_group
+      expect(user.groups.size).to eq(1)
+    end
+
+    it 'should set the host pattern if configured' do
+      allow(Figaro.env).to receive(:default_host_pattern).and_return('S*')
+      user.initialise_host_and_group
+      expect(user.hosts.first.host_pattern).to eq('S*')
+    end
+  end
+
+  describe 'create_user' do
+    it 'shouldn\'t create the user if email is already registered' do
+      user = create(:user)
+      User.create_user(user.name, user.email)
+      expect(User.where(email: user.email).size).to eq(1)
+    end
+
+    it 'should create admin user if its first user being created' do
+      user_data = attributes_for(:user)
+      user = User.create_user(user_data[:name], user_data[:email])
+      expect(user.admin).to eq(true)
+    end
+
+    it 'should generate login id' do
+      user_data = attributes_for(:user)
+      expect_any_instance_of(User).to receive(:generate_login_id)
+      User.create_user(user_data[:name], user_data[:email])
+    end
+
+    it 'should generate uid' do
+      user_data = attributes_for(:user)
+      expect_any_instance_of(User).to receive(:generate_uid)
+      User.create_user(user_data[:name], user_data[:email])
+    end
+
+    it 'should initialise host and group for user' do
+      user_data = attributes_for(:user)
+      expect_any_instance_of(User).to receive(:initialise_host_and_group)
+      User.create_user(user_data[:name], user_data[:email])
+    end
+  end
+
+  describe 'generate_two_factor_auth' do
+    let(:rotp_key) { ROTP::Base32.random_base32 }
+
+    before(:each) do
+      allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+    end
+
+    it 'shouldn\'t generate key if user is not created' do
+      user = build(:user)
+      user.generate_two_factor_auth
+      expect(user.auth_key.blank?).to eq(true)
+      expect(user.provisioning_uri.blank?).to eq(true)
+    end
+
+    it 'should generate auth_key' do
+      user = create(:user)
+      user.generate_two_factor_auth
+      expect(user.auth_key).to eq(rotp_key)
+    end
+
+    it 'should update provisioning url' do
+      user = create(:user)
+      user.generate_two_factor_auth
+      url = ROTP::TOTP.new(rotp_key).provisioning_uri "GoJek-C #{user.name}"
+      expect(user.provisioning_uri).to eq(url)
+    end
+  end
+
+  describe 'add_temp_user' do
+    let(:user_data) { attributes_for(:user) }
+    let(:rotp_key) { ROTP::Base32.random_base32 }
+    let(:domain) { 'test.com' }
+    before(:each) do
+      allow(Figaro.env).to receive(:gate_hosted_domain).and_return(domain)
+      allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+    end
+
+    it 'the email should be appended with the configured hosted domain' do
+      User.add_temp_user(user_data[:name], user_data[:email])
+      user = User.where(email: "#{user_data[:email]}@#{domain}").first
+      expect(user.present?).to eq(true)
+    end
+
+    it 'should generate auth_key' do
+      expect_any_instance_of(User).to receive(:generate_two_factor_auth)
+      User.add_temp_user(user_data[:name], user_data[:email])
+    end
+  end
+
+  describe 'update_profile' do
+    let(:user) { create(:user) }
+    it 'should update user profile' do
+      public_key = OpenSSL::PKey::RSA.new(2048).public_key.to_pem
+      attrs = { name: Faker::Name.name, admin: true, active: true, public_key: public_key }
+      user.update_profile(attrs)
+      expect(user.name).to eq(attrs[:name])
+      expect(user.admin).to eq(attrs[:admin])
+      expect(user.active).to eq(attrs[:active])
+      expect(user.public_key).to eq(attrs[:public_key])
+    end
+
+    it 'should update user profile only for public_key, name, product_name, admin and active' do
+      auth_key = ROTP::Base32.random_base32
+      user.update_profile(auth_key: auth_key)
+      expect(user.auth_key).not_to eq(auth_key)
+    end
+
+    it 'should update the deactivated_at date if user is made inactive' do
+      create(:user, admin: true)
+      Timecop.freeze
+      user.update_profile(active: false)
+      expect(user.deactivated_at).to eq(Time.current)
+    end
+
+    it 'shouldn\'t make the admin user a normal user if its only single admin user' do
+      user.update_profile(active: false)
+      p user.errors.messages
+      expect(user.errors.messages.key?(:admin)).to eq(true)
+      expect(user.valid?).to eq(false)
+    end
+  end
+end
+
+UID_CONSTANT = 5000
 RSpec.describe User, type: :model do
 
   before(:each) do
@@ -37,12 +197,13 @@ RSpec.describe User, type: :model do
 
   it "should set deactivation time when user is deactivated" do
     user = create(:user)
-    user.update!(active: false)
+    user.update_profile(active: false)
     expect(user.deactivated_at).not_to be nil
   end
 
   describe ".purge!" do
     it "should remove group associations for inactive user" do
+      create(:user)
       user = create(:user)
       user.update!(active: false)
       user.purge!

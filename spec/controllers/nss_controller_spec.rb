@@ -24,7 +24,7 @@ RSpec.describe NssController, type: :controller do
 
   it "should return group list for registered email" do
     create(:access_token, token: access_token)
-    create(:user, email: email)
+    user_test = create(:user, email: email)
     get :groups_list, token: access_token, email: email
     data = JSON.parse(response.body)
     expect(data["success"]).to eq(true)
