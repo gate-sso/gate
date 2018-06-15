@@ -7,7 +7,7 @@ class ProfileController < ApplicationController
   prepend_before_filter :setup_user if Rails.env.development?
 
   def regen_auth
-    current_user.generate_two_factor_auth
+    current_user.generate_two_factor_auth(true)
     redirect_to profile_path
   end
 
