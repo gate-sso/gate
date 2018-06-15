@@ -32,11 +32,11 @@ class User < ActiveRecord::Base
     groups << Group.find_or_initialize_by(name: user_login_id)
   end
 
-  def generate_two_factor_auth
-    if persisted?
+  def generate_two_factor_auth(force_create = false)
+    if persisted? && (force_create || (!force_create && auth_key.blank?))
       self.auth_key = ROTP::Base32.random_base32
       totp = ROTP::TOTP.new(auth_key)
-      self.provisioning_uri = totp.provisioning_uri "GoJek-C #{name}"
+      self.provisioning_uri = totp.provisioning_uri "GoJek-C #{email}"
       save!
     end
   end

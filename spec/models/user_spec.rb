@@ -79,9 +79,12 @@ RSpec.describe User, type: :model do
 
   describe 'generate_two_factor_auth' do
     let(:rotp_key) { ROTP::Base32.random_base32 }
+    let(:new_rotp_key) { ROTP::Base32.random_base32 }
 
-    before(:each) do
-      allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+    before(:each) do |ex|
+      unless ex.metadata[:skip_before]
+        allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+      end
     end
 
     it 'shouldn\'t generate key if user is not created' do
@@ -100,7 +103,31 @@ RSpec.describe User, type: :model do
     it 'should update provisioning url' do
       user = create(:user)
       user.generate_two_factor_auth
-      url = ROTP::TOTP.new(rotp_key).provisioning_uri "GoJek-C #{user.name}"
+      url = ROTP::TOTP.new(rotp_key).provisioning_uri "GoJek-C #{user.email}"
+      expect(user.provisioning_uri).to eq(url)
+    end
+
+    it 'shouldn\'t generate the token if it\'s already generated', skip_before: true do
+      user = create(:user)
+      allow(ROTP::Base32).to receive(:random_base32).and_return(new_rotp_key)
+      url = ROTP::TOTP.new(new_rotp_key).provisioning_uri "GoJek-C #{user.email}"
+      user.generate_two_factor_auth
+      allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+      user.generate_two_factor_auth
+      user.reload
+      expect(user.auth_key).to eq(new_rotp_key)
+      expect(user.provisioning_uri).to eq(url)
+    end
+
+    it 'should generate the token if its already generated and force_generate is true',
+      skip_before: true do
+      user = create(:user)
+      allow(ROTP::Base32).to receive(:random_base32).and_return(new_rotp_key)
+      url = ROTP::TOTP.new(new_rotp_key).provisioning_uri "GoJek-C #{user.email}"
+      user.generate_two_factor_auth true
+      allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+      user.generate_two_factor_auth
+      expect(user.auth_key).to eq(rotp_key)
       expect(user.provisioning_uri).to eq(url)
     end
   end
