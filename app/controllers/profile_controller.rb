@@ -15,9 +15,7 @@ class ProfileController < ApplicationController
     redirect_to profile_path
   end
 
-  def show
-
-  end
+  def show; end
 
   def user_admin
     @users = []
@@ -186,10 +184,7 @@ class ProfileController < ApplicationController
     redirect_to user_path
   end
 
-  def user_edit
-
-
-  end
+  def user_edit; end
 
   def public_key_update
     @user = User.where(id: params[:id]).first

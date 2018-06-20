@@ -358,7 +358,7 @@ class User < ActiveRecord::Base
     GroupAdmin.find_by_user_id(self.id).present?
   end
 
-  private 
+  private
 
   def stamp_deactivation_time
     if self.active
