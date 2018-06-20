@@ -7,7 +7,5 @@ class HomeController < ApplicationController
     redirect_to profile_path if signed_in?
   end
 
-  def index
-
-  end
+  def index; end
 end

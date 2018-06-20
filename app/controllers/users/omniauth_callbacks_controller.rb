@@ -5,10 +5,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     #
     data = request.env['omniauth.auth']
     domain = data['info']['email'].split('@').last
+
     unless User.valid_domain? domain
       return render text: 'Your domain is unauthorized', status: :unauthorized
     end
     @user = User.create_user(data.info['name'], data.info['email'])
+
     if @user.persisted?
       @user.generate_two_factor_auth
       sign_in_and_redirect @user, event: :authentication
