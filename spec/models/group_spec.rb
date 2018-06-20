@@ -12,9 +12,8 @@ RSpec.describe Group, type: :model do
   end
 
   it "should provide name response" do
-    group = create(:group)
     user = create(:user)
-    group_response = Group.get_name_response group.name
+    group_response = Group.get_name_response user.groups.first.name
     expect(group_response.count).to eq(4)
     expect(group_response[:gr_mem].count).to eq(1)
     expect(group_response[:gr_mem][0]).to eq(user.user_login_id)
@@ -31,6 +30,8 @@ RSpec.describe Group, type: :model do
   it "should provide correct gid response even if we add a machine to grouo" do
     group = create(:group)
     user = create(:user)
+    user.groups << group
+    user.save
     host_machine = create(:host_machine)
     host_machine.groups << group
     host_machine.save!
@@ -41,7 +42,6 @@ RSpec.describe Group, type: :model do
     expect(group_response[:gr_mem][0]).to eq(user.user_login_id)
 
     host_response = HostMachine.get_group_response host_machine.name
-
     expect(host_machine.groups.count).to eq(1)
     expect(host_response[:groups].count).to eq(1)
     expect(host_response[:groups][0]).to eq(group.name)

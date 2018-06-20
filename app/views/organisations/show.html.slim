@@ -1,0 +1,8 @@
+.container.col-md-8
+  .row.mb-3.mt-2
+    .col-md-12
+      h5 Update Organisation
+  hr
+  = form_for(org) do |f|
+    = render partial: 'form', locals: {f: f}
+    = f.submit 'Update Organisation', class: 'btn btn-primary mb-2'

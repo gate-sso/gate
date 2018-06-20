@@ -3,9 +3,9 @@ class ::Api::V1::UsersController < ApiController
   def create
     user = user_params
     if User.add_temp_user user[:name], user[:email]
-      render json: { status: "created"}, status: :ok
+      render json: { status: 'created' }, status: :ok
     else
-      render json: { status: "error"}, status: :unprocessable_entity
+      render json: { status: 'error' }, status: :unprocessable_entity
     end
   end
 
@@ -25,12 +25,15 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def update
-    attrs = params.select { |k,v| %w(public_key name product_name).include?(k) }
     @user = current_user
-    render json: { success: @user.update_profile(attrs) }
+    render json: { success: @user.update_profile(user_params) }
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :public_key, :product_name)
+    if params.key?(:user)
+      params.require(:user).permit(:name, :email, :public_key, :product_name)
+    else
+      params.permit(:name, :email, :public_key, :product_name)
+    end
   end
 end

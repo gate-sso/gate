@@ -96,11 +96,10 @@ class NssController < ApplicationController
     render json: @response
   end
 
-
   def groups_list
-    token =  AccessToken.valid_token params[:token]
+    token = AccessToken.valid_token params[:token]
     if token
-      user = User.get_user(params[:email].split("@").first)
+      user = User.get_user(params[:email].split('@').first)
       if user.blank?
         render json: { success: false }
       else

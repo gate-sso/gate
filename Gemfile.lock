@@ -1,13 +1,3 @@
-GIT
-  remote: https://github.com/gate-sso/saml_idp.git
-  revision: cd646cbb9baf9af05df87af33d5368c74713f46c
-  specs:
-    saml_idp (0.7.2)
-      activesupport (>= 3.2)
-      builder (>= 3.0)
-      nokogiri (>= 1.6.2)
-      uuid (>= 2.3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -40,23 +30,31 @@ GEM
       activemodel (= 4.2.8)
       activesupport (= 4.2.8)
       arel (~> 6.0)
-    activerecord-jdbc-adapter (1.3.24)
-      activerecord (>= 2.2, < 5.0)
     activesupport (4.2.8)
       i18n (~> 0.7)
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
+    ansi (1.5.0)
     arel (6.0.4)
-    autoprefixer-rails (8.2.0)
+    ast (2.4.0)
+    autoprefixer-rails (8.6.2)
       execjs
-    bcrypt (3.1.11)
-    bcrypt (3.1.11-java)
+    bcrypt (3.1.12)
     bootstrap (4.0.0)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
+    capybara (3.2.1)
+      addressable
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      xpath (~> 3.1)
     chronic (0.10.2)
     coderay (1.1.2)
     coffee-rails (4.2.2)
@@ -67,8 +65,16 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
-    concurrent-ruby (1.0.5-java)
+    coveralls (0.7.2)
+      multi_json (~> 1.3)
+      rest-client (= 1.6.7)
+      simplecov (>= 0.7)
+      term-ansicolor (= 1.2.2)
+      thor (= 0.18.1)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     crass (1.0.4)
+    database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     devise (4.4.3)
       bcrypt (~> 3.0)
@@ -77,56 +83,60 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.3)
+    docile (1.3.1)
     erubis (2.7.0)
     execjs (2.7.0)
-    factory_bot (4.8.2)
+    factory_bot (4.10.0)
       activesupport (>= 3.0.0)
-    factory_bot_rails (4.8.2)
-      factory_bot (~> 4.8.2)
+    factory_bot_rails (4.10.0)
+      factory_bot (~> 4.10.0)
       railties (>= 3.0.0)
     faker (1.8.7)
       i18n (>= 0.7)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.23)
-    ffi (1.9.23-java)
+    ffi (1.9.25)
     figaro (1.1.1)
       thor (~> 0.14)
     font-awesome-rails (4.7.0.4)
       railties (>= 3.2, < 6.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    hashdiff (0.3.7)
     hashie (3.5.7)
+    hirb (0.7.3)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
+    jaro_winkler (1.5.1)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
-    jdbc-mysql (5.1.44)
-    jquery-rails (4.3.1)
+    jquery-rails (4.3.3)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    json (2.1.0)
     jwt (1.5.6)
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    macaddr (1.7.1)
-      systemu (~> 2.6.2)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
+    mock_redis (0.18.0)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     mysql2 (0.3.21)
-    newrelic_rpm (5.0.0.342)
+    newrelic_rpm (5.2.0.345)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
-    nokogiri (1.8.2-java)
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.13)
       jwt (~> 1.0)
@@ -144,22 +154,24 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
-    paper_trail (9.0.0)
+    paper_trail (9.2.0)
       activerecord (>= 4.2, < 5.3)
+      paper_trail-association_tracking (< 2)
       request_store (~> 1.1)
+    paper_trail-association_tracking (1.0.0)
+    parallel (1.12.1)
     paranoia (2.4.1)
       activerecord (>= 4.0, < 5.3)
+    parser (2.5.1.0)
+      ast (~> 2.4.0)
     popper_js (1.12.9)
+    powerpack (0.1.2)
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    pry (0.11.3-java)
-      coderay (~> 1.1.0)
-      method_source (~> 0.9.0)
-      spoon (~> 0.0)
+    public_suffix (3.0.2)
     puma (3.11.4)
-    puma (3.11.4-java)
-    rack (1.6.9)
+    rack (1.6.10)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.8)
@@ -186,17 +198,20 @@ GEM
       activesupport (= 4.2.8)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    rainbow (3.0.0)
     rake (12.3.1)
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
-    rdoc (6.0.3)
+    rdoc (6.0.4)
     redis (4.0.1)
     request_store (1.4.1)
       rack (>= 1.4)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rotp (3.3.1)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
@@ -215,6 +230,18 @@ GEM
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
+    rubocop (0.57.2)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.5)
+      powerpack (~> 0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    rubocop-rspec (1.27.0)
+      rubocop (>= 0.56.0)
+    ruby-progressbar (1.9.0)
+    safe_yaml (1.0.4)
     sass (3.5.6)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -230,6 +257,15 @@ GEM
       rdoc (>= 5.0)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
+    simplecov (0.16.1)
+      docile (~> 1.1)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-console (0.4.2)
+      ansi
+      hirb
+      simplecov
+    simplecov-html (0.10.2)
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
@@ -237,8 +273,6 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (~> 3.0)
-    spoon (0.0.6)
-      ffi
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -246,50 +280,54 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    systemu (2.6.5)
     temple (0.8.0)
-    therubyrhino (2.0.4)
-      therubyrhino_jar (>= 1.7.3)
-    therubyrhino_jar (1.7.6)
-    thor (0.20.0)
+    term-ansicolor (1.2.2)
+      tins (~> 0.8)
+    thor (0.18.1)
     thread_safe (0.3.6)
-    thread_safe (0.3.6-java)
     tilt (2.0.8)
+    timecop (0.9.1)
+    tins (0.13.2)
     turbolinks (5.1.1)
       turbolinks-source (~> 5.1)
     turbolinks-source (5.1.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.9)
+    uglifier (4.1.11)
       execjs (>= 0.3.0, < 3)
-    uuid (2.3.8)
-      macaddr (~> 1.0)
+    unicode-display_width (1.4.0)
     warden (1.2.7)
       rack (>= 1.0)
     web-console (3.3.0)
       activemodel (>= 4.2)
       debug_inspector
       railties (>= 4.2)
+    webmock (3.4.2)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
     whenever (0.10.0)
       chronic (>= 0.6.3)
+    xpath (3.1.0)
+      nokogiri (~> 1.8)
 
 PLATFORMS
-  java
   ruby
 
 DEPENDENCIES
-  activerecord (= 4.2.8)
-  activerecord-jdbc-adapter (~> 1.3.2)
   bootstrap (~> 4.0.0)
+  capybara
   coffee-rails
+  coveralls
+  database_cleaner
   devise
   factory_bot_rails
   faker
   figaro
   font-awesome-rails
   jbuilder
-  jdbc-mysql
   jquery-rails
+  mock_redis
   mysql2 (~> 0.3.18)
   newrelic_rpm
   omniauth
@@ -302,16 +340,20 @@ DEPENDENCIES
   redis
   rotp
   rspec-rails
-  saml_idp!
+  rubocop
+  rubocop-rspec
   sass-rails
   sdoc
   shoulda-matchers
+  simplecov
+  simplecov-console
   slim-rails
-  therubyrhino
+  timecop
   turbolinks
   uglifier
   web-console
+  webmock
   whenever
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

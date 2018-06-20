@@ -11,7 +11,7 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 
 1. Setup OpenVPN with Gate's authentication.
 2. Automatically create VPN profiles for each of the users.
-3. Provide you with JaSig CAS Custom Authentication Handler to authenticate with Gate SSO and in turn enabliing MFA for JaSig CAS.
+3. Provide you with JaSig CAS Custom Authentication Handler to authenticate with Gate SSO and in turn enabling MFA for JaSig CAS.
 4. Enable Linux authentication with gate-pam - which sits like small module with Linux and allow authentication.
 5. Enable Name Service Switch on Linux - so that Gate User's can be discovered and authenticated on Linux.
 6. **Access Control on Linux** Gate also allows you to control access to specific machines, like which hosts a user can login. And that can be controlled by reg-ex pattern on host name or IP addresses. Please note pattern * matches everything.
@@ -20,124 +20,35 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 
 ### Setup
 
-Gate is a Rails application, compatible with JRuby.
 
-#### Local
-
+#### Initializing Your Application
 * Checkout gate
 * Run `bundle install --path .local`
-* Setup below environment variables
+* Run `rake app:init` to copy your environment file (we use Figaro to manage environment variables)
 
-```
-GATE_OAUTH_CLIENT_ID                - Your OAuth client key
-GATE_OAUTH_CLIENT_SECRET            - Your OAUTH client secret
-GATE_HOSTED_DOMAINS                 - The hosted domains for gmail (comma separated)
-GATE_HOSTED_DOMAIN                  - The hosted domain for Gate
-GATE_SERVER_URL                     - Gate server FQDN
-GATE_CONFIG_SECRET                  - Ruby required config secret key in production environment
-GATE_EMAIL_DOMAIN                   - Your company's domain for email address
-GATE_URL                            - Gate FQDN
-GATE_ORGANIZATION_NAME              - Organization name to be reflected in vpn mobileconfig
-GATE_ORGANIZATION_STATIC            - Organization static to be reflected in vpn mobileconfig
-GATE_VPN_SSL_PVTKEY                 - Private key for signing vpn mobileconfig
-GATE_VPN_SSL_CERT                   - SSL key for signing vpn mobileconfig
-GATE_VPN_SSL_XSIGNED                - Cross signed key for signing vpn mobileconfig
-PRODUCT_LIST                        - comma separated product list
-CACHE_PORT                          - redis port
-CACHE_HOST                          - redis host
-GATE_DB_HOST                        - Mysql db host
-GATE_DB_PORT                        - Mysql db port
-GATE_DB_USER                        - Mysql db user
-GATE_DB_PASSWORD                    - Mysql db password
-```
+#### Setting up your Environment Variables
+* Setup your database (mysql) and update the following values (GATE_DB_HOST, GATE_DB_PORT, GATE_DB_USER, GATE_DB_PASSWORD)
+* Setup your cache (redis) and update the following values (CACHE_DB, CACHE_HOST)
+* Add dummy values to `PRODUCT_LIST`, can be any string (we would be removing this soon)
+* Configuring oAuth
+  * Head to https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[ACCOUNT-ID]
+ to setup your oAuth credentials, you might need to enable **Google+**
+  * If you are running on `localhost:3000`, specify that for the `Authorized Javascript Origins` and `Authorized Redirect URIs` following which you can generate your client_id and client_secret
+  * Update the client_id and client_secret to `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
+  * Update your `GATE_SERVER_URL` to `http://localhost:3000`
+  * Specify your email domain for `GATE_EMAIL_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if you are your email address is  `test123@gmail.com` then the values would be `gmail.com`
 
-* (OPTIONAL) Setup below environment variables if you want to integrate SAML into gate
-> **NOTE** We will be automating the integration for SAML Service Providers through rake task/UI.
-```
-ENABLE_SAML                         - [Default to false] Set true to enable SAML
-GATE_SAML_IDP_ORGANIZATION_NAME     - company name. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_ORGANIZATION_URL      - company website url. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_RESPONSE_EXPIRY       - response timeout in seconds. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_SESSION_EXPIRY        - session timeout in seconds. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_X509_CERTIFICATE      - x509 cert. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_SECRET_KEY            - x509 key. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_FINGERPRINT           - x509 fingerprint. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_DATA_DOG_SSO_URL      - datadog service provider sso url. Required if ENABLE_SAML is set to true
-GATE_SAML_IDP_DATA_DOG_METADATA_URL - datadog service provider metadata url. Required if ENABLE_SAML is set to true
-```
+#### Finishing Setup
+To finish with your setup you just need to run `rake app:setup` this would setup your database and also run the inital set of tests to make sure you have a successful setup.
 
-* Run bundle exec rake db:create db:migrate db:seed
-* Run bundle exec rake spec
-* Setup gate with ruby/jruby in your favorite way, we recommend puma/nginx
-* We will be including installation script or packages for this soon
-
+#### Additional Steps
 Once Gate is setup, sign up with your user and you should see welcome page with a VPN profile download and VPN MFA Scanning.
 
 If you want gate to setup VPN for your, then just install OpenVPN with easy rsa, Gate should just work fine with it.
 
 > **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
 
-### Setting Up with Google Authentication
-
-You want to sign into the Google Cloud Console URL for the project and enabling Google+
-
-```
-https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[ACCOUNT-ID]
-```
-
-Once you click activate, go to the following link
-
-```
-https://console.developers.google.com/apis/credentials?project=[ACCOUNT-ID]
-```
-
-Click `Create credentials > Client ID` and select Web Application
-
-In `Authorized Javascript origins` put the your server url
-In `Authorized Redirect URIs` put `<server url>/users/auth/google_oauth2/callback`
-
-You can then put the clientId and clientSecret in the appropriate variables in `.env`
-
-### Creating self signed x509 certificate for datadog SAML setup
-Please run the following commands to generate certificate and key. You need to have openssl installed on your local System.
-```
-openssl genrsa -des3 -passout pass:x -out /tmp/server.pass.key 2048 && \
-    openssl rsa -passin pass:x -in /tmp/server.pass.key -out /tmp/server.key && \
-    rm /tmp/server.pass.key
-```
-
-```
-    openssl req -new -key /tmp/server.key -out /tmp/server.csr -subj "/C=UK/ST=Warwickshire/L=Leamington/O=Test/OU=Example/CN=test-example.com"
-```
-> **NOTE** Please use appropriate values in place of C[Country Code], ST[State/Province], L[Location], O[Organization Name], OU[Organization Unit Name], CN[Company Domain Name]
-
-```
-    openssl x509 -req -days 365 -in /tmp/server.csr -signkey /tmp/server.key -out /tmp/server.crt
-```
-Use /tmp/server.crt for `GATE_SAML_IDP_X509_CERTIFICATE` and /tmp/server.key for `GATE_SAML_IDP_SECRET_KEY`
-
-please run the following command to generate fingerprint[GATE_SAML_IDP_FINGERPRINT]
-```
-openssl x509 -in /tmp/server.crt -noout -sha256 -fingerprint
-```
-
-
-
-#### Local dockerised setup
-
-* Checkout gate
-* Run `make init` to setup `.env` file.
-* Setup proper env variable values in `.env` file.
-* Run `make all` to build, run and run migrations
-* Run `make rpsec` or `make rspec <filename:line_no>` for running specs.
-* Run `make routes` to list all the routes.
-* Run `make shell` for shell access to app server.
-* Run `make logs` to view logs of web container.
-* Run `make kill` to remove daemonised containers.
-
-
 ### Modules
-
 * pam_gate - for Linux/Unix
 * nss_gate - for Linux Name Service Switch
 * cas_gate - for JaSig CAS Server
@@ -145,9 +56,7 @@ openssl x509 -in /tmp/server.crt -noout -sha256 -fingerprint
 * ssh_gate
 
 ### Setting up public key lookup
-
 Given user has uploaded public key into gate
-
 * Add following lines to your sshd_config - It's located at `/etc/ssh/sshd_config` on most linux distros
 
 ```
@@ -158,15 +67,14 @@ AuthorizedKeysCommandUser nobody
 
 ```
 #!/bin/sh
-
 /usr/bin/curl -k --silent "https://<gate server name or IP>/profile/$1/key"
 ```
 
 > **Please Note** Adjust URL for GateServer and test by executing `gate_ssh.sh <username>` to see if this prints the public key
 
 
-### Administration
 
+### Administration
 You might have to open rails console and give one user admin privileges by setting up `user.admin = true` in console. Then Gate will open up Administration URL for you. You can do following with Gate's admin web UI
 
 * Enable/Disable User account
@@ -178,11 +86,9 @@ You might have to open rails console and give one user admin privileges by setti
 
 
 #### Logs
-
 The puma logs are in `shared/log/puma.stdout.log`  and `shared/log/puma.stderr.log` and the app logs are in `log/<env>.log`, some errors may be being written directly to stdout/stderr and may not be available in the application's log file
 
 #### Newrelic Support
-
 If you want to enable Newrelic monitoring on your Gate deployment, you just have to create these additional keys on your environment variables:
 
 ```
@@ -192,7 +98,6 @@ NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to 
 ```
 
 #### Scheduler
-
-Gate has several tasks that can be scheduled for maintenance purpose. Please see `config/scheduler.rb` to see the list of tasks. 
+Gate has several tasks that can be scheduled for maintenance purpose. Please see `config/scheduler.rb` to see the list of tasks.
 
 You may have to run `whenever --update-crontab` to update cronjob so that it run these tasks. Gate utilize `whenever` gem for maintaining scheduled tasks, which in turn utilize cronjob as its backend.

@@ -1,0 +1,26 @@
+.container.col-md-8
+  .row.mb-3.mt-2
+    .col-md-8
+      h5 Organisations
+    .col-md-4.text-right
+      = link_to "New Organisation", new_organisation_path, class: "btn btn-primary", id: 'new_organisation_btn'
+  - if flash.key?(:success)
+    .alert.alert-success#organisation_form_success
+      = flash[:success]
+  #organisation_list.table-responsive
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th URL
+          th Email Domain
+      tbody
+        - if org_list.present?
+          - org_list.each do |org|
+            tr
+              td = link_to org.name, organisation_path(org)
+              td = link_to org.url, org.url
+              td = org.email_domain
+        - else
+          td.text-center colspan='3'
+            p There are no organisations yet, why don't you create an organisation
