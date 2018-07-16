@@ -103,19 +103,20 @@ class ProfileController < ApplicationController
 
 
   def authenticate_cas
-
     username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]
+    user = User.find_by(user_login_id: username)
 
-    ## cas-5.1.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
+    ## cas-5.2.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
     response_map = {
-      "@class":"org.apereo.cas.authentication.principal.SimplePrincipal",
-      "id" => username,
-      "attributes": {"backend": "gate-sso"}
+      '@class':'org.apereo.cas.authentication.principal.SimplePrincipal',
+      'id' => username,
+      'attributes': {'backend': 'gate-sso', 'email': user.email, 'authToken': user.auth_key},
     }
 
     if username.present?
       render json: response_map, status: :ok
     else
+      response_map['attributes'] = nil
       render json: response_map, status: 401
     end
   end
