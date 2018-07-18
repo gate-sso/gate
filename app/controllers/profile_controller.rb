@@ -11,9 +11,7 @@ class ProfileController < ApplicationController
     redirect_to profile_path
   end
 
-  def show
-
-  end
+  def show; end
 
   def user_admin
     @users = []
@@ -105,19 +103,20 @@ class ProfileController < ApplicationController
 
 
   def authenticate_cas
-
     username = User.authenticate_cas request.env["HTTP_AUTHORIZATION"]
+    user = User.find_by(user_login_id: username)
 
-    ## cas-5.1.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
+    ## cas-5.2.x expects {"@c":".SimplePrincipal","id":"casuser","attributes":{}}
     response_map = {
-      "@class":"org.apereo.cas.authentication.principal.SimplePrincipal",
-      "id" => username,
-      "attributes": {"backend": "gate-sso"}
+      '@class':'org.apereo.cas.authentication.principal.SimplePrincipal',
+      'id' => username,
+      'attributes': {'backend': 'gate-sso', 'email': user.try(:email), 'auth_token': user.try(:auth_key), 'admin': user.try(:admin)},
     }
 
     if username.present?
       render json: response_map, status: :ok
     else
+      response_map['attributes'] = nil
       render json: response_map, status: 401
     end
   end
@@ -182,10 +181,7 @@ class ProfileController < ApplicationController
     redirect_to user_path
   end
 
-  def user_edit
-
-
-  end
+  def user_edit; end
 
   def public_key_update
     @user = User.where(id: params[:id]).first
