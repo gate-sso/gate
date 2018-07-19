@@ -110,7 +110,7 @@ class ProfileController < ApplicationController
     response_map = {
       '@class':'org.apereo.cas.authentication.principal.SimplePrincipal',
       'id' => username,
-      'attributes': {'backend': 'gate-sso', 'email': user.try(:email), 'auth_token': user.try(:auth_key), 'admin': user.try(:admin)},
+      'attributes': {'backend': 'gate-sso'},
     }
 
     if username.present?
