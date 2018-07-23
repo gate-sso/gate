@@ -34,6 +34,17 @@ class OrganisationsController < ApplicationController
     render :show, locals: { org: load_org }
   end
 
+  def setup_saml
+    org = load_org
+    if org.saml_setup?
+      flash[:errors] = 'SAML Certificates Already Setup'
+    else
+      load_org.setup_saml_certs
+      flash[:success] = 'Successfully setup SAML Certificates'
+    end
+    redirect_to organisations_path
+  end
+
   private
 
   def load_org

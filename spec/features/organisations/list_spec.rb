@@ -21,6 +21,9 @@ RSpec.feature 'List Organisations', type: :feature do
       expect(page).to have_xpath(
         "#{table_xpath}//td[.='#{org.domain}']"
       )
+      expect(page).to have_xpath(
+        "#{table_xpath}//td/a[@href='#{organisation_setup_saml_path(org)}' and .='Setup SAML']"
+      )
     end
   end
   scenario 'Ability to see organsiation details' do

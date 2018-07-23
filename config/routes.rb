@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     authenticated :user do
-      resources :organisations, except: %i(destroy)
+      resources :organisations, except: %i(destroy) do
+        get 'setup_saml', to: :setup_saml
+      end
     end
 
     delete "/users/sign_out" => "devise/sessions#destroy"

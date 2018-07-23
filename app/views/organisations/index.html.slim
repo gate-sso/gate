@@ -7,6 +7,9 @@
   - if flash.key?(:success)
     .alert.alert-success#organisation_form_success
       = flash[:success]
+  - if flash.key?(:errors)
+    .alert.alert-danger#organisation_form_errors
+      = flash[:errors]
   #organisation_list.table-responsive
     table.table.table-striped
       thead
@@ -14,6 +17,7 @@
           th Name
           th URL
           th Email Domain
+          th Actions
       tbody
         - if org_list.present?
           - org_list.each do |org|
@@ -21,6 +25,9 @@
               td = link_to org.name, organisation_path(org)
               td = link_to org.website, org.website
               td = org.domain
+              td
+                - unless org.saml_setup?
+                  = link_to "Setup SAML", organisation_setup_saml_path(org)
         - else
           td.text-center colspan='3'
             p There are no organisations yet, why don't you create an organisation
