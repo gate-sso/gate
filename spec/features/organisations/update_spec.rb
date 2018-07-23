@@ -6,9 +6,10 @@ RSpec.feature 'Update Organisation', type: :feature do
   scenario 'Create an organisation successfully' do
     sign_in(user)
     visit organisation_path(org)
-    fill_in 'organisation_name', with: org_data[:name]
-    fill_in 'organisation_url', with: org_data[:url]
-    fill_in 'organisation_email_domain', with: org[:email_domain]
+    select Country.all.sample.name, from: 'organisation_country'
+    %w(name website domain state address admin_email_address slug unit_name).each do |key|
+      fill_in "organisation_#{key}", with: org_data[key.to_sym]
+    end
     click_button('Update Organisation')
     expect(current_path).to eq(organisations_path)
     expect(page).to have_xpath(

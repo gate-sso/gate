@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613165050) do
+ActiveRecord::Schema.define(version: 20180723175600) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "hashed_token", limit: 255
@@ -114,11 +114,20 @@ ActiveRecord::Schema.define(version: 20180613165050) do
   add_index "ip_addresses", ["mac_address"], name: "index_ip_addresses_on_mac_address", using: :btree
 
   create_table "organisations", force: :cascade do |t|
-    t.string   "name",         limit: 255
-    t.string   "url",          limit: 255
-    t.string   "email_domain", limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "name",                limit: 255
+    t.string   "website",             limit: 255
+    t.string   "domain",              limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "country",             limit: 255
+    t.string   "state",               limit: 255
+    t.string   "address",             limit: 255
+    t.string   "unit_name",           limit: 255
+    t.string   "admin_email_address", limit: 255
+    t.string   "slug",                limit: 255
+    t.string   "cert_fingerprint",    limit: 255
+    t.text     "cert_key",            limit: 65535
+    t.text     "cert_private_key",    limit: 65535
   end
 
   create_table "users", force: :cascade do |t|

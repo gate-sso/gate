@@ -14,7 +14,7 @@ class OrganisationsController < ApplicationController
       redirect_to organisations_path
     else
       flash[:errors] = org.errors.full_messages
-      redirect_to new_organisation_path
+      render :new, locals: { org: org }
     end
   end
 
@@ -26,7 +26,7 @@ class OrganisationsController < ApplicationController
       redirect_to organisations_path
     else
       flash[:errors] = org.errors.full_messages
-      redirect_to organisation_path(org)
+      render :show, locals: { org: org }
     end
   end
 
@@ -43,6 +43,9 @@ class OrganisationsController < ApplicationController
   end
 
   def organisation_params
-    params.require(:organisation).permit(:name, :url, :email_domain)
+    params.require(:organisation).permit(
+      :name, :website, :domain, :country, :state, :address, :admin_email_address,
+      :slug, :unit_name
+    )
   end
 end

@@ -19,8 +19,8 @@
           - org_list.each do |org|
             tr
               td = link_to org.name, organisation_path(org)
-              td = link_to org.url, org.url
-              td = org.email_domain
+              td = link_to org.website, org.website
+              td = org.domain
         - else
           td.text-center colspan='3'
             p There are no organisations yet, why don't you create an organisation
