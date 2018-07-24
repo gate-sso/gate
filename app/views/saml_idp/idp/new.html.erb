@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GoJek &#8211; Single Sign on</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <style type="text/css">
+    #container { margin-top: 50px; }
+    .login-header {
+      padding: 20px;
+      background-color: #d5d5d5;
+      margin-bottom: 10px;
+      border-radius: 4px 4px 0px 0px;
+    }
+    #login {
+      background-color: #efefef;
+      border-radius: 4px;
+    }
+    #login .login-header .fa-circle { color: #1190AB; }
+    #login form  { padding: 30px; padding-top: 15px; }
+    #login_container { width: 100%; max-width: 430px; margin: auto; }
+  </style>
+</head>
+<body>
+<div id="container" class="container-fluid">
+  <div class="row text-center">
+    <div id="login_container">
+      <%= image_tag("logo.png") %>
+      <p>Single Sign-on Multifactor Authentication.</p>
+      <div id="login">
+	      <div class="login-header">
+		      <h2>Login</h2>
+      		<span class="fa-stack fa-2x hidden-xs">
+		        <i class="fa fa-circle fa-stack-2x"></i>
+      		  <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+		      </span>
+	      </div>
+	      <%= form_tag auth_path, class: 'text-left' do %>
+		      <%= hidden_field_tag("SAMLRequest", params[:SAMLRequest]) %>
+      		<%= hidden_field_tag("RelayState", params[:RelayState]) %>
+		      <div class="form-group">
+    		    <%= label_tag :email %>
+		        <%= email_field_tag :email, params[:email], :autocapitalize => "off", :autocorrect => "off", :autofocus => "autofocus", :spellcheck => "false", :size => 30, :class => "email_pwd txt form-control" %>
+		      </div>
+		      <div class="form-group">
+		        <%= label_tag "Google Authenticator Code" %>
+		        <%= password_field_tag :password, params[:password], :autocapitalize => "off", :autocorrect => "off", :spellcheck => "false", :size => 30, :class => "email_pwd txt form-control" %>
+		      </div>
+		      <%= submit_tag "Sign in", :class => "button big blueish btn btn-primary" %>
+	      <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

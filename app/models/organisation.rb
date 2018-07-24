@@ -14,6 +14,10 @@ class Organisation < ActiveRecord::Base
     name website domain country state address admin_email_address slug unit_name
   ).freeze
 
+  def self.find_by_slug(slug)
+    Organisation.where(slug: slug).first
+  end
+
   def self.setup(attrs = {})
     attrs = attrs.stringify_keys
     attrs = attrs.select { |k, _v| UPDATE_KEYS.include?(k) }

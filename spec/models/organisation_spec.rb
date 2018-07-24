@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Organisation, type: :model do
+  describe '.find_by_slug' do
+    let(:org) { create(:organisation) }
+    it 'should return organisation based on slug' do
+      expect(Organisation.find_by_slug(org.slug)).to eq(org)
+    end
+  end
+
   describe '.setup' do
     let(:org_data) { attributes_for(:organisation) }
     it 'should create organisation' do
