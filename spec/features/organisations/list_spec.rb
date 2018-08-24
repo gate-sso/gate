@@ -16,10 +16,13 @@ RSpec.feature 'List Organisations', type: :feature do
         "#{table_xpath}//td/a[@href='#{organisation_path(org)}' and .='#{org.name}']"
       )
       expect(page).to have_xpath(
-        "#{table_xpath}//td/a[@href='#{org.url}' and .='#{org.url}']"
+        "#{table_xpath}//td/a[@href='#{org.website}' and .='#{org.website}']"
       )
       expect(page).to have_xpath(
-        "#{table_xpath}//td[.='#{org.email_domain}']"
+        "#{table_xpath}//td[.='#{org.domain}']"
+      )
+      expect(page).to have_xpath(
+        "#{table_xpath}//td/a[@href='#{organisation_setup_saml_path(org)}' and .='Setup SAML']"
       )
     end
   end

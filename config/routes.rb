@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }, :path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
+  scope '/:slug/saml' do
+    get '/auth' => 'saml_idp#new'
+    get '/metadata' => 'saml_idp#show'
+    post '/auth' => 'saml_idp#create'
+    match '/logout' => 'saml_idp#logout', via: [:get, :post, :delete]
+  end
+
   devise_scope :user do
     authenticated :user do
-      resources :organisations, except: %i(destroy)
+      resources :organisations, except: %i(destroy) do
+        get 'setup_saml', action: :setup_saml
+      end
     end
 
     delete "/users/sign_out" => "devise/sessions#destroy"
