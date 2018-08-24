@@ -8,8 +8,8 @@ FactoryBot.define do
   factory :user do
     name
     email
-    active true
-    admin true
+    active { true }
+    admin { true }
     sequence(:reset_password_token) { |n| "secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(
@@ -23,8 +23,8 @@ FactoryBot.define do
   factory :group_admin, class: User do
     name
     email
-    active true
-    admin true
+    active { true }
+    admin { true }
     sequence(:reset_password_token) { |n| "secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(
@@ -38,8 +38,8 @@ FactoryBot.define do
   factory :admin_user, class: User do
     name
     email
-    active true
-    admin true
+    active { true }
+    admin { true }
     sequence(:reset_password_token) { |n| "secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(

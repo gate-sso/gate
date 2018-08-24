@@ -8,7 +8,7 @@ gem 'figaro'
 gem 'font-awesome-rails'
 gem 'jbuilder'
 gem 'jquery-rails'
-gem 'mysql2', '~> 0.3.18', platform: :ruby
+gem 'mysql2', '~> 0.4.10'
 gem 'newrelic_rpm'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :group_association do
-    user ""
-    group ""
+    user { "" }
+    group { "" }
   end
 end
