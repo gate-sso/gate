@@ -95,7 +95,7 @@ RSpec.describe HostMachine, type: :model do
       expect(groups.include?("#{host_machine.name.downcase}_host_group")).to eq(true)
     end
 
-    it 'shouldn\'t add the group if the name is invalid' do
+    it 'should not add the group if the name is invalid' do
       host_machine.add_host_group('')
       groups = host_machine.groups.map(&:name)
       expect(groups.include?("")).to eq(false)
@@ -119,7 +119,7 @@ RSpec.describe HostMachine, type: :model do
       expect(groups.include?(group_name.downcase)).to eq(true)
     end
 
-    it 'shouldn\'t add the group if the name is invalid' do
+    it 'should not add the group if the name is invalid' do
       host_machine.add_group('')
       groups = host_machine.groups.map(&:name)
       expect(groups.include?("")).to eq(false)

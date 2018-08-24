@@ -30,11 +30,27 @@ RSpec.describe NssController, type: :controller do
     expect(data["success"]).to eq(true)
   end
 
-  it 'it shouldn\'t return sysadmins for invalid token' do
+  it 'should not return sysadmins for invalid token' do
     json = { token: '', name: 'random_host', group_name: '', format: :json }
     post 'add_host', json
     body = response.body
     expect(JSON.parse(body)['success']).to eq(false)
+  end
+
+  it "should not create groups and admins again for the same host name" do
+
+    create(:access_token, token: access_token)
+    json = { token: access_token, name: 'random_host', group_name: 'duplicate_group', format: :json }
+    post 'add_host', json
+    body = response.body
+    expect(JSON.parse(body)['success']).to eq(true)
+    expect(JSON.parse(body)['groups'].count).to eq 2
+
+    json = { token: access_token, name: 'random_host', group_name: 'duplicate_group', format: :json }
+    post 'add_host', json
+    body = response.body
+    expect(JSON.parse(body)['success']).to eq(true)
+    expect(JSON.parse(body)['groups'].count).to eq 2
   end
 
   it "should return sysadmins for that host" do

@@ -36,15 +36,18 @@ class HostMachine < ActiveRecord::Base
   end
 
   def add_host_group(name)
-    if name.squish.present?
-      name = "#{name.squish}_host_group"
-      self.add_group(name.squish.downcase)
+    name = name.squish
+    if name.present?
+      name = "#{name}_host_group"
+      self.add_group(name.downcase)
     end
   end
 
   def add_group(name)
-    if name.squish.present?
-      self.groups << Group.find_or_initialize_by(name: name.squish.downcase)
+    name = name.squish
+    if name.present?
+      group =  Group.find_or_initialize_by(name: name.downcase)
+      self.groups << group unless self.groups.include? group
       self.save
     end
   end
