@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'bootstrap', '~> 4.0.0'
 gem 'coffee-rails'
+gem 'countries', require: 'countries/global'
 gem 'devise'
 gem 'figaro'
 gem 'font-awesome-rails'
@@ -17,13 +18,14 @@ gem 'puma'
 gem 'rails', '4.2.8'
 gem 'redis'
 gem 'rotp'
+gem 'ruby-saml', '1.8.0'
+gem 'saml_idp'
 gem 'sass-rails'
 gem 'sdoc', group: :doc
 gem 'slim-rails'
 gem 'turbolinks'
 gem 'uglifier'
 gem 'whenever', require: false
-
 # platform :jruby do
 #  gem 'activerecord', '4.2.8'
 #  gem 'jdbc-mysql'

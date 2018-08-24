@@ -9,8 +9,26 @@
   = f.label :name
   = f.text_field :name, class: 'form-control'
 .form-group
-  = f.label :url
-  = f.text_field :url, class: 'form-control'
+  = f.label :website
+  = f.text_field :website, class: 'form-control'
 .form-group
-  = f.label :email_domain
-  = f.text_field :email_domain, class: 'form-control'
+  = f.label :domain
+  = f.text_field :domain, class: 'form-control'
+.form-group
+  = f.label :country
+  = f.collection_select :country, Country.all.sort_by(&:name), :gec, :name, {}, class: 'form-control'
+.form-group
+  = f.label :state
+  = f.text_field :state, class: 'form-control'
+.form-group
+  = f.label :address
+  = f.text_field :address, class: 'form-control'
+.form-group
+  = f.label :admin_email_address
+  = f.text_field :admin_email_address, class: 'form-control'
+.form-group
+  = f.label :slug
+  = f.text_field :slug, class: 'form-control'
+.form-group
+  = f.label :unit_name
+  = f.text_field :unit_name, class: 'form-control'

@@ -14,3 +14,4 @@ GATE_DB_USER: ''
 GATE_DB_PASSWORD: ''
 DEFAULT_HOST_PATTERN: 's*'
 UID_BUFFER: 5000
+GATE_URL: 'https://gate.gojek.co.id/'
