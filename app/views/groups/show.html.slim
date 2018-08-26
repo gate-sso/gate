@@ -44,10 +44,13 @@
               th Email address
               th
           tbody
-            - @group.users.sort_by{ |user| user.email}.select{|user| user.active}.each do |user|
+            - @group.users.sort_by{ |user| user.email}.each do |user|
               tr
                 td
-                  = link_to "#{user.name}", user_path(user)
+                  - if user.active?
+                    = link_to "#{user.name}", user_path(user)
+                  - else
+                    = link_to "#{user.name} (inactive)", user_path(user)
                 td
                   = "#{user.email}"
                 td
