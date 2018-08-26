@@ -43,13 +43,22 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe 'Search for Users' do
-    it "should return active users according to supplied search string" do
+    it "should return only active users by default according to query" do
       sign_in user
       users = create_list(:user, 3)
       users.last.update(active: false)
       get :search, { q: users.first.name }
       returned_ids = JSON.parse(response.body).collect{|c| c['id']}
       expect(returned_ids).to eq([users.first.id])
+    end
+
+    it "should return users according to query, if we supplied include_inactive params" do
+      sign_in user
+      users = create_list(:user, 3)
+      users.last.update(active: false)
+      get :search, { q: users.last.name, include_inactive: 'true' }
+      returned_ids = JSON.parse(response.body).collect{|c| c['id']}
+      expect(returned_ids).to eq([users.last.id])
     end
   end
 
