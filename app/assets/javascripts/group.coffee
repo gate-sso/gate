@@ -3,6 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 group_ready = ->
+  $('#assign_admin_include_inactive_user').prop('checked', false);
   $('#assign_admin_user_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -15,9 +16,13 @@ group_ready = ->
       if !query.length
         return callback()
 
+      # Clear the cache, because user list may change
+      this.clearOptions()
+      include_inactive = $('#assign_admin_include_inactive_user').is(':checked')
+
       # Use remote as source
       $.ajax
-        url: '/users/search?q=' + encodeURIComponent(query) 
+        url: '/users/search?q=' + encodeURIComponent(query) + '&include_inactive=' + include_inactive
         type: 'GET'
         error: ->
           callback()
@@ -30,6 +35,7 @@ group_ready = ->
   $('#assign_admin_user_id').on 'change', ->
     set_allow_submit($(this).val(), $(this))
 
+  $('#add_user_include_inactive_user').prop('checked', false);
   $('#add_user_user_id').selectize
     maxItems: 1
     valueField: 'id'
@@ -42,9 +48,13 @@ group_ready = ->
       if !query.length
         return callback()
 
+      # Clear the cache, because user list may change
+      this.clearOptions()
+      include_inactive = $('#add_user_include_inactive_user').is(':checked')
+
       # Use remote as source
       $.ajax
-        url: '/users/search?q=' + encodeURIComponent(query) 
+        url: '/users/search?q=' + encodeURIComponent(query) + '&include_inactive=' + include_inactive
         type: 'GET'
         error: ->
           callback()

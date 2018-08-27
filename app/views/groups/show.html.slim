@@ -26,6 +26,11 @@
               = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
             .col
               = submit_tag "Assign admin", class: "form-control btn btn-md btn-primary", disabled: true
+          .row
+            .col
+              = check_box_tag "assign_admin_include_inactive_user", "true", false
+              = " Include Inactive User"
+            .col
   a name="group_members"
   br
   .card
@@ -39,10 +44,13 @@
               th Email address
               th
           tbody
-            - @group.users.sort_by{ |user| user.email}.select{|user| user.active}.each do |user|
+            - @group.users.sort_by{ |user| user.email}.each do |user|
               tr
                 td
-                  = link_to "#{user.name}", user_path(user)
+                  - if user.active?
+                    = link_to "#{user.name}", user_path(user)
+                  - else
+                    = link_to "#{user.name} (inactive)", user_path(user)
                 td
                   = "#{user.email}"
                 td
@@ -61,7 +69,13 @@
               = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
             .col
               = submit_tag "Add User", class: "form-control btn-md btn-primary", disabled: true
-
+          .row
+            .col
+            .col
+            .col
+              = check_box_tag "add_user_include_inactive_user", "true", false
+              = " Include Inactive User"
+            .col
   br
   .card
     .card-body

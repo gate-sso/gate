@@ -51,9 +51,11 @@ class UsersController < ApplicationController
   def search
     @users = User.
       where("name LIKE :q OR email LIKE :q", q: "%#{params[:q]}%").
-      where(active: true).
       order("name ASC").
       limit(20)
+    unless params[:include_inactive] == 'true'
+      @users = @users.where(active: true)
+    end
     data = @users.map{ |user| {
       id: user.id,
       name: user.name,
