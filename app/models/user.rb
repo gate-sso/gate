@@ -204,12 +204,9 @@ class User < ActiveRecord::Base
   end
 
   def self.get_user_pass_attributes params
-    token = params[:token]
-    email = params[:email]
-    email = params[:user] if email.blank?
-    token = params[:password] if token.blank?
-
-    return [null, null] if email.blank? || token.blank?
+    token = params[:token].present? ? params[:token] : params[:password]
+    email = params[:email].present? ? params[:email] : params[:user]
+    return [nil, nil] if email.blank? || token.blank?
     [email, token]
   end
 

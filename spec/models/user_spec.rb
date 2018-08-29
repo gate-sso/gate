@@ -422,6 +422,33 @@ RSpec.describe User, type: :model do
     expect(otp3).to_not equal(otp1)
   end
 
+  describe '.get_user_pass_attributes' do
+    it 'should return token and email if token and email is passed' do
+      params = { email: Faker::Internet.email, token: SecureRandom.uuid, user: '', password: '' }
+      expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:token]])
+    end
+
+    it 'should return password and email if email and password is present, and token is not present' do
+      params = { email: Faker::Internet.email, token: '', user: '', password: SecureRandom.uuid }
+      expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:password]])
+    end
+
+    it 'should return user and token if user and token is present, and email is not present' do
+      params = { email: '', token: SecureRandom.uuid, user: Faker::Internet.email, password: '' }
+      expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:token]])
+    end
+
+    it 'should return user and password if user and password is present and email and token is not present' do
+      params = { email: '', token: '', user: Faker::Internet.email, password: SecureRandom.uuid }
+      expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:password]])
+    end
+
+    it 'should return nil and nil if email and user is blank or password and token is blank' do
+      params = { email: '', token: '', user: '', password: '' }
+      expect(User.get_user_pass_attributes(params)).to eq([nil, nil])
+    end
+  end
+
   describe '.get_user' do
     after(:each) do
       User.destroy_all
