@@ -5,7 +5,8 @@ class SamlIdpController < SamlIdp::IdpController
   private
 
   def idp_authenticate(email, password)
-    User.find_and_check_user(email, password) ? User.find_active_user_by_email(email) : nil
+    User.find_and_check_user(email, password)
+    valid_user ? User.get_user(email) : nil
   end
 
   def idp_make_saml_response(found_user)

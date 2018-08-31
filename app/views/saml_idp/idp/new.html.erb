@@ -21,6 +21,7 @@
     #login .login-header .fa-circle { color: #1190AB; }
     #login form  { padding: 30px; padding-top: 15px; }
     #login_container { width: 100%; max-width: 430px; margin: auto; }
+    #login_container img { width: 200px; }
   </style>
 </head>
 <body>
@@ -42,7 +43,7 @@
       		<%= hidden_field_tag("RelayState", params[:RelayState]) %>
 		      <div class="form-group">
     		    <%= label_tag :email %>
-		        <%= email_field_tag :email, params[:email], :autocapitalize => "off", :autocorrect => "off", :autofocus => "autofocus", :spellcheck => "false", :size => 30, :class => "email_pwd txt form-control" %>
+		        <%= text_field_tag :email, params[:email], :autocapitalize => "off", :autocorrect => "off", :autofocus => "autofocus", :spellcheck => "false", :size => 30, :class => "email_pwd txt form-control" %>
 		      </div>
 		      <div class="form-group">
 		        <%= label_tag "Google Authenticator Code" %>

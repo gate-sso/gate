@@ -195,7 +195,6 @@ class User < ActiveRecord::Base
     user = User.get_user email
     return false if user.blank?
     return false if !user.active
-
     user_key = "#{user.id}:#{Time.now.hour}"
     request_count = REDIS_CACHE.incrby user_key, 1
     REDIS_CACHE.expire user_key, 3600
