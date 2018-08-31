@@ -19,7 +19,7 @@ gem 'rails', '4.2.10'
 gem 'redis'
 gem 'rotp'
 gem 'ruby-saml', '1.8.0'
-gem 'saml_idp'
+gem 'saml_idp', git: 'https://github.com/gate-sso/saml_idp'
 gem 'sass-rails'
 gem 'sdoc', group: :doc
 gem 'slim-rails'
