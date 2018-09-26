@@ -191,6 +191,24 @@ class User < ActiveRecord::Base
     return User.where(user_login_id: user_login_id, active: true).first
   end
 
+  def self.find_and_validate_saml_user(email, password, app_name)
+    query = 'users.email = ? and users.active = ? and groups.name = ?'
+    users = User.joins(:groups).where(query, email, true, app_name)
+    if users.present?
+      users.first.valid_otp?(password) ? users.first : false
+    else
+      false
+    end
+  end
+
+  def valid_otp?(password)
+    user_key = "#{id}:#{Time.now.hour}"
+    request_count = REDIS_CACHE.incrby user_key, 1
+    REDIS_CACHE.expire user_key, 3600
+    return false if request_count > RATE_LIMIT
+    password.eql?(ROTP::TOTP.new(self.auth_key).now)
+  end
+
   def self.find_and_check_user email, token
     user = User.get_user email
     return false if user.blank?

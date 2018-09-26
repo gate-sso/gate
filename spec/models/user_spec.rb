@@ -9,6 +9,56 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'find_and_validate_saml_user' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+    it 'returns false if user is not active' do
+      user.update_attribute(:active, false)
+      expect(User.find_and_validate_saml_user(user.email, 123456, 'datadog')).to eq(false)
+    end
+
+    it 'returns false if the user doesn\'t belong to app group' do
+      expect(User.find_and_validate_saml_user(user.email, 123456, 'datadog')).to eq(false)
+    end
+
+    it 'returns user if all credentials are valid' do
+      user.groups << group
+      allow_any_instance_of(User).to receive(:valid_otp?).and_return(true)
+      expect(User.find_and_validate_saml_user(user.email, 123456, group.name)).to eq(user)
+    end
+
+    it 'validates the user password' do
+      user.groups << group
+      expect_any_instance_of(User).to receive(:valid_otp?)
+      User.find_and_validate_saml_user(user.email, 123456, group.name)
+    end
+  end
+
+  describe 'valid_otp?' do
+    let(:user) { create(:user) }
+    before do
+      user.generate_two_factor_auth(true)
+      Timecop.freeze
+    end
+
+    it 'expires redis cache' do
+      user_key = "#{user.id}:#{Time.now.hour}"
+      expect(REDIS_CACHE).to receive(:expire).with(user_key, 3600)
+      user.valid_otp?(123456)
+    end
+
+    it 'return false if rate limit is exceeded' do
+      user_key = "#{user.id}:#{Time.now.hour}"
+      allow(REDIS_CACHE).to receive(:incrby).with(user_key, 1).and_return(RATE_LIMIT + 1)
+      expect(user.valid_otp?(123456)).to eq(false)
+    end
+
+    it 'validates otp token' do
+      allow_any_instance_of(ROTP::TOTP).to receive(:now).and_return(123456)
+      expect(user.valid_otp?(123456)).to eq(true)
+    end
+  end
+
   describe 'generate_uid' do
     let(:user) { build(:user) }
     it 'should generate uid' do

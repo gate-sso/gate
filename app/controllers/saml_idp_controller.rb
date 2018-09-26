@@ -5,8 +5,8 @@ class SamlIdpController < SamlIdp::IdpController
   private
 
   def idp_authenticate(email, password)
-    valid_user = User.find_and_check_user(email, password)
-    valid_user ? User.get_user(email) : nil
+    user = User.find_and_validate_saml_user(email, password, params[:app])
+    user.present? ? user : nil
   end
 
   def idp_make_saml_response(found_user)
@@ -20,8 +20,9 @@ class SamlIdpController < SamlIdp::IdpController
 
   def setup_saml_configuration
     slug = params[:slug]
+    app = params[:app]
     org = Organisation.find_by_slug(slug)
-    saml_url = "#{Figaro.env.gate_url}#{slug}/saml"
+    saml_url = "#{Figaro.env.gate_url}#{slug}/#{app}/saml"
     SamlIdp.configure do |config|
       config.x509_certificate = org.cert_key
       config.secret_key = org.cert_private_key
