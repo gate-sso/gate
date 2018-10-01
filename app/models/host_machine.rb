@@ -7,7 +7,7 @@ class HostMachine < ActiveRecord::Base
   validates :name, presence: true
 
   before_create :set_lower_case_name
-  before_save :set_host_access_key
+  before_create :set_host_access_key
 
   def set_host_access_key
     self.access_key = ROTP::Base32.random_base32
