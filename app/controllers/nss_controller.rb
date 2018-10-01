@@ -27,6 +27,7 @@ class NssController < ApplicationController
       host = HostMachine.find_or_create_by(name: params[:name])
       host.add_host_group(params[:name])
       host.add_group(params[:group_name])
+      host.reload
       render 'add_host', locals: { host: host }, format: :json
     else
       errors = ['Name can\'t be blank']
