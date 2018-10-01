@@ -35,6 +35,11 @@ class HostMachinesController < ApplicationController
     @groups = Group.all
   end
 
+  def update
+    @host_machine.update(default_admins: params[:host_machine][:default_admins])
+    redirect_to host_machine_path @host_machine
+  end
+
   def add_group
     @machine = @host_machine
     if current_user.admin?

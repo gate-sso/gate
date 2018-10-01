@@ -13,9 +13,8 @@ class NssController < ApplicationController
 
     host_machine = HostMachine.find_by(access_key: params[:token])
     sysadmins = host_machine.sysadmins if host_machine.present?
-
     if sysadmins.present? && sysadmins.count > 0
-      @response = Group.get_sysadmins_and_groups sysadmins
+      @response = Group.get_sysadmins_and_groups sysadmins, host_machine.default_admins
     end
     render json: @response
     return
@@ -25,6 +24,8 @@ class NssController < ApplicationController
   def add_host
     if params[:name].present?
       host = HostMachine.find_or_create_by(name: params[:name])
+      host.default_admins = params[:default_admins]
+      host.save
       host.add_host_group(params[:name])
       host.add_group(params[:group_name])
       render 'add_host', locals: { host: host }, format: :json
@@ -44,7 +45,7 @@ class NssController < ApplicationController
       host_machine = HostMachine.find_by(access_key: params[:token])
       sysadmins = host_machine.sysadmins if host_machine.present?
       if sysadmins.present? && sysadmins.count > 0
-        @response = Group.get_sysadmins_and_groups sysadmins
+        @response = Group.get_sysadmins_and_groups sysadmins, host_machine.default_admins
         REDIS_CACHE.set( "G:" + params[:token], @response.to_json)
         REDIS_CACHE.expire( "G:" + params[:token], REDIS_KEY_EXPIRY * 60)
       end

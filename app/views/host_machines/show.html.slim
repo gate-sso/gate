@@ -4,6 +4,19 @@
   .row
     .col 
       = @host_machine.name
+  - if current_user.admin?
+    .card
+      .card-body
+        h6.card-title Configurations 
+        hr
+        = form_tag "/host_machines/#{@host_machine.id}", method: 'put' do
+          .row
+            .col
+              .custom-control.custom-checkbox
+                = check_box "host_machine", "default_admins", class: "custom-control-input", id: "admin-checkbox" 
+                label.custom-control-label for="admin-checkbox" Default Admins?
+            .col
+              = submit_tag "Update", class: "form-control btn-md btn-primary"
   br
 
   .card

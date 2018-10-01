@@ -126,6 +126,35 @@ RSpec.describe NssController, type: :controller do
 
   end
 
+  it "should not return sysadmins if inheritance is off" do
+
+    access_token = create(:access_token)
+    group = create(:group, name: "sysadmins")
+    group_2 = create(:group, name: "random")
+    user = create(:user)
+    user.groups << group_2
+    user_2 = create(:user)
+    user_2.groups << group
+
+    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", default_admins: false, format: :json}
+    host = HostMachine.first
+    expect(host.name).to eq "random_host_01"
+    host.groups << group_2
+
+
+    get "group", { token: host.access_key, format: :json }
+    body = JSON.parse(response.body)
+
+    expect(body.count).to eq 2
+    expect(body[0]["gr_mem"].count).to eq 1
+    expect(body[1]["gr_mem"].count).to eq 1
+
+    expect(body[0]["gr_mem"][0]).to eq user.user_login_id
+    expect(body[1]["gr_mem"][0]).to eq user.user_login_id
+
+
+  end
+
   it "should return all the users for the host" do
 
     access_token = create(:access_token)

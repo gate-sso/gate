@@ -119,9 +119,9 @@ class Group < ActiveRecord::Base
     return group_response
   end
 
-  def self.get_sysadmins_and_groups sysadmins
+  def self.get_sysadmins_and_groups sysadmins, default_admins = true
     groups, sysadmins_login_ids = Group.get_groups_for_host sysadmins
-    groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids)
+    groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
     groups.to_json
   end
 
@@ -148,15 +148,18 @@ class Group < ActiveRecord::Base
     return user_ids
   end
 
-  def self.get_default_sysadmin_group_for_host sysadmins_login_ids
+  def self.get_default_sysadmin_group_for_host sysadmins_login_ids, default_admins = true
     sysadmin_group = {}
-    group = Group.find_by(name: "sysadmins")
-    sysadmins = sysadmins_login_ids 
-    if group.present?
-      sysadmins = sysadmins + group.get_user_ids
+    sysadmins = sysadmins_login_ids
+
+    if default_admins
+      group = Group.find_by(name: "sysadmins")
+       
+      if group.present?
+        sysadmins = sysadmins + group.get_user_ids
+      end
     end
     group_id = group.blank? ? 8999 : group.id
-
 
     sysadmin_group[:gr_gid] = group_id
     sysadmin_group[:gr_mem] = sysadmins.uniq 

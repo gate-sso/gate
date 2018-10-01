@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180723175600) do
+ActiveRecord::Schema.define(version: 20181002023107) do
 
   create_table "access_tokens", force: :cascade do |t|
     t.string   "hashed_token", limit: 255
@@ -78,11 +78,12 @@ ActiveRecord::Schema.define(version: 20180723175600) do
   add_index "host_access_groups", ["host_machine_id", "group_id"], name: "index_host_access_groups_on_host_machine_id_and_group_id", using: :btree
 
   create_table "host_machines", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "api_key",    limit: 255
-    t.string   "access_key", limit: 255
+    t.string   "name",           limit: 255
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.string   "api_key",        limit: 255
+    t.string   "access_key",     limit: 255
+    t.boolean  "default_admins",             default: true
   end
 
   add_index "host_machines", ["access_key"], name: "index_host_machines_on_access_key", using: :btree
