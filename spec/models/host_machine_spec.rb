@@ -26,17 +26,23 @@ RSpec.describe HostMachine, type: :model do
       group.save!
       host_machine.reload
 
+      host_machine.save #bad design, causing cache to burst
 
       expect(host_machine.sysadmins.count).to eq 2
       group = create(:group)
       group.host_machines << host_machine
       group.save!
 
+      host_machine.save #bad design, causing cache to burst
+
       host_machine.reload
 
       expect(host_machine.sysadmins.count).to eq 2
       group.users << user
       group.save!
+
+      host_machine.save #bad design, causing cache to burst
+
       host_machine.reload
       expect(host_machine.sysadmins.count).to eq 2
 
@@ -44,6 +50,8 @@ RSpec.describe HostMachine, type: :model do
 
       group.users << user
       group.save!
+      host_machine.save #bad design, causing cache to burst
+
       host_machine.reload
       expect(host_machine.sysadmins.count).to eq 3
     end
@@ -68,6 +76,8 @@ RSpec.describe HostMachine, type: :model do
         group.users << user
       end
       group.save!
+      host_machine.save #bad design, causing cache to burst
+
       host_machine.reload
       group.reload
 

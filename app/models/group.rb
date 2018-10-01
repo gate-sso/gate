@@ -22,6 +22,8 @@ class Group < ActiveRecord::Base
 
   GID_CONSTANT = 9000
 
+
+
   def burst_host_cache
     if host_machines.count > 0
       host_machines.each do |host|
@@ -94,37 +96,72 @@ class Group < ActiveRecord::Base
   end
 
   def group_response
-    response_hash = {}
-    response_hash[:gr_name] = name
-    response_hash[:gr_passwd] = "x"
-    response_hash[:gr_gid] = gid
-    response_hash[:gr_mem] = users.collect { |u| u.user_login_id}
-    response_hash
+    return Group.group_nss_response name
+  end
+
+  def self.group_nss_response name
+    group_response = REDIS_CACHE.get( "UG:" + name)
+    group_response = JSON.parse(group_response) if group_response.present?
+
+    if group_response.blank?
+      group = Group.find_by(name: name)
+      if group.present?
+        response_hash = {}
+        response_hash[:gr_name] = group.name
+        response_hash[:gr_passwd] = "x"
+        response_hash[:gr_gid] = group.gid
+        response_hash[:gr_mem] = group.users.collect { |u| u.user_login_id}
+        REDIS_CACHE.set( "UG:" + group.name, response_hash.to_json)
+        REDIS_CACHE.expire( "UG:" + group.name, REDIS_KEY_EXPIRY * 60)
+        group_response = response_hash
+      end
+    end
+    return group_response
   end
 
   def self.get_sysadmins_and_groups sysadmins
+    groups, sysadmins_login_ids = Group.get_groups_for_host sysadmins
+    groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids)
+    groups.to_json
+  end
+
+  def self.get_groups_for_host sysadmins
     groups = []
     sysadmins_login_ids = []
     sysadmins.each do |sysadmin|
-      user = User.find(sysadmin)
-      sysadmins_login_ids << user.user_login_id
-      group = Group.find_by(name: user.user_login_id)
-      groups << group.group_response if group.present?
+      user = User.from_cache(sysadmin)
+      sysadmins_login_ids << user["user_login_id"]
+      groups << Group.group_nss_response(user["user_login_id"])
     end
+    [groups, sysadmins_login_ids]
+  end
 
+  def get_user_ids
+    user_ids = REDIS_CACHE.get( "G_UID:" + name)
+    user_ids = JSON.parse(user_ids) if user_ids.present?
+
+    if user_ids.blank?
+      user_ids = users.collect {|u| u.user_login_id}
+      REDIS_CACHE.set( "G_UID:" + name, user_ids.to_json)
+      REDIS_CACHE.expire( "G_UID:" + name, REDIS_KEY_EXPIRY * 60)
+    end
+    return user_ids
+  end
+
+  def self.get_default_sysadmin_group_for_host sysadmins_login_ids
     sysadmin_group = {}
-
     group = Group.find_by(name: "sysadmins")
-    sysadmins_login_ids = sysadmins_login_ids + group.users.collect {|u| u.user_login_id} if group.present?
+    sysadmins = sysadmins_login_ids 
+    if group.present?
+      sysadmins = sysadmins + group.get_user_ids
+    end
     group_id = group.blank? ? 8999 : group.id
 
 
     sysadmin_group[:gr_gid] = group_id
-    sysadmin_group[:gr_mem] = sysadmins_login_ids.uniq
+    sysadmin_group[:gr_mem] = sysadmins.uniq 
     sysadmin_group[:gr_name] = "sysadmins"
     sysadmin_group[:gr_passwd] = "x"
-
-    groups << sysadmin_group
-    groups.to_json
+    return sysadmin_group
   end
 end

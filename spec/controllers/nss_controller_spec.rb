@@ -163,16 +163,16 @@ RSpec.describe NssController, type: :controller do
       group.burst_host_cache
     end
 
-    cache_count_bfr = REDIS_CACHE.keys("*").count
+    cache_count_bfr = REDIS_CACHE.keys("UG*").count
 
     get "group", { token: host_machine.access_key, format: :json }
-    cache_count_aft = REDIS_CACHE.keys("*").count
+    cache_count_aft = REDIS_CACHE.keys("UG*").count
 
     expect(cache_count_aft).to eq cache_count_bfr + 1
     group.burst_host_cache
 
-    cache_count_aft = REDIS_CACHE.keys("*").count
-    expect(cache_count_aft).to eq cache_count_bfr
+    cache_count_aft = REDIS_CACHE.keys("UG*").count
+    expect(cache_count_aft).to eq cache_count_bfr + 1
 
   end
 

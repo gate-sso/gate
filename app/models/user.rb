@@ -14,6 +14,24 @@ class User < ActiveRecord::Base
 
   validate :remove_default_admin, on: :update
 
+  before_save :remove_user_cache
+
+  def remove_user_cache
+    REDIS_CACHE.del( "USER_CACHE:" + "#{id}") if id.present?
+  end
+
+  def self.from_cache id
+    user = REDIS_CACHE.get( "USER_CACHE:" + "#{id}")
+    user = JSON.parse(user) if user.present?
+    if user.blank?
+      user = User.find(id).to_json
+      REDIS_CACHE.set( "USER_CACHE:" + "#{id}", user)
+      REDIS_CACHE.expire( "USER_CACHE:" + "#{id}", REDIS_KEY_EXPIRY * 60)
+      user = JSON.parse(user)
+    end
+    return user
+  end
+
   def generate_login_id
     email.split('@').first
   end

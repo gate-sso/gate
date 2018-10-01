@@ -7,7 +7,9 @@ class HostMachine < ActiveRecord::Base
   validates :name, presence: true
 
   before_create :set_lower_case_name
-  before_save :set_host_access_key
+  before_create :set_host_access_key
+
+  before_save :remove_host_cache
 
   def set_host_access_key
     self.access_key = ROTP::Base32.random_base32
@@ -26,12 +28,24 @@ class HostMachine < ActiveRecord::Base
     response
   end
 
+  def remove_host_cache
+    REDIS_CACHE.del( "HOST_UID:" + name)
+  end
+
   def sysadmins
-    users = GroupAssociation.
-      joins(:user).
-      where("group_id IN (?)", groups.collect(&:id)).
-      collect(&:user_id)
-    users.uniq
+    host_users = REDIS_CACHE.get( "HOST_UID:" + name)
+    host_users = JSON.parse(host_users) if host_users.present?
+    users = []
+    if host_users.blank?
+      users = GroupAssociation.
+        joins(:user).
+        where("group_id IN (?)", groups.collect(&:id)).
+        collect(&:user_id)
+      host_users = users.uniq
+      REDIS_CACHE.set( "HOST_UID:" + name, host_users.to_json)
+      REDIS_CACHE.expire( "HOST_UID:" + name, REDIS_KEY_EXPIRY)
+    end
+    host_users
   end
 
   def add_host_group(name)
