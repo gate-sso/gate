@@ -112,7 +112,7 @@ class Group < ActiveRecord::Base
         response_hash[:gr_gid] = group.gid
         response_hash[:gr_mem] = group.users.collect { |u| u.user_login_id}
         REDIS_CACHE.set( "UG:" + group.name, response_hash.to_json)
-        REDIS_CACHE.expire( "UG:" + group.name, REDIS_KEY_EXPIRY * 60)
+        REDIS_CACHE.expire( "UG:" + group.name, REDIS_KEY_EXPIRY)
         group_response = response_hash
       end
     end
@@ -143,7 +143,7 @@ class Group < ActiveRecord::Base
     if user_ids.blank?
       user_ids = users.collect {|u| u.user_login_id}
       REDIS_CACHE.set( "G_UID:" + name, user_ids.to_json)
-      REDIS_CACHE.expire( "G_UID:" + name, REDIS_KEY_EXPIRY * 60)
+      REDIS_CACHE.expire( "G_UID:" + name, REDIS_KEY_EXPIRY)
     end
     return user_ids
   end

@@ -47,7 +47,7 @@ class NssController < ApplicationController
       if sysadmins.present? && sysadmins.count > 0
         @response = Group.get_sysadmins_and_groups sysadmins, host_machine.default_admins
         REDIS_CACHE.set( "G:" + params[:token], @response.to_json)
-        REDIS_CACHE.expire( "G:" + params[:token], REDIS_KEY_EXPIRY * 60)
+        REDIS_CACHE.expire( "G:" + params[:token], REDIS_KEY_EXPIRY)
       end
     end
 

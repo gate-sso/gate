@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
     if user.blank?
       user = User.find(id).to_json
       REDIS_CACHE.set( "USER_CACHE:" + "#{id}", user)
-      REDIS_CACHE.expire( "USER_CACHE:" + "#{id}", REDIS_KEY_EXPIRY * 60)
+      REDIS_CACHE.expire( "USER_CACHE:" + "#{id}", REDIS_KEY_EXPIRY)
       user = JSON.parse(user)
     end
     return user
