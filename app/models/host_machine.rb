@@ -8,7 +8,6 @@ class HostMachine < ActiveRecord::Base
 
   before_create :set_lower_case_name
   before_create :set_host_access_key
-
   before_save :remove_host_cache
 
   def set_host_access_key
