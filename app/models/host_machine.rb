@@ -28,11 +28,11 @@ class HostMachine < ActiveRecord::Base
   end
 
   def remove_host_cache
-    REDIS_CACHE.del("HOST_UID:" + name)
+    REDIS_CACHE.del("#{HOST_UID_PREFIX}:#{name}")
   end
 
   def sysadmins
-    host_users = REDIS_CACHE.get("HOST_UID:" + name)
+    host_users = REDIS_CACHE.get("#{HOST_UID_PREFIX}:#{name}")
     host_users = JSON.parse(host_users) if host_users.present?
     users = []
     if host_users.blank?
@@ -41,7 +41,7 @@ class HostMachine < ActiveRecord::Base
         where("group_id IN (?)", groups.collect(&:id)).
         collect(&:user_id)
       host_users = users.uniq
-      REDIS_CACHE.set("HOST_UID:" + name, host_users.to_json)
+      REDIS_CACHE.set("#{HOST_UID_PREFIX}:#{name}", host_users.to_json)
     end
     host_users
   end
