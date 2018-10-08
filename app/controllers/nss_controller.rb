@@ -66,7 +66,7 @@ class NssController < ApplicationController
       if sysadmins.present? && sysadmins.count > 0
         @response = User.get_sysadmins sysadmins
         REDIS_CACHE.set( "P:" + params[:token], @response.to_json)
-        REDIS_CACHE.expire( "P:" + params[:token], REDIS_KEY_PASSWD_EXPIRY)
+        REDIS_CACHE.expire( "P:" + params[:token], REDIS_KEY_EXPIRY)
       end
     end
     render json: @response
