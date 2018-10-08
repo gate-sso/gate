@@ -28,8 +28,8 @@ class Group < ActiveRecord::Base
     if host_machines.count > 0
       host_machines.each do |host|
         if host.access_key.present?
-          REDIS_CACHE.del ("G:" + host.access_key)
-          REDIS_CACHE.del ("P:" + host.access_key)
+          REDIS_CACHE.del ("#{GROUP_RESPONSE}:#{host.access_key}")
+          REDIS_CACHE.del ("#{PASSWD_RESPONSE}:#{host.access_key}")
           Rails.logger.info "hello #{host.name} #{host.access_key}"
         end
       end
@@ -100,7 +100,7 @@ class Group < ActiveRecord::Base
   end
 
   def self.group_nss_response name
-    group_response = REDIS_CACHE.get( "UG:" + name)
+    group_response = REDIS_CACHE.get("#{GROUP_NAME_RESPONSE}:#{name}")
     group_response = JSON.parse(group_response) if group_response.present?
 
     if group_response.blank?
@@ -111,8 +111,8 @@ class Group < ActiveRecord::Base
         response_hash[:gr_passwd] = "x"
         response_hash[:gr_gid] = group.gid
         response_hash[:gr_mem] = group.users.collect { |u| u.user_login_id}
-        REDIS_CACHE.set( "UG:" + group.name, response_hash.to_json)
-        REDIS_CACHE.expire( "UG:" + group.name, REDIS_KEY_EXPIRY)
+        REDIS_CACHE.set("#{GROUP_NAME_RESPONSE}:#{group.name}", response_hash.to_json)
+        REDIS_CACHE.expire("#{GROUP_NAME_RESPONSE}:#{group.name}", REDIS_KEY_EXPIRY)
         group_response = response_hash
       end
     end
@@ -137,13 +137,13 @@ class Group < ActiveRecord::Base
   end
 
   def get_user_ids
-    user_ids = REDIS_CACHE.get( "G_UID:" + name)
+    user_ids = REDIS_CACHE.get("#{GROUP_UID_RESPONSE}:#{name}")
     user_ids = JSON.parse(user_ids) if user_ids.present?
 
     if user_ids.blank?
       user_ids = users.collect {|u| u.user_login_id}
-      REDIS_CACHE.set( "G_UID:" + name, user_ids.to_json)
-      REDIS_CACHE.expire( "G_UID:" + name, REDIS_KEY_EXPIRY)
+      REDIS_CACHE.set("#{GROUP_UID_RESPONSE}:#{name}", user_ids.to_json)
+      REDIS_CACHE.expire("#{GROUP_UID_RESPONSE}:#{name}", REDIS_KEY_EXPIRY)
     end
     return user_ids
   end
