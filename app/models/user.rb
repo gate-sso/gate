@@ -94,11 +94,25 @@ class User < ActiveRecord::Base
     "#{name} (#{email})"
   end
 
-  def self.get_sysadmins uids
-    user_list = []
-    uids.each do |uid|
-      user_list << get_passwd_uid_response(User.find(uid).uid)
-    end
+  def self.get_sysadmins user_ids
+    users = User.
+      select(%Q(
+        id, 
+        name, 
+        uid, 
+        user_login_id, 
+        (
+          SELECT gid 
+          FROM groups 
+          INNER JOIN group_associations 
+            ON groups.id = group_associations.group_id 
+          WHERE group_associations.user_id = users.id
+          AND groups.name = users.user_login_id
+          LIMIT 1
+        ) AS gid
+      )).
+      where(id: user_ids)
+    user_list = users.map{ |user| get_passwd_uid_response(user) }
     user_list
   end
 
@@ -295,9 +309,7 @@ class User < ActiveRecord::Base
     user_response
   end
 
-
-  def self.get_passwd_uid_response uid
-    user = User.where(uid: uid).first
+  def self.get_passwd_uid_response user
     return [] if user.blank?
     user.user_passwd_response
   end
@@ -362,7 +374,14 @@ class User < ActiveRecord::Base
     user_hash[:pw_name] = user_login_id
     user_hash[:pw_passwd]  = "x"
     user_hash[:pw_uid] = uid.to_i
-    user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid if groups.where(name: user_login_id).count > 0
+
+    # If gid is supplied (avoid N+1)
+    if self.respond_to?(:gid) && gid
+      user_hash[:pw_gid] = gid.to_i
+    else
+      user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid if groups.where(name: user_login_id).count > 0
+    end
+
     user_hash[:pw_gecos]  = "#{name}"
     user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
     user_hash[:pw_shell] = "/bin/bash"

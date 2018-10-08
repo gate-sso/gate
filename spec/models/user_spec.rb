@@ -324,7 +324,7 @@ RSpec.describe User, type: :model do
 
   it "should return false if user is not active" do
     user = create(:user)
-    response = User.get_passwd_uid_response user.uid
+    response = User.get_passwd_uid_response user
     expect(response[:pw_name]).to eq(user.user_login_id)
   end
 

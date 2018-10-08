@@ -154,7 +154,7 @@ class Group < ActiveRecord::Base
 
     if default_admins
       group = Group.find_by(name: "sysadmins")
-       
+
       if group.present?
         sysadmins = sysadmins + group.get_user_ids
       end
