@@ -14,7 +14,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
   describe 'Authentication' do
     context "with valid_attributes" do
       it "should create users" do
-        post :create,  {user: valid_attributes, "access_token": @token}
+        post :create,  params: {user: valid_attributes, "access_token": @token}
         expect(response.status).to eq(200)
         user = User.where(name: valid_attributes[:name]).first
         expect(user.blank?).to eq(false)
@@ -25,7 +25,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
 
   describe 'UnAuthentication' do
     it 'gives 401 when access token is in valid' do
-      post :create,  {user: valid_attributes, "access_token": "foo"}
+      post :create,  params: {user: valid_attributes, "access_token": "foo"}
       expect(response.status).to eq(401)
     end
   end
@@ -39,7 +39,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       public_key = rsa_key.public_key.to_pem
       name = "test_name"
       product_name = "test_product"
-      post :update, { "access_token" => access_token.token, 'public_key' => public_key, 'product_name' => product_name, 'name' => name, 'email' => user.email }
+      post :update, params: { "access_token" => access_token.token, 'public_key' => public_key, 'product_name' => product_name, 'name' => name, 'email' => user.email }
       expect(response.status).to eq(200)
     end
   end
@@ -49,14 +49,14 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       it 'should return 200 http status code' do
         group = FactoryBot.create(:group)
         user =  FactoryBot.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1")
-        get :show, { email: user.email, "access_token": @token, :format => :json }
+        get :show, params: { email: user.email, "access_token": @token, :format => :json }
         expect(response.status).to eq(200)
       end
 
       it 'should return the user details' do
         group = FactoryBot.create(:group)
         user =  FactoryBot.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
-        get :show, { email: user.email, "access_token": @token, :format => :json }
+        get :show, params: { email: user.email, "access_token": @token, :format => :json }
         reponse_json = JSON(response.body)
         expect(reponse_json["product_name"]).to eq(user.product_name)
       end
@@ -64,7 +64,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       it 'should not display user secrets' do
         group = FactoryBot.create(:group)
         user =  FactoryBot.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct", created_at: "2018-01-11T21:30:41.000Z", updated_at: "2018-01-11T21:30:41.000Z")
-        get :show, { email: user.email, "access_token": @token, :format => :json }
+        get :show, params: { email: user.email, "access_token": @token, :format => :json }
         response_json = JSON(response.body)
         %w(
           email uid name active admin home_dir shell public_key user_login_id
@@ -79,7 +79,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
       it 'should return http status code 404' do
         group = FactoryBot.create(:group)
         user =  FactoryBot.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
-        get :show, { email: "test@test.com", "access_token": @token, :format => :json }
+        get :show, params: { email: "test@test.com", "access_token": @token, :format => :json }
         expect(response.status).to eq(404)
       end
 
@@ -87,7 +87,7 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
         group = FactoryBot.create(:group)
         user =  FactoryBot.create(:user, name: "foo", user_login_id: "foob", email: "foo@foobar.com", reset_password_token: "test1", product_name: "fooproduct")
 
-        get :show, { email: "test@test.com", "access_token": "invalid_access_token" }
+        get :show, params: { email: "test@test.com", "access_token": "invalid_access_token" }
 
         expect(response.status).to eq(401)
       end

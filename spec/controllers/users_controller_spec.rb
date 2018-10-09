@@ -9,7 +9,7 @@ RSpec.describe UsersController, type: :controller do
     it "should update profile with product name" do
       sign_in user
 
-      patch :update, id: user.id, product_name: product_name
+      patch :update, params: { id: user.id, product_name: product_name }
 
       user.reload
       expect(user.product_name).to eq(product_name)
@@ -18,7 +18,7 @@ RSpec.describe UsersController, type: :controller do
     it "should return 302" do
       sign_in user
 
-      patch :update, id: user.id, product_name: product_name
+      patch :update, params: { id: user.id, product_name: product_name }
 
       expect(response).to have_http_status(302)
     end
@@ -26,7 +26,7 @@ RSpec.describe UsersController, type: :controller do
     it "should redirect to same page once the profile is updated" do
       sign_in user
 
-      patch :update, id: user.id, product_name: product_name
+      patch :update, params: { id: user.id, product_name: product_name }
 
       expect(response).to redirect_to(user_path)
     end
@@ -35,7 +35,7 @@ RSpec.describe UsersController, type: :controller do
       it "should return params missing message on flash" do
         sign_in user
 
-        patch :update, id: user.id
+        patch :update, params: { id: user.id }
 
         expect(flash[:notice]).to eq("Params are missing")
       end
@@ -47,7 +47,7 @@ RSpec.describe UsersController, type: :controller do
       sign_in user
       users = create_list(:user, 3)
       users.last.update(active: false)
-      get :search, { q: users.first.name }
+      get :search, params: { q: users.first.name }
       returned_ids = JSON.parse(response.body).collect{|c| c['id']}
       expect(returned_ids).to eq([users.first.id])
     end
@@ -56,7 +56,7 @@ RSpec.describe UsersController, type: :controller do
       sign_in user
       users = create_list(:user, 3)
       users.last.update(active: false)
-      get :search, { q: users.last.name, include_inactive: 'true' }
+      get :search, params: { q: users.last.name, include_inactive: 'true' }
       returned_ids = JSON.parse(response.body).collect{|c| c['id']}
       expect(returned_ids).to eq([users.last.id])
     end
@@ -74,13 +74,13 @@ RSpec.describe UsersController, type: :controller do
 
     it "regenerates access token of the requested user" do
       old_hashed_token = user.access_token.hashed_token
-      get :regenerate_token, {:id => user.to_param}
+      get :regenerate_token, params: {:id => user.to_param}
       user.reload
       expect(user.access_token.hashed_token).to_not eq old_hashed_token
     end
 
     it "redirects to the user" do
-      get :regenerate_token, {:id => user.to_param}
+      get :regenerate_token, params: {:id => user.to_param}
       expect(response).to redirect_to(user_path(user.id))
     end
   end
