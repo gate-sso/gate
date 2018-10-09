@@ -1,3 +1,3 @@
-class VpnSearchDomain < ActiveRecord::Base
+class VpnSearchDomain < ApplicationRecord
   belongs_to :vpn
 end

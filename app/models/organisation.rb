@@ -1,4 +1,4 @@
-class Organisation < ActiveRecord::Base
+class Organisation < ApplicationRecord
   validates :name, :website, :domain, :country, :state, :address,
             :admin_email_address, :slug, presence: true
   validates :address, format: {

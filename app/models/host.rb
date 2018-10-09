@@ -1,4 +1,4 @@
-class Host < ActiveRecord::Base
+class Host < ApplicationRecord
   has_paper_trail
   belongs_to :user
   acts_as_paranoid

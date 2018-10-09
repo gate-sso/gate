@@ -1,4 +1,4 @@
-class ApiResource < ActiveRecord::Base
+class ApiResource < ApplicationRecord
   attr_accessor :access_key
 
   validates :name, format: { with: /\A[a-zA-Z0-9_-]+\Z/ }, uniqueness: true, presence: true

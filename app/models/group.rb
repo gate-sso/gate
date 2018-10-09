@@ -1,4 +1,4 @@
-class Group < ActiveRecord::Base
+class Group < ApplicationRecord
   has_paper_trail
 
   has_many :group_admins, dependent: :destroy
@@ -162,7 +162,7 @@ class Group < ActiveRecord::Base
     group_id = group.blank? ? 8999 : group.id
 
     sysadmin_group[:gr_gid] = group_id
-    sysadmin_group[:gr_mem] = sysadmins.uniq 
+    sysadmin_group[:gr_mem] = sysadmins.uniq
     sysadmin_group[:gr_name] = "sysadmins"
     sysadmin_group[:gr_passwd] = "x"
     return sysadmin_group

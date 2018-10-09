@@ -1,4 +1,4 @@
-class AccessToken < ActiveRecord::Base
+class AccessToken < ApplicationRecord
   attr_accessor :token
 
   has_paper_trail

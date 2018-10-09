@@ -1,2 +1,2 @@
-class IpAddress < ActiveRecord::Base
+class IpAddress < ApplicationRecord
 end
