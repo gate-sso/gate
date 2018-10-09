@@ -1,6 +1,6 @@
 class ApiController < ActionController::Base
   protect_from_forgery with: :null_session
-  before_filter :authenticate_user_from_token!
+  before_action :authenticate_user_from_token!
 
   def authenticate_user_from_token!
     unless AccessToken.valid_token(get_token)

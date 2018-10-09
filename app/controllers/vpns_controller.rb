@@ -7,7 +7,7 @@ class VpnsController < ApplicationController
                                  :add_supplemental_match_domain, :remove_supplemental_match_domain, \
                                  :migrate_to_new_group, :assign_group]
 
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   require 'securerandom'
 
@@ -19,10 +19,10 @@ class VpnsController < ApplicationController
     if current_user.admin?
       @vpn = Vpn.find(params[:id])
       if @vpn.update(vpn_params)
-        redirect_to vpn_path(@vpn), notice: 'Vpn was successfully updated.' 
+        redirect_to vpn_path(@vpn), notice: 'Vpn was successfully updated.'
       end
     else
-      redirect_to vpn_path(@vpn), notice: 'You can not update, not sufficient privileges.' 
+      redirect_to vpn_path(@vpn), notice: 'You can not update, not sufficient privileges.'
     end
   end
 

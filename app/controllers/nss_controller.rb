@@ -1,6 +1,6 @@
 class NssController < ApplicationController
-  skip_before_filter :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
-  before_filter :authenticate_access_token!, only: %i[add_host]
+  skip_before_action :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
+  before_action :authenticate_access_token!, only: %i[add_host]
 
   def host
     token =  AccessToken.valid_token params[:token]
