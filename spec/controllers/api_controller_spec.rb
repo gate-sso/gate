@@ -16,12 +16,12 @@ RSpec.describe ApiController, type: :controller do
       @token = @user.access_token.token
     end
     it 'gives 200 when access token is valid' do
-      get :index, access_token: @token
+      get :index, params: { access_token: @token }
       expect(response.status).to eq(200)
     end
 
     it 'gives 401 when access token is in valid' do
-      get :index, access_token: "foo"
+      get :index, params: { access_token: "foo" }
       expect(response.status).to eq(401)
     end
   end

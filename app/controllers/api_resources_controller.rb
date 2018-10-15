@@ -1,6 +1,6 @@
 class ApiResourcesController < ApplicationController
   before_action :set_api_resource, only: [:show, :edit, :update, :destroy, :regenerate_access_key]
-  before_filter :authenticate_user!, :except => [:authenticate]
+  before_action :authenticate_user!, :except => [:authenticate]
 
   # GET /api_resources
   # GET /api_resources.json

@@ -222,15 +222,14 @@ RSpec.describe User, type: :model do
     end
 
     it 'should update the deactivated_at date if user is made inactive' do
-      create(:user, admin: true)
-      Timecop.freeze
-      user.update_profile(active: false)
-      expect(user.deactivated_at).to eq(Time.current)
+      Timecop.freeze(Time.current)
+      inactive_user = create(:user, admin: true)
+      inactive_user.update_profile(active: false)
+      expect(inactive_user.deactivated_at.to_s).to eq(Time.current.to_s)
     end
 
     it 'shouldn\'t make the admin user a normal user if its only single admin user' do
       user.update_profile(active: false)
-      p user.errors.messages
       expect(user.errors.messages.key?(:admin)).to eq(true)
       expect(user.valid?).to eq(false)
     end

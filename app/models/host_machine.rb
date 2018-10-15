@@ -1,4 +1,4 @@
-class HostMachine < ActiveRecord::Base
+class HostMachine < ApplicationRecord
   has_paper_trail
 
   has_many :host_access_groups

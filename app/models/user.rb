@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_paper_trail
 
   include MsChapAuth
@@ -97,15 +97,15 @@ class User < ActiveRecord::Base
   def self.get_sysadmins user_ids
     users = User.
       select(%Q(
-        id, 
-        name, 
-        uid, 
-        user_login_id, 
+        id,
+        name,
+        uid,
+        user_login_id,
         (
-          SELECT gid 
-          FROM groups 
-          INNER JOIN group_associations 
-            ON groups.id = group_associations.group_id 
+          SELECT gid
+          FROM groups
+          INNER JOIN group_associations
+            ON groups.id = group_associations.group_id
           WHERE group_associations.user_id = users.id
           AND groups.name = users.user_login_id
           LIMIT 1

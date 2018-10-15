@@ -7,7 +7,7 @@ RSpec.describe GroupsController, type: :controller do
     it "should return groups according to supplied search string" do
       sign_in user
       groups = create_list(:group, 3)
-      get :search, { q: "People" }
+      get :search, params: { q: "People" }
       expect(JSON.parse(response.body)).to eq(groups.map{|m| {"id" => m.id, "name" => m.name}})
     end
   end

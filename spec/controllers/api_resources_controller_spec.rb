@@ -33,7 +33,7 @@ RSpec.describe ApiResourcesController, type: :controller do
   describe "GET #index" do
     it "returns a success response" do
       api_resource = ApiResource.create! valid_attributes
-      get :index, {}, valid_session
+      get :index, params: {}, session: valid_session
       expect(response).to be_success
     end
   end
@@ -41,14 +41,14 @@ RSpec.describe ApiResourcesController, type: :controller do
   describe "GET #show" do
     it "returns a success response" do
       api_resource = ApiResource.create! valid_attributes
-      get :show, {:id => api_resource.to_param}, valid_session
+      get :show, params: {:id => api_resource.to_param}, session: valid_session
       expect(response).to be_success
     end
   end
 
   describe "GET #new" do
     it "returns a success response" do
-      get :new, {}, valid_session
+      get :new, params: {}, session: valid_session
       expect(response).to be_success
     end
   end
@@ -56,7 +56,7 @@ RSpec.describe ApiResourcesController, type: :controller do
   describe "GET #edit" do
     it "returns a success response" do
       api_resource = ApiResource.create! valid_attributes
-      get :edit, {:id => api_resource.to_param}, valid_session
+      get :edit, params: {:id => api_resource.to_param}, session: valid_session
       expect(response).to be_success
     end
   end
@@ -67,19 +67,19 @@ RSpec.describe ApiResourcesController, type: :controller do
         sign_in user
 
         expect {
-          post :create, {:api_resource => valid_attributes}, valid_session
+          post :create, params: {:api_resource => valid_attributes}, session: valid_session
         }.to change(ApiResource, :count).by(1)
       end
 
       it "redirects to the created api_resource" do
-        post :create, {:api_resource => valid_attributes}, valid_session
+        post :create, params: {:api_resource => valid_attributes}, session: valid_session
         expect(response).to redirect_to(api_resource_path(assigns[:api_resource]))
       end
     end
 
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, {:api_resource => invalid_attributes}, valid_session
+        post :create, params: {:api_resource => invalid_attributes}, session: valid_session
         expect(response).to be_success
       end
     end
@@ -93,14 +93,14 @@ RSpec.describe ApiResourcesController, type: :controller do
 
       it "updates the requested api_resource" do
         api_resource = ApiResource.create! valid_attributes
-        put :update, {:id => api_resource.to_param, :api_resource => new_attributes}, valid_session
+        put :update, params: {:id => api_resource.to_param, :api_resource => new_attributes}, session: valid_session
         api_resource.reload
         expect(api_resource.name).to eq("new_name")
       end
 
       it "redirects to the api_resource" do
         api_resource = ApiResource.create! valid_attributes
-        put :update, {:id => api_resource.to_param, :api_resource => valid_attributes}, valid_session
+        put :update, params: {:id => api_resource.to_param, :api_resource => valid_attributes}, session: valid_session
         expect(response).to redirect_to(api_resources_url)
       end
     end
@@ -108,7 +108,7 @@ RSpec.describe ApiResourcesController, type: :controller do
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
         api_resource = ApiResource.create! valid_attributes
-        put :update, {:id => api_resource.to_param, :api_resource => invalid_attributes}, valid_session
+        put :update, params: {:id => api_resource.to_param, :api_resource => invalid_attributes}, session: valid_session
         expect(response).to be_success
       end
     end
@@ -118,13 +118,13 @@ RSpec.describe ApiResourcesController, type: :controller do
     it "destroys the requested api_resource" do
       api_resource = ApiResource.create! valid_attributes
       expect {
-        delete :destroy, {:id => api_resource.to_param}, valid_session
+        delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
       }.to change(ApiResource, :count).by(-1)
     end
 
     it "redirects to the api_resources list" do
       api_resource = ApiResource.create! valid_attributes
-      delete :destroy, {:id => api_resource.to_param}, valid_session
+      delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
       expect(response).to redirect_to(api_resources_url)
     end
   end
@@ -132,7 +132,7 @@ RSpec.describe ApiResourcesController, type: :controller do
   describe 'Search for API Resources' do
     it "should return API Resources according to supplied search string" do
       api_resources = create_list(:api_resource, 3)
-      get :search, { q: "API" }
+      get :search, params: { q: "API" }
       expect(JSON.parse(response.body)).to eq(api_resources.map{|m| {"id" => m.id, "name" => m.name}})
     end
   end
@@ -141,14 +141,14 @@ RSpec.describe ApiResourcesController, type: :controller do
     it "regenerates access_key of the requested api_resource" do
       api_resource = ApiResource.create! valid_attributes
       old_hashed_access_key = api_resource.hashed_access_key
-      get :regenerate_access_key, {:id => api_resource.to_param}, valid_session
+      get :regenerate_access_key, params: {:id => api_resource.to_param}, session: valid_session
       api_resource.reload
       expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
     end
 
     it "redirects to the api_resource" do
       api_resource = ApiResource.create! valid_attributes
-      get :regenerate_access_key, {:id => api_resource.to_param}
+      get :regenerate_access_key, params: {:id => api_resource.to_param}
       expect(response).to redirect_to(api_resource_path(api_resource.id))
     end
   end
@@ -164,7 +164,7 @@ RSpec.describe ApiResourcesController, type: :controller do
       api_resource = ApiResource.create! valid_attributes
       api_resource.group = group
       api_resource.save!
-      get :authenticate, { access_key: valid_attributes[:access_key], access_token: access_token.token }, valid_session
+      get :authenticate, params: { access_key: valid_attributes[:access_key], access_token: access_token.token }, session: valid_session
       expect(response).not_to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 1
@@ -181,7 +181,7 @@ RSpec.describe ApiResourcesController, type: :controller do
       api_resource.group = group
       group.users << user
       api_resource.save!
-      get :authenticate, { access_key: valid_attributes[:access_key], access_token: access_token.token }, valid_session
+      get :authenticate, params: { access_key: valid_attributes[:access_key], access_token: access_token.token }, session: valid_session
       expect(response).to be_success
       body = JSON.parse(response.body)
       expect(body["result"]).to eq 0

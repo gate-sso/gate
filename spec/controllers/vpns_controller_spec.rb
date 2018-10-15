@@ -43,22 +43,22 @@ RSpec.describe VpnsController, type: :controller do
 
       @vpn01 = Vpn.create(name: "z")
 
-      post :add_dns_server, { id: @vpn01.id, server_address: '1.1.1.1'} 
+      post :add_dns_server, params: { id: @vpn01.id, server_address: '1.1.1.1'}
       expect(@vpn01.vpn_domain_name_servers.count).to eq(1)
 
-      post :remove_dns_server, { id: @vpn01.id, vpn_domain_name_server_id: @vpn01.vpn_domain_name_servers.first.id} 
+      post :remove_dns_server, params: { id: @vpn01.id, vpn_domain_name_server_id: @vpn01.vpn_domain_name_servers.first.id}
       expect(@vpn01.vpn_domain_name_servers.count).to eq(0)
 
-      post :add_search_domain, { id: @vpn01.id, search_domain: 'xyz.com'} 
+      post :add_search_domain, params: { id: @vpn01.id, search_domain: 'xyz.com'}
       expect(@vpn01.vpn_search_domains.count).to eq(1)
 
-      post :remove_search_domain, { id: @vpn01.id, vpn_search_domain_id: @vpn01.vpn_search_domains.first.id} 
+      post :remove_search_domain, params: { id: @vpn01.id, vpn_search_domain_id: @vpn01.vpn_search_domains.first.id}
       expect(@vpn01.vpn_search_domains.count).to eq(0)
 
-      post :add_supplemental_match_domain, { id: @vpn01.id, supplemental_match_domain: 'abc.co.id'} 
+      post :add_supplemental_match_domain, params: { id: @vpn01.id, supplemental_match_domain: 'abc.co.id'}
       expect(@vpn01.vpn_supplemental_match_domains.count).to eq(1)
 
-      post :remove_supplemental_match_domain, { id: @vpn01.id, vpn_supplemental_match_domain_id: @vpn01.vpn_supplemental_match_domains.first.id} 
+      post :remove_supplemental_match_domain, params: { id: @vpn01.id, vpn_supplemental_match_domain_id: @vpn01.vpn_supplemental_match_domains.first.id}
       expect(@vpn01.vpn_supplemental_match_domains.count).to eq(0)
 
     end
@@ -68,7 +68,7 @@ RSpec.describe VpnsController, type: :controller do
     it "should return vpns according to supplied search string" do
       sign_in user
       vpns = create_list(:vpn, 3)
-      get :search, { q: "VPN" }
+      get :search, params: { q: "VPN" }
       expect(JSON.parse(response.body)).to eq(vpns.map{|m| {"id" => m.id, "name" => m.name}})
     end
   end

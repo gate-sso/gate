@@ -10,14 +10,14 @@ RSpec.describe NssController, type: :controller do
   end
 
   it "should return false for invalid token" do
-    get :groups_list, token: access_token, email: email
+    get :groups_list, params: { token: access_token, email: email }
     data = JSON.parse(response.body)
     expect(data["success"]).to eq(false)
   end
 
   it "should return false for not registered email" do
     create(:access_token, token: access_token)
-    get :groups_list, token: access_token, email: email
+    get :groups_list, params: { token: access_token, email: email }
     data = JSON.parse(response.body)
     expect(data["success"]).to eq(false)
   end
@@ -25,14 +25,14 @@ RSpec.describe NssController, type: :controller do
   it "should return group list for registered email" do
     create(:access_token, token: access_token)
     user_test = create(:user, email: email)
-    get :groups_list, token: access_token, email: email
+    get :groups_list, params: { token: access_token, email: email }
     data = JSON.parse(response.body)
     expect(data["success"]).to eq(true)
   end
 
   it 'should not return sysadmins for invalid token' do
     json = { token: '', name: 'random_host', group_name: '', format: :json }
-    post 'add_host', json
+    post 'add_host', params: json
     body = response.body
     expect(JSON.parse(body)['success']).to eq(false)
   end
@@ -41,13 +41,13 @@ RSpec.describe NssController, type: :controller do
 
     create(:access_token, token: access_token)
     json = { token: access_token, name: 'random_host', group_name: 'duplicate_group', format: :json }
-    post 'add_host', json
+    post 'add_host', params: json
     body = response.body
     expect(JSON.parse(body)['success']).to eq(true)
     expect(JSON.parse(body)['groups'].count).to eq 2
 
     json = { token: access_token, name: 'random_host', group_name: 'duplicate_group', format: :json }
-    post 'add_host', json
+    post 'add_host', params: json
     body = response.body
     expect(JSON.parse(body)['success']).to eq(true)
     expect(JSON.parse(body)['groups'].count).to eq 2
@@ -57,7 +57,7 @@ RSpec.describe NssController, type: :controller do
     sign_in user
     access_token = create(:access_token)
     json =  { token: access_token.token, name: "random_host_01" }
-    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
+    post "add_host", params: { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
     body = response.body
     access_key = JSON.parse(body)["access_key"]
 
@@ -80,14 +80,14 @@ RSpec.describe NssController, type: :controller do
     group.reload
 
     expect(host.sysadmins.count).to eq 2
-    get "host", { token: access_key, format: json }
+    get "host", params: { token: access_key, format: json }
     body = JSON.parse(response.body)
 
     expect(body.count).to eq 3
     expect(body[2]["gr_mem"].count).to eq 2
 
 
-    get "group", { token: access_key, format: json }
+    get "group", params: { token: access_key, format: json }
     body = JSON.parse(response.body)
 
     expect(body.count).to eq 3
@@ -107,13 +107,13 @@ RSpec.describe NssController, type: :controller do
     user = create(:user)
     user.groups << group
 
-    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
+    post "add_host", params: { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
     host = HostMachine.first
     expect(host.name).to eq "random_host_01"
     host.groups << group
 
 
-    get "group", { token: host.access_key, format: :json }
+    get "group", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
 
     expect(body.count).to eq 2
@@ -136,13 +136,13 @@ RSpec.describe NssController, type: :controller do
     user_2 = create(:user)
     user_2.groups << group
 
-    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", default_admins: false, format: :json}
+    post "add_host", params: { token: access_token.token, name: "random_host_01", group_name: "random_group_01", default_admins: false, format: :json}
     host = HostMachine.first
     expect(host.name).to eq "random_host_01"
     host.groups << group_2
 
 
-    get "group", { token: host.access_key, format: :json }
+    get "group", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
 
     expect(body.count).to eq 2
@@ -162,7 +162,7 @@ RSpec.describe NssController, type: :controller do
     user = create(:user)
     user.groups << group
 
-    post "add_host", { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
+    post "add_host", params: { token: access_token.token, name: "random_host_01", group_name: "random_group_01", format: :json}
     host = HostMachine.first
     expect(host.name).to eq "random_host_01"
     host.groups << group
@@ -172,10 +172,10 @@ RSpec.describe NssController, type: :controller do
     user.reload
 
 
-    get "passwd", { token: host.access_key, format: :json }
+    get "passwd", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
     expect(body.count).to eq 1
-    get "passwd", { token: host.access_key, format: :json }
+    get "passwd", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
     expect(body.count).to eq 1
   end
@@ -194,7 +194,7 @@ RSpec.describe NssController, type: :controller do
 
     cache_count_bfr = REDIS_CACHE.keys("UG*").count
 
-    get "group", { token: host_machine.access_key, format: :json }
+    get "group", params: { token: host_machine.access_key, format: :json }
     cache_count_aft = REDIS_CACHE.keys("UG*").count
 
     expect(cache_count_aft).to eq cache_count_bfr + 1

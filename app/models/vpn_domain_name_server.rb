@@ -1,3 +1,3 @@
-class VpnDomainNameServer < ActiveRecord::Base
+class VpnDomainNameServer < ApplicationRecord
   belongs_to :vpn
 end
