@@ -2,6 +2,17 @@ class SamlIdpController < SamlIdp::IdpController
   layout false
   before_action :setup_saml_configuration
 
+  def show
+    xml_content = SamlIdp.metadata.signed
+    if params.key?(:download)
+      send_data xml_content,
+        type: 'text/xml',
+        filename: 'metadata.xml'
+    else
+      render xml: xml_content
+    end
+  end
+
   private
 
   def idp_authenticate(email, password)

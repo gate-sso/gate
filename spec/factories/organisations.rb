@@ -1,7 +1,7 @@
 FactoryBot.define do
   country = Country.find_country_by_name(Country.all.map(&:name).sort.sample)
   factory :organisation do
-    sequence(:slug) { |n| "#{Faker::Internet.slug}_#{n}" }
+    sequence(:slug) { |n| "#{Faker::Lorem.word}_#{n}" }
     name { Faker::Lorem.word }
     website { Faker::Internet.url }
     domain { Faker::Internet.email.split('@').last }

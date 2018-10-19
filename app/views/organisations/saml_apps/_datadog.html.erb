@@ -1,0 +1,64 @@
+<ul class="nav nav-tabs" id="configAppTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" href="#instruction" id="instruction-tab" data-toggle="tab" role="tab" aria-controls="instruction" aria-selected="true">Instructions</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#settings" id="settings-tab" data-toggle="tab" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#manage-users" id="manage-users-tab" data-toggle="tab" role="tab" aria-controls="manage-users" aria-selected="true">Manage Users</a>
+  </li>
+</ul>
+<div class="tab-content" id="configAppTabsContent">
+  <div class="tab-pane fade show active" id="instruction" role="tabpanel" aria-labelledby="instruction-tab">
+    <h6>Pre Requisites</h6>
+    <ol>
+      <li>You need to have a valid account @ <a href="https://www.datadog.com">datadog.com</a></li>
+      <li>You need to be an administrator of the datadog account</li>
+    </ol>
+    <h6>Instruction Steps</h6>
+    <ol>
+      <li><a href="#configureDataDog">Configuration Steps on DataDog</a></li>
+      <li><a href="#configureGate">Configuration Steps on Gate</a></li>
+      <li><a href="#manageUsersGate">Manage Users on Gate</a></li>
+    </ol>
+    <h6 id="configureDataDog">Configuration Steps on Datadog</h6>
+    <ol>
+      <li>Login to Datadog as an administrator</li>
+      <li>
+        <p>
+          Click on <img src='https://secure.gravatar.com/avatar/5800f8b6f41ce19a81012cf8aef1bfc1?s=48&d=retro' style='width: 20px;' /> in the bottom left, then select <b>Configure SAML</b>
+        </p>
+        <%= image_tag("saml_configure_datadog_01.png") %>
+      </li>
+      <li>Download the IdP Metadata by clicking <%= link_to "here", metadata_path(slug: org.slug, app: 'datadog', download: true) %></li>
+      <li>
+        <p>Click <b>Choose file</b>, locate the <b>metadata.xml</b> you just saved, and then click Upload File</p>
+        <%= image_tag("saml_configure_datadog_02.png") %>
+      </li>
+      <li>
+        <p>Click <b>Enable</b></p>
+        <%= image_tag("saml_configure_datadog_03.png") %>
+      </li>
+      <li>Make a copy of your <b>Single Sign-on URL</b> value</li>
+      <li>
+        <p>For the below image follow the following steps:</p>
+        <ol>
+          <li>Enable <b>Identity Provider (IdP) Initiated Login</b></li>
+          <li>Enable <b>SAML Strict Mode</b></li>
+          <li><u>Note: We will not be using <b>JIT</b>, instead managing users will be done via a different panel</u></li>
+          <li>Hit <b>Save</b></li>
+        </ol>
+        <%= image_tag("saml_configure_datadog_04.png") %>
+      </li>
+    </ol>
+    <h6 id="configureGate">Configuration Steps on Gate</h6>
+    <h6 id="manageUsersGate">Manage Users on Gate</h6>
+  </div>
+  <div class="tab-pane fage" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+    settings
+  </div>
+  <div class="tab-pane fage" id="manage-users" role="tabpanel" aria-labelledby="manage-users-tab">
+    manage users
+  </div>
+</div>

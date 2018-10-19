@@ -1,10 +1,22 @@
 class OrganisationsController < ApplicationController
+  before_action :load_org, only: %i(config_saml_app update show setup_saml)
+
   def index
     render :index, locals: { org_list: Organisation.all }
   end
 
   def new
     render :new, locals: { org: Organisation.new }
+  end
+
+  def config_saml_app
+    saml_apps = Figaro.env.saml_apps.split(',').map(&:downcase)
+    app_name = params[:app_name]
+    if saml_apps.include?(app_name.downcase)
+      render :config_saml_app, locals: { app_name: params[:app_name], org: @org }
+    else
+      redirect_to organisation_path(id: params[:organisation_id])
+    end
   end
 
   def create
@@ -19,27 +31,25 @@ class OrganisationsController < ApplicationController
   end
 
   def update
-    org = load_org
-    org.update_profile(organisation_params.to_h || {})
-    if org.errors.blank?
+    @org.update_profile(organisation_params.to_h || {})
+    if @org.errors.blank?
       flash[:success] = 'Successfully updated organisation'
       redirect_to organisations_path
     else
-      flash[:errors] = org.errors.full_messages
-      render :show, locals: { org: org }
+      flash[:errors] = @org.errors.full_messages
+      render :show, locals: { org: @org }
     end
   end
 
   def show
-    render :show, locals: { org: load_org }
+    render :show, locals: { org: @org }
   end
 
   def setup_saml
-    org = load_org
-    if org.saml_setup?
+    if @org.saml_setup?
       flash[:errors] = 'SAML Certificates Already Setup'
     else
-      load_org.setup_saml_certs
+      @org.setup_saml_certs
       flash[:success] = 'Successfully setup SAML Certificates'
     end
     redirect_to organisations_path
@@ -48,9 +58,11 @@ class OrganisationsController < ApplicationController
   private
 
   def load_org
-    org = Organisation.where(params[:id]).first
-    redirect_to organisations_path if org.blank?
-    org
+    id = params[:id] || params[:organisation_id]
+    @org = Organisation.where(id: id).first
+    if @org.blank?
+      redirect_to organisations_path
+    end
   end
 
   def organisation_params
