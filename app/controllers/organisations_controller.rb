@@ -1,5 +1,6 @@
 class OrganisationsController < ApplicationController
-  before_action :load_org, only: %i(config_saml_app update show setup_saml)
+  before_action :load_org, only: %i(config_saml_app update show setup_saml save_config_saml_app)
+  before_action :validate_app_name, only: %i(config_saml_app save_config_saml_app)
 
   def index
     render :index, locals: { org_list: Organisation.all }
@@ -10,13 +11,25 @@ class OrganisationsController < ApplicationController
   end
 
   def config_saml_app
-    saml_apps = Figaro.env.saml_apps.split(',').map(&:downcase)
     app_name = params[:app_name]
-    if saml_apps.include?(app_name.downcase)
-      render :config_saml_app, locals: { app_name: params[:app_name], org: @org }
-    else
-      redirect_to organisation_path(id: params[:organisation_id])
-    end
+    saml_app = app_name.titleize.constantize.new(@org.id)
+    render :config_saml_app, locals: {
+      org: @org,
+      saml_config: saml_app.config,
+      app_name: app_name,
+    }
+  end
+
+  def save_config_saml_app
+    app_name = params[:app_name]
+    saml_app_config = params[:saml_app_config]
+    saml_app = app_name.titleize.constantize.new(@org.id)
+    saml_app.save_config(saml_app_config[:sso_url], params[:config])
+    flash[:success] = 'Configuration saved successfully'
+    redirect_to organisation_config_saml_app_path(
+      app_name: app_name,
+      organisation_id: @org.id
+    )
   end
 
   def create
@@ -62,6 +75,13 @@ class OrganisationsController < ApplicationController
     @org = Organisation.where(id: id).first
     if @org.blank?
       redirect_to organisations_path
+    end
+  end
+
+  def validate_app_name
+    saml_apps = Figaro.env.saml_apps.split(',').map(&:downcase)
+    unless saml_apps.include?(params[:app_name].downcase)
+      redirect_to organisation_path(id: params[:organisation_id])
     end
   end
 

@@ -53,10 +53,44 @@
       </li>
     </ol>
     <h6 id="configureGate">Configuration Steps on Gate</h6>
+    <ol>
+      <li>
+        <p>Copy the entity Id from the below picture after setting up SAML using the previous Instructions</p>
+        <%= image_tag("saml_configure_datadog_03.png") %>
+      </li>
+      <li>Navigate to <a href="https://app.datadoghq.com/account/settings#api">Datadog API Setup</a> to setup your API and App Keys</li>
+      <li>
+        <p>Refer the below image, to add the API Key</p>
+        <%= image_tag("saml_configure_datadog_05.png") %>
+      </li>
+      <li>
+        <p>Refer the below image, to add the App Key</p>
+        <%= image_tag("saml_configure_datadog_06.png") %>
+      </li>
+      <li>
+        <p>Update the SSO Url, Application Key, API Key from the previous steps by refering the below image</p>
+        <%= image_tag("saml_configure_datadog_07.png") %>
+      </li>
+      <li>As a part of this process a group will be auto generated to add and remove users for accessing Datadog. The group created would be called <b>saml_datadog_users</b></li>
+    </ol>
     <h6 id="manageUsersGate">Manage Users on Gate</h6>
   </div>
   <div class="tab-pane fage" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-    settings
+    <%= form_for saml_config, url: organisation_save_config_saml_app_path(organisation_id: org.id, app_name: app_name), method: :post do |f|  %>
+      <div class='form-group'>
+        <%= label_tag :datadog_sso_url %>
+        <%= f.text_field :sso_url, class: 'form-control' %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :application_key %>
+        <%= text_field_tag 'config[app_key]', saml_config.config['app_key'], class: 'form-control' %>
+      </div>
+      <div class='form-group'>
+        <%= label_tag :api_key %>
+        <%= text_field_tag 'config[api_key]', saml_config.config['api_key'], class: 'form-control' %>
+      </div>
+      <%= f.submit 'Update Configuration', class: 'btn btn-primary mb-2'%>
+    <% end %>
   </div>
   <div class="tab-pane fage" id="manage-users" role="tabpanel" aria-labelledby="manage-users-tab">
     manage users

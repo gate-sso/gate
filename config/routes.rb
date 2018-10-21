@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :organisations, except: %i(destroy) do
         get 'setup_saml', action: :setup_saml
         get 'config_saml_app/:app_name', action: :config_saml_app, as: 'config_saml_app'
+        post 'config_saml_app/:app_name', action: :save_config_saml_app, as: :save_config_saml_app
       end
     end
 
