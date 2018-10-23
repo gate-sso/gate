@@ -10,9 +10,28 @@ class SamlApp
 
   def save_config(sso_url, config = {})
     unless @config.persisted?
-      @config.group = Group.find_or_create_by(name: "saml_#{app_name}_users")
+      group_name = "#{@config.organisation.slug}_saml_#{app_name}_users"
+      @config.group = Group.find_or_create_by(name: group_name)
     end
     @config.sso_url = sso_url
     @config.save
+  end
+
+  def add_user(email)
+    user = User.where(email: email).first
+    unless user.blank?
+      @config.group.add_user(user.id)
+      return true
+    end
+    false
+  end
+
+  def remove_user(email)
+    user = User.where(email: email).first
+    unless user.blank?
+      @config.group.remove_user(user.id)
+      return true
+    end
+    false
   end
 end

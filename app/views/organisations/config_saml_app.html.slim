@@ -4,4 +4,4 @@
       h5 Configure #{app_name.titleize}
   .row.mb-3.mt-2
     .col-md-12
-      = render partial: "organisations/saml_apps/#{app_name}", locals: {org: org, app_name: app_name, saml_config: saml_config}
+      = render partial: "organisations/saml_apps/#{app_name}", locals: {org: org, app_name: app_name, saml_config: saml_config, users: users}

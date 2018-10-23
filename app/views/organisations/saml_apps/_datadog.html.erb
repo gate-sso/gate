@@ -74,6 +74,17 @@
       <li>As a part of this process a group will be auto generated to add and remove users for accessing Datadog. The group created would be called <b>saml_datadog_users</b></li>
     </ol>
     <h6 id="manageUsersGate">Manage Users on Gate</h6>
+    <ol>
+      <li>Click on <b>Manage Users</b> to add/remove users</li>
+      <li>
+        <p>Enter the email address in the below box to add users to datadog</p>
+        <%= image_tag("saml_configure_datadog_08.png") %>
+      </li>
+      <li>
+        <p>When you click on the page, you will get a list of users with a remove button. You can click remove to remove users from accessing datadog</p>
+        <%= image_tag("saml_configure_datadog_09.png") %>
+      </li>
+    </ol>
   </div>
   <div class="tab-pane fage" id="settings" role="tabpanel" aria-labelledby="settings-tab">
     <%= form_for saml_config, url: organisation_save_config_saml_app_path(organisation_id: org.id, app_name: app_name), method: :post do |f|  %>
@@ -93,6 +104,32 @@
     <% end %>
   </div>
   <div class="tab-pane fage" id="manage-users" role="tabpanel" aria-labelledby="manage-users-tab">
-    manage users
+    <%= form_tag  organisation_add_user_saml_app_path(organisation_id: org.id, app_name: app_name), method: :post do  %>
+      <div class='form-group'>
+        <%= label_tag :email_address %>
+        <%= text_field_tag 'email', '', class: 'form-control' %>
+      </div>
+      <%= submit_tag 'Add User', class: 'btn btn-primary mb-2', id: 'add_user_to_app' %>
+    <% end %>
+    <div class="table_responsive">
+      <table class="table table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.each do |user| %>
+            <tr>
+              <td><%= link_to user.name, user_path(id: user.id) %></td>
+              <td><%= user.email %></td>
+              <td><%= link_to "Remove", organisation_remove_user_saml_app_path(organisation_id: org.id, app_name: app_name, email: user.email), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger', id: "saml_user_remove_#{user.id}" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

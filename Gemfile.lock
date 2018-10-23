@@ -123,6 +123,8 @@ GEM
     hashdiff (0.3.7)
     hashie (3.5.7)
     hirb (0.7.3)
+    httparty (0.16.2)
+      multi_xml (>= 0.5.2)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
@@ -357,6 +359,7 @@ DEPENDENCIES
   faker
   figaro
   font-awesome-rails
+  httparty
   jbuilder
   jquery-rails
   mock_redis

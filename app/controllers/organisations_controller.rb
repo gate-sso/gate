@@ -1,6 +1,12 @@
 class OrganisationsController < ApplicationController
-  before_action :load_org, only: %i(config_saml_app update show setup_saml save_config_saml_app)
-  before_action :validate_app_name, only: %i(config_saml_app save_config_saml_app)
+  before_action :load_org, only: %i(
+    config_saml_app update show setup_saml save_config_saml_app
+    remove_user_saml_app add_user_saml_app
+  )
+  before_action :validate_app_name, only: %i(
+    config_saml_app save_config_saml_app
+    remove_user_saml_app add_user_saml_app
+  )
 
   def index
     render :index, locals: { org_list: Organisation.all }
@@ -13,10 +19,13 @@ class OrganisationsController < ApplicationController
   def config_saml_app
     app_name = params[:app_name]
     saml_app = app_name.titleize.constantize.new(@org.id)
+    config = saml_app.config
+    users = config.persisted? ? config.group.users : []
     render :config_saml_app, locals: {
       org: @org,
-      saml_config: saml_app.config,
+      saml_config: config,
       app_name: app_name,
+      users: users,
     }
   end
 
@@ -30,6 +39,28 @@ class OrganisationsController < ApplicationController
       app_name: app_name,
       organisation_id: @org.id
     )
+  end
+
+  def remove_user_saml_app
+    app_name = params[:app_name]
+    saml_app = app_name.titleize.constantize.new(@org.id)
+    if saml_app.remove_user(params[:email])
+      flash[:success] = 'User removed successfullly'
+    else
+      flash[:error] = 'Issue removing the user'
+    end
+    redirect_to organisation_config_saml_app_path
+  end
+
+  def add_user_saml_app
+    app_name = params[:app_name]
+    saml_app = app_name.titleize.constantize.new(@org.id)
+    if saml_app.add_user(params[:email])
+      flash[:success] = 'User added successfullly'
+    else
+      flash[:error] = 'Issue adding the user'
+    end
+    redirect_to organisation_config_saml_app_path
   end
 
   def create

@@ -14,6 +14,8 @@ Rails.application.routes.draw do
         get 'setup_saml', action: :setup_saml
         get 'config_saml_app/:app_name', action: :config_saml_app, as: 'config_saml_app'
         post 'config_saml_app/:app_name', action: :save_config_saml_app, as: :save_config_saml_app
+        post 'config_saml_app/:app_name/add_user', action: :add_user_saml_app, as: :add_user_saml_app
+        delete 'config_saml_app/:app_name', action: :remove_user_saml_app, as: :remove_user_saml_app
       end
     end
 
