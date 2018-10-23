@@ -34,8 +34,7 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - DOCKER_COMPOSE_VERSION=1.11.2
 before_install:
-  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('LlmZctqmhudM') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
-  - sudo mysql_upgrade -u root -pLlmZctqmhudM
+  - sudo mysql_upgrade -u root
   - sudo service mysql restart
   - mysql -e 'CREATE DATABASE IF NOT EXISTS gate_test;'
   - gem install bundler
