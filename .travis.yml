@@ -5,6 +5,13 @@ rvm:
 services:
   - redis-server
   - mysql
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
 env:
   global:
   - GATE_OAUTH_CLIENT_ID=totally_secret_client_id
@@ -27,11 +34,14 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - DOCKER_COMPOSE_VERSION=1.11.2
 before_install:
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('LlmZctqmhudM') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade -u root -pLlmZctqmhudM
+  - sudo service mysql restart
   - mysql -e 'CREATE DATABASE IF NOT EXISTS gate_test;'
   - gem install bundler
 script:
   - bundle package --all
-  - bundle install --binstubs --local 
+  - bundle install --binstubs --local
   - bundle exec rake db:migrate
   - bundle exec rake spec
   - bundle exec rake assets:precompile RAILS_ENV=production
@@ -48,7 +58,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: VWDGnrtrECoeJBATfe71HdpvnD15IKTkHWq/cQDfo9FTrm005ngTusQpW0eim76tSTMcJ1OBLoE9aAkd4Szi00TWenNPaAWHtgodcvNXxjqyZEtznRmtZW/vSk2H+iwJxJZoPDMZqStjmmSoD0dA1t2GLGltFzeJ5Y409YeroLUsVdRcTJY0mvQYbuLt1aZCu76gY5nB01yH7ib4ykZllJQbkyX57TKBYSLoQVUQ3hqo9BLUoROknHSfFGBHjSN9D3zIqKoh0XDOuTnyMHB+zMGmjjJbHMx5Z2eW1NW1HvpqDUOPl8uRnUEoCCfujA7OUlGgdadRBeUJObzpNkpQUNLEh5zIIr9NAZzjunzYkMiMZIseTNflJ6HOajld2Bcgz3PcbzM8hcIFog5loE7CBLWEzDoOIY/B75NYuHPIzRzTbgw7jf8XdfypCNMm0RLWiCXiDmuDMcNPZT9NrrheNGFz1CDmWkwpJmUTIv8J13J2Ux9ex1NY9iSRD8rgJ+bLOfp/u1nJWjACki8zq2/vffm2oUWz/R7q23Keq5Itddpe3mJUyFjokTUZPNSAlC45rF+rgK4ka7yJb+ZZAOaq/N8iIfVkgnfviWtaPQzAWRkO8J8Wzt1GrfQpNlo2BMM6Cpy0iV9ANYqAVYerImAopMWlzQmjbtt8P+xmmYA0FIw=
-  file_glob: true  
+  file_glob: true
   file: $TRAVIS_BUILD_DIR/*.tar.gz
   on:
     repo: gate-sso/gate
