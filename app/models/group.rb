@@ -167,4 +167,14 @@ class Group < ApplicationRecord
     sysadmin_group[:gr_passwd] = "x"
     return sysadmin_group
   end
+
+  def add_user(user_id)
+    unless group_associations.map(&:user_id).include?(user_id)
+      group_associations.create(user_id: user_id)
+    end
+  end
+
+  def remove_user(user_id)
+    group_associations.where(user_id: user_id).delete_all
+  end
 end

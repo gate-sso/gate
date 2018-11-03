@@ -26,7 +26,13 @@
               td = link_to org.website, org.website
               td = org.domain
               td
-                - unless org.saml_setup?
+                - if org.saml_setup?
+                  .dropdown.position-relative#configureAppDropDownMenuContainer
+                    button.btn.btn-primary.btn-sm.dropdown-toggle type="button" id="configureAppDropDownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-boundary="configureAppDropDownMenuContainer"
+                      = "Configure App"
+                    .dropdown-menu aria-labelledby="configureAppDropDownMenu"
+                      = link_to "Datadog", organisation_config_saml_app_path(organisation_id: org.id, app_name: 'datadog'), class: 'dropdown-item'
+                - else
                   = link_to "Setup SAML", organisation_setup_saml_path(org)
         - else
           td.text-center colspan='3'

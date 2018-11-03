@@ -47,4 +47,30 @@ RSpec.describe Group, type: :model do
     expect(host_response[:groups][0]).to eq(group.name)
   end
 
+  describe 'add_user' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    it 'add user to the group' do
+      group.add_user(user.id)
+      expect(group.users.map(&:id).include?(user.id)).to eq(true)
+    end
+
+    it 'not add user if already added to the group' do
+      group.add_user(user.id)
+      group.add_user(user.id)
+      expect(group.users.where(id: user.id).size).to eq(1)
+    end
+  end
+
+  describe 'remove_user' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    it 'removes users from the group' do
+      group.add_user(user.id)
+      group.remove_user(user.id)
+      expect(group.users.map(&:id).include?(user.id)).to eq(false)
+    end
+  end
 end

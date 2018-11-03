@@ -46,5 +46,8 @@ a:hover {
     color: blue;
     background: none;
 }
+.table-responsive { overflow-x: inherit;  }
 
-
+#configAppTabsContent .tab-pane { padding-top: 20px; }
+#configAppTabsContent ol li { margin-top: 10px; }
+#configAppTabsContent li > ol { margin-bottom: 10px; }
