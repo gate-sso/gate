@@ -50,13 +50,13 @@ class Group < ApplicationRecord
   end
 
   def self.get_name_response name
-    response = REDIS_CACHE.get(GROUP_NAME_RESPONSE + name)
+    response = REDIS_CACHE.get(GROUP_NSS_RESPONSE + name)
     if response.blank?
       group = Group.where(name: name).first
       group = [] if group.blank?
       response = group.group_response.to_json
-      REDIS_CACHE.set(GROUP_NAME_RESPONSE + name, response)
-      REDIS_CACHE.expire(GROUP_NAME_RESPONSE + name, REDIS_KEY_EXPIRY)
+      REDIS_CACHE.set(GROUP_NSS_RESPONSE + name, response)
+      REDIS_CACHE.expire(GROUP_NSS_RESPONSE + name, REDIS_KEY_EXPIRY)
     end
     return JSON.parse(response, symbolize_names: true)
   end
@@ -100,7 +100,7 @@ class Group < ApplicationRecord
   end
 
   def self.group_nss_response name
-    group_response = REDIS_CACHE.get("#{GROUP_NAME_RESPONSE}:#{name}")
+    group_response = REDIS_CACHE.get("#{GROUP_NSS_RESPONSE}:#{name}")
     group_response = JSON.parse(group_response) if group_response.present?
 
     if group_response.blank?
@@ -111,8 +111,8 @@ class Group < ApplicationRecord
         response_hash[:gr_passwd] = "x"
         response_hash[:gr_gid] = group.gid
         response_hash[:gr_mem] = group.users.collect { |u| u.user_login_id}
-        REDIS_CACHE.set("#{GROUP_NAME_RESPONSE}:#{group.name}", response_hash.to_json)
-        REDIS_CACHE.expire("#{GROUP_NAME_RESPONSE}:#{group.name}", REDIS_KEY_EXPIRY)
+        REDIS_CACHE.set("#{GROUP_NSS_RESPONSE}:#{group.name}", response_hash.to_json)
+        REDIS_CACHE.expire("#{GROUP_NSS_RESPONSE}:#{group.name}", REDIS_KEY_EXPIRY)
         group_response = response_hash
       end
     end
