@@ -42,6 +42,7 @@ class HostMachine < ApplicationRecord
         collect(&:user_id)
       host_users = users.uniq
       REDIS_CACHE.set("#{HOST_UID_PREFIX}:#{name}", host_users.to_json)
+      REDIS_CACHE.expire("#{HOST_UID_PREFIX}:#{name}", REDIS_KEY_EXPIRY)
     end
     host_users
   end
