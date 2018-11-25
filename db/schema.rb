@@ -124,11 +124,11 @@ ActiveRecord::Schema.define(version: 20181016093315) do
   create_table "saml_app_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "group_id"
     t.string   "sso_url"
-    t.json     "config"
+    t.text     "config",          limit: 4294967295,              collation: "utf8mb4_bin"
     t.integer  "organisation_id"
     t.string   "app_name"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.index ["group_id"], name: "index_saml_app_configs_on_group_id", using: :btree
     t.index ["organisation_id"], name: "index_saml_app_configs_on_organisation_id", using: :btree
   end
