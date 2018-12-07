@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 20181016093315) do
 
-  create_table "access_tokens", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "access_tokens", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "hashed_token"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["user_id"], name: "fk_rails_96fc070778", using: :btree
   end
 
-  create_table "api_resources", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "api_resources", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "name"
     t.string   "description"
     t.string   "hashed_access_key"
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["user_id"], name: "index_api_resources_on_user_id", using: :btree
   end
 
-  create_table "group_admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "group_admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "group_id"
     t.integer  "user_id"
     t.datetime "created_at"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["user_id"], name: "fk_rails_0ac5a6fa32", using: :btree
   end
 
-  create_table "group_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "group_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "user_id"
     t.integer  "group_id"
     t.datetime "created_at", null: false
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["group_id", "user_id"], name: "index_group_associations_on_group_id_and_user_id", using: :btree
   end
 
-  create_table "groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "name"
     t.integer  "gid"
     t.datetime "created_at",  null: false
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["name"], name: "index_groups_on_name", unique: true, using: :btree
   end
 
-  create_table "host_access_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "host_access_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "host_machine_id"
     t.integer  "group_id"
     t.datetime "created_at",      null: false
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["host_machine_id", "group_id"], name: "index_host_access_groups_on_host_machine_id_and_group_id", using: :btree
   end
 
-  create_table "host_machines", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "host_machines", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "name"
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["access_key"], name: "index_host_machines_on_access_key", using: :btree
   end
 
-  create_table "hosts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "hosts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "host_pattern"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["user_id"], name: "index_hosts_on_user_id", using: :btree
   end
 
-  create_table "ip_addresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "ip_addresses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "address"
     t.string   "mac_address"
     t.datetime "created_at",      null: false
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["mac_address"], name: "index_ip_addresses_on_mac_address", using: :btree
   end
 
-  create_table "organisations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "organisations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "name"
     t.string   "website"
     t.string   "domain"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.text     "cert_private_key",    limit: 65535
   end
 
-  create_table "saml_app_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "saml_app_configs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "group_id"
     t.string   "sso_url"
     t.text     "config",          limit: 4294967295,              collation: "utf8mb4_bin"
@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["organisation_id"], name: "index_saml_app_configs_on_organisation_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "email",                                default: "",    null: false
     t.string   "encrypted_password",                   default: "",    null: false
     t.string   "reset_password_token"
@@ -177,14 +177,14 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   end
 
-  create_table "vpn_domain_name_servers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpn_domain_name_servers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "vpn_id"
     t.string   "server_address"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "vpn_group_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpn_group_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "group_id"
     t.integer  "vpn_id"
     t.datetime "created_at"
@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["vpn_id"], name: "fk_rails_9be3690c1d", using: :btree
   end
 
-  create_table "vpn_group_user_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpn_group_user_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "user_id"
     t.integer  "vpn_id"
     t.integer  "group_id"
@@ -204,21 +204,21 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.index ["vpn_id"], name: "fk_rails_dbd29a5c87", using: :btree
   end
 
-  create_table "vpn_search_domains", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpn_search_domains", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "vpn_id"
     t.string   "search_domain"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "vpn_supplemental_match_domains", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpn_supplemental_match_domains", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.integer  "vpn_id"
     t.string   "supplemental_match_domain"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "vpns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "vpns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "name"
     t.string   "host_name"
     t.datetime "created_at"
@@ -227,18 +227,4 @@ ActiveRecord::Schema.define(version: 20181016093315) do
     t.string   "uuid"
   end
 
-  add_foreign_key "access_tokens", "users"
-  add_foreign_key "api_resources", "groups"
-  add_foreign_key "api_resources", "users"
-  add_foreign_key "group_admins", "groups"
-  add_foreign_key "group_admins", "users"
-  add_foreign_key "hosts", "users"
-  add_foreign_key "ip_addresses", "host_machines"
-  add_foreign_key "saml_app_configs", "groups"
-  add_foreign_key "saml_app_configs", "organisations"
-  add_foreign_key "vpn_group_associations", "groups"
-  add_foreign_key "vpn_group_associations", "vpns"
-  add_foreign_key "vpn_group_user_associations", "groups"
-  add_foreign_key "vpn_group_user_associations", "users"
-  add_foreign_key "vpn_group_user_associations", "vpns"
 end
