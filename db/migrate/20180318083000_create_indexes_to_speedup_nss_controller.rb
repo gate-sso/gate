@@ -1,4 +1,4 @@
-class CreateIndexesToSpeedupNssController < ActiveRecord::Migration
+class CreateIndexesToSpeedupNssController < ActiveRecord::Migration[5.0]
   def change
     add_index :users, :uid
     add_index :access_tokens, :hashed_token

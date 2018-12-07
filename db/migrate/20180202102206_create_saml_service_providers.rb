@@ -1,4 +1,4 @@
-class CreateSamlServiceProviders < ActiveRecord::Migration
+class CreateSamlServiceProviders < ActiveRecord::Migration[5.0]
   def change
     create_table :saml_service_providers do |t|
       t.string :name, null: false, unique: true

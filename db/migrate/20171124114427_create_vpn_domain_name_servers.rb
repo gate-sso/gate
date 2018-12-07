@@ -1,4 +1,4 @@
-class CreateVpnDomainNameServers < ActiveRecord::Migration
+class CreateVpnDomainNameServers < ActiveRecord::Migration[5.0]
   def change
     create_table :vpn_domain_name_servers do |t|
       t.integer :vpn_id

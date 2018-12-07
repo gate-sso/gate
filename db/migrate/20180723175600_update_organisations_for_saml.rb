@@ -1,4 +1,4 @@
-class UpdateOrganisationsForSaml < ActiveRecord::Migration
+class UpdateOrganisationsForSaml < ActiveRecord::Migration[5.0]
   def change
     rename_column :organisations, :url, :website
     rename_column :organisations, :email_domain, :domain

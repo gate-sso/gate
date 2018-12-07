@@ -1,4 +1,4 @@
-class CreateVpns < ActiveRecord::Migration
+class CreateVpns < ActiveRecord::Migration[5.0]
   def change
     create_table :vpns do |t|
       t.string :name

@@ -1,4 +1,4 @@
-class CreateGroupAssociations < ActiveRecord::Migration
+class CreateGroupAssociations < ActiveRecord::Migration[5.0]
   def change
     create_table :group_associations do |t|
       t.references :user

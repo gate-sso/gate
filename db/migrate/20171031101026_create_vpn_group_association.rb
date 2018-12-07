@@ -1,4 +1,4 @@
-class CreateVpnGroupAssociation < ActiveRecord::Migration
+class CreateVpnGroupAssociation < ActiveRecord::Migration[5.0]
   def change
     create_table :vpn_group_associations do |t|
       t.integer :group_id

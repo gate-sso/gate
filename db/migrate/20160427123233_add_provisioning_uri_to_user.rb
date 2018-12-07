@@ -1,4 +1,4 @@
-class AddProvisioningUriToUser < ActiveRecord::Migration
+class AddProvisioningUriToUser < ActiveRecord::Migration[5.0]
   def change
     add_column :users, :provisioning_uri, :string
   end

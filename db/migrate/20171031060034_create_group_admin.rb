@@ -1,4 +1,4 @@
-class CreateGroupAdmin < ActiveRecord::Migration
+class CreateGroupAdmin < ActiveRecord::Migration[5.0]
   def change
     create_table :group_admins do |t|
       t.integer :group_id
