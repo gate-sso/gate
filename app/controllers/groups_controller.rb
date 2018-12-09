@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_vpn, :add_admin, :remove_admin, :delete_user, :delete_vpn, :delete_machine]
   before_action :authenticate_user!
 
-  prepend_before_filter :setup_user if Rails.env.development?
+  prepend_before_action :setup_user if Rails.env.development?
 
   def index
     @groups = []
@@ -145,19 +145,19 @@ class GroupsController < ApplicationController
       end
     end
   end
-  def add_group    
+  def add_group
     @user = User.find(params[:id])
     if current_user.admin?
 
       @group = Group.find(params[:group_id])
       @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
-      @user.save! 
+      @user.save!
 
     end
     redirect_to user_path
   end
 
-  def delete_group  
+  def delete_group
     @user = User.find(params[:user_id])
     if current_user.admin?
       group = Group.find(params[:id])
