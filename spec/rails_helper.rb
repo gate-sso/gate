@@ -6,8 +6,6 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'helpers/factory_girl'
-require 'helpers/x509_certificate_helper'
 require 'webmock/rspec'
 require 'database_cleaner'
 require 'coveralls'
@@ -18,6 +16,7 @@ require 'capybara/rspec'
 require 'pry'
 require 'redis'
 require 'mock_redis'
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -42,6 +41,8 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include FactoryBot::Syntax::Methods
+  #config.include CertificateHelper
   #config.include Warden::Test::Helpers
   config.render_views = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
