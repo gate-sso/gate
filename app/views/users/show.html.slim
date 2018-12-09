@@ -1,6 +1,9 @@
 .container.col-md-8
   h5.mb-3 User Profile 
   hr
+  - if flash.key?(:success)
+    .alert.alert-success
+      = flash[:success]
   form.needs-validation novalidate="" 
     .form-row.mb-3
       .col

@@ -33,7 +33,31 @@ class UsersController < ApplicationController
     end
   end
 
+  def new
+    if current_user.admin
+      render :new, locals: {
+          roles: Figaro.env.user_roles.split(','),
+          domains: Figaro.env.gate_hosted_domains.split(','),
+      }
+    else
+      redirect_to profile_path
+    end
+  end
+
   def create
+    user = User.add_user(
+        user_params[:first_name],
+        user_params[:last_name],
+        user_params[:user_role],
+        params[:user_domain]
+    )
+    if user.errors.present?
+      flash[:errors] = user.errors.full_messages
+      redirect_to(new_user_path)
+    else
+      flash[:success] = 'Successfully Created User'
+      redirect_to user_path(id: user.id)
+    end
   end
 
   def update
@@ -82,6 +106,12 @@ class UsersController < ApplicationController
   end
 
   private
+  def user_params
+    params.require(:user).permit(
+        :first_name, :last_name, :user_role
+    )
+  end
+
   def form_response(message)
     respond_to do |format|
       format.html { redirect_to user_path, notice: message }

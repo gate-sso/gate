@@ -9,12 +9,34 @@ class User < ApplicationRecord
   has_many :group_admin, dependent: :destroy
   has_one :access_token
 
-  HOME_DIR = '/home'.freeze
-  USER_SHELL = '/bin/bash'.freeze
+  # TODO: Need to add the validations for the user model, right now a lot of tests fail due to enabling this
+  # validates :first_name, :last_name, :mobile, :user_role, presence: true
+  # validates :first_name, :last_name, format: { with: /[a-zA-Z]/}, allow_blank: true
+  # validates :user_role, inclusion: { in: Figaro.env.user_roles.split(',') }
+  # validate :validate_email_domain
+  validates :email, uniqueness: true
 
   validate :remove_default_admin, on: :update
 
+  HOME_DIR = '/home'.freeze
+  USER_SHELL = '/bin/bash'.freeze
+
+
+
   before_save :remove_user_cache
+
+  def self.add_user(first_name, last_name, user_role, domain)
+    user = User.new(first_name: first_name, last_name: last_name, user_role: user_role)
+    user.assign_attributes(
+      user_login_id: "#{first_name.downcase}.#{last_name.downcase}",
+      uid: user.generate_uid,
+      email: "#{first_name.downcase}.#{last_name.downcase}@#{domain}",
+      name: "#{first_name} #{last_name}"
+    )
+    user.save
+    user.initialise_host_and_group if user.persisted?
+    user
+  end
 
   def remove_user_cache
     REDIS_CACHE.del("#{USER_CACHE_PREFIX}:#{id}") if id.present?
@@ -399,5 +421,11 @@ class User < ApplicationRecord
     if (!admin || !active) && admin_users.blank?
       errors.add(:admin, 'You cannot remove or make inactive the default admin account')
     end
+  end
+
+  def validate_email_domain
+    domain_list = Figaro.env.gate_hosted_domains.split(',')
+    domain = email.split('@').last
+    errors.add(:email, "Invalid Domain for Email Address") unless domain_list.include?(domain)
   end
 end

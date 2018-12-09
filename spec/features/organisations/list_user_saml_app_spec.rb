@@ -42,7 +42,7 @@ RSpec.feature 'Config Saml App', type: :feature do
     page.find('#manage-users-tab').click
     users.each do |user|
       expect(page).to have_xpath(
-        "//td/a[.='#{user.name}' and @href='#{user_path(id: user.id)}']"
+        "//td/a[@href='#{user_path(id: user.id)}' and contains(string(), '#{user.name}')]"
       )
     end
   end

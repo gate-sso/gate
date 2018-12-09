@@ -1,0 +1,41 @@
+<div class="container col-md-8">
+  <div class="row mb-3 mt-2">
+    <div class="col-md-12">
+      <h5>Create User</h5>
+      <hr />
+      <%= form_for(User.new) do |f| %>
+        <% if flash.key?(:errors) %>
+          <div class="alert alert-danger" id="user_form_errors">
+            <b>Issue Creating User</b><br/>
+            <%= flash[:errors].map { |msg| "- #{msg}".html_safe }.join("<br />").html_safe %>
+          </div>
+        <% end %>
+        <div class="form-group">
+          <%= f.label :first_name %>
+          <%= f.text_field :first_name, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :last_name %>
+          <%= f.text_field :last_name, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :mobile %>
+          <%= f.text_field :mobile, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :alternate_email %>
+          <%= f.text_field :alternate_email, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= f.label :user_role %>
+          <%= f.select :user_role, add_placeholder_to_list(roles, "Select A Role"), {}, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :domain %>
+          <%= select_tag :user_domain, options_for_select(add_placeholder_to_list(domains, "Select A Domain", string_convert: '')), class: 'form-control' %>
+        </div>
+        <%= f.submit 'Create User', class: 'btn btn-primary mb-2' %>
+      <% end %>
+    </div>
+  </div>
+</div>

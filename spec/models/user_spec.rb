@@ -527,4 +527,64 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '.add_user' do
+
+    it 'creates a new user' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+      expect(user.persisted?).to eq(true)
+    end
+
+    it 'creates a user with email in format first_name.last_name' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+      expect(user.persisted?).to eq(true)
+      expect(user.email).to eq("#{user.first_name.downcase}.#{user.last_name.downcase}@#{domain}")
+    end
+
+    it 'generate uid' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      expect_any_instance_of(User).to receive(:generate_uid)
+      User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+    end
+
+    it 'generates login id' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+      expect(user.user_login_id).to eq("#{user_data.first_name.downcase}.#{user_data.last_name.downcase}")
+    end
+
+    it 'initializes host groups' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      expect_any_instance_of(User).to receive(:initialise_host_and_group)
+      User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+    end
+
+    xit 'fails if required fields are not present' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      user = User.add_user('', user_data.last_name, user_data.user_role, domain)
+      expect(user.persisted?).to eq(false)
+    end
+
+    xit 'fails if domain doesn\'t exist in list of domains' do
+      user_data = build(:user)
+      user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, Faker::Internet.domain_name)
+      expect(user.persisted?).to eq(false)
+    end
+
+    it 'fails if email is already taken' do
+      user_data = build(:user)
+      domain = user_data.email.split('@').last
+      user_data.save
+      user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+      expect(user.persisted?).to eq(false)
+    end
+  end
 end

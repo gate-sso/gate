@@ -1,13 +1,16 @@
 FactoryBot.define do
-  sequence(:name) { |n| "#{Faker::Name.name}#{n}" }
-  sequence(:email) do |n|
-    email = Faker::Internet.email
-    "#{email.split('@').first}_#{n}@#{email.split('@').last}"
-  end
-
   factory :user do
-    name
-    email
+    transient do
+      user_roles_list { Figaro.env.user_roles.split(',') }
+      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+    end
+    first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
+    last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }
+    user_role { user_roles_list.sample }
+    mobile { Faker::PhoneNumber.cell_phone }
+    email { "#{first_name.downcase}.#{last_name.downcase}@#{hosted_domains_list.sample}" }
+    alternate_email { Faker::Internet.email }
+    name { "#{first_name} #{last_name}" }
     active { true }
     admin { true }
     sequence(:reset_password_token) { |n| "secret#{n}" }
@@ -21,10 +24,19 @@ FactoryBot.define do
   end
 
   factory :group_admin, class: User do
-    name
-    email
+    transient do
+      user_roles_list { Figaro.env.user_roles.split(',') }
+      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+    end
+    first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
+    last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }
+    user_role { user_roles_list.sample }
+    alternate_email { Faker::Internet.email }
+    mobile { Faker::PhoneNumber.cell_phone }
     active { true }
     admin { true }
+    email { "#{first_name.downcase}.#{last_name.downcase}@#{hosted_domains_list.sample}" }
+    name { "#{first_name} #{last_name}" }
     sequence(:reset_password_token) { |n| "secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(
@@ -36,10 +48,19 @@ FactoryBot.define do
   end
 
   factory :admin_user, class: User do
-    name
-    email
+    transient do
+      user_roles_list { Figaro.env.user_roles.split(',') }
+      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+    end
+    first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
+    last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }
+    user_role { user_roles_list.sample }
+    alternate_email { Faker::Internet.email }
+    mobile { Faker::PhoneNumber.cell_phone }
     active { true }
     admin { true }
+    email { "#{first_name.downcase}.#{last_name.downcase}@#{hosted_domains_list.sample}" }
+    name { "#{first_name} #{last_name}" }
     sequence(:reset_password_token) { |n| "secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(
