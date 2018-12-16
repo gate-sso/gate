@@ -74,15 +74,21 @@
   br
   .card
     .card-body
-      h6.card-title Public Key
-      = form_tag user_public_key_update_path, method: :post do
-          .row
-            .col
-              = text_area_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:200px;width:100%;", placeholder: "Your public key here..."
-          br
-          .row
-            .col-md-3
-              = submit_tag "Update key", class: "form-control btn-md btn-primary"
+      - if (current_user.admin? or (current_user.id == @user.id))
+        h6.card-title Public Key
+        = form_tag user_public_key_update_path, method: :post do
+            .row
+              .col
+                = text_area_tag "public_key", @user.public_key, class: "form-contol text-align-top", style: "height:200px;width:100%;", placeholder: "Your public key here..."
+            br
+            .row
+              .col-md-3
+                = submit_tag "Update key", class: "form-control btn-md btn-primary"
+      - else
+        h6.card-title Public Key
+        .row
+          .col
+            = @user.public_key
 
   br
   .card
