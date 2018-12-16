@@ -60,7 +60,7 @@
       br
       = "*This group does not have any group members" if @group.users.count == 0
       br
-      - if current_user.admin? || current_user.group_admin?
+      - if current_user.admin or @group.admin?(current_user)
         = form_tag  add_user_to_group_path, method: :post do
           .row
             .col
