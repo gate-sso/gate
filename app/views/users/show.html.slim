@@ -16,18 +16,19 @@
              span.input-group-text @
           input#email.form-control placeholder="you@example.com" readonly="" type="email" value="#{@user.email}"
 
-  form.needs-validation novalidate="" 
-    .form-row.mb-3
-      .col
-        b Your Access Token
-      .col
-        - if flash[:token]
-          .alert.alert-warning role="alert"
-            | Important! please make note of this token, you will see it only this once.
-          pre
-            = flash[:token]
-        - else
-          = link_to 'Regenerate Token', regenerate_token_user_path(@user), :data => {:confirm => 'Are you sure?'}
+  - if (current_user.admin? or (current_user.id == @user.id))
+    form.needs-validation novalidate="" 
+      .form-row.mb-3
+        .col
+          b Your Access Token
+        .col
+          - if flash[:token]
+            .alert.alert-warning role="alert"
+              | Important! please make note of this token, you will see it only this once.
+            pre
+              = flash[:token]
+          - else
+            = link_to 'Regenerate Token', regenerate_token_user_path(@user), :data => {:confirm => 'Are you sure?'}
 
   - if current_user.admin?
     .card
