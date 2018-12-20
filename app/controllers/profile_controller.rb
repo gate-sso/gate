@@ -60,7 +60,7 @@ class ProfileController < ApplicationController
       user = User.get_user(params[:name])
       response = user.uid if user.present?
     end
-    render text: response
+    render plain: response
   end
 
   def download_vpn
@@ -90,15 +90,15 @@ class ProfileController < ApplicationController
   def authenticate
     response = User.authenticate params
     if response
-      render text: 0
+      render plain: 0
     else
-      render text: 1
+      render plain: 1
     end
   end
 
   def authenticate_ms_chap
     response = User.ms_chap_auth params
-    render text: response
+    render plain: response
   end
 
 
@@ -124,9 +124,9 @@ class ProfileController < ApplicationController
   def authenticate_pam
     response = User.authenticate_pam params
     if response
-      render text: 0
+      render plain: 0
     else
-      render text: 1
+      render plain: 1
     end
   end
 
@@ -135,12 +135,12 @@ class ProfileController < ApplicationController
     if token
       response = User.verify params
       if response
-        render text: 0
+        render plain: 0
       else
-        render text: 1
+        render plain: 1
       end
     else
-      render text: 1
+      render plain: 1
     end
   end
 
@@ -196,7 +196,7 @@ class ProfileController < ApplicationController
     public_key = ''
     @user = User.get_user(params[:name])
     public_key = @user.public_key if @user.present?
-    render text: public_key
+    render plain: public_key
   end
 
   def user

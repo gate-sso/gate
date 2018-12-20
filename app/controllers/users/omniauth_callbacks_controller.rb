@@ -7,7 +7,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     domain = data['info']['email'].split('@').last
 
     unless User.valid_domain? domain
-      return render text: 'Your domain is unauthorized', status: :unauthorized
+      return render plain: 'Your domain is unauthorized', status: :unauthorized
     end
     @user = User.create_user(data.info['name'], data.info['email'])
 
