@@ -97,7 +97,7 @@ class GroupsController < ApplicationController
   end
 
   def add_admin
-    if current_user.admin? or @group.admin?(current_user)
+    if current_user.admin?
       GroupAdmin.find_or_create_by(group_id: @group.id, user_id: params[:user_id])
     end
 
@@ -109,7 +109,7 @@ class GroupsController < ApplicationController
   end
 
   def remove_admin
-    if current_user.admin? or  @group.admin?(current_user)
+    if current_user.admin?
       GroupAdmin.delete(params[:group_admin_id])
     end
 

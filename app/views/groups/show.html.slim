@@ -19,18 +19,19 @@
                 .col
                   =  "#{admin.user.try(:name)}"
                 .col 
-                  - if (current_user.admin? or @group.admin?(current_user) ) and current_user.id != admin.user.try(:id)
-                    = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.try(:name)} ?"} 
-          .row
-            .col
-              = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
-            .col
-              = submit_tag "Assign admin", class: "form-control btn btn-md btn-primary", disabled: true
-          .row
-            .col
-              = check_box_tag "assign_admin_include_inactive_user", "true", false
-              = " Include Inactive User"
-            .col
+                  - if (current_user.admin?)
+                    = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.try(:name)} ?"}
+          - if (current_user.admin?)
+            .row
+              .col
+                = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
+              .col
+                = submit_tag "Assign admin", class: "form-control btn btn-md btn-primary", disabled: true
+            .row
+              .col
+                = check_box_tag "assign_admin_include_inactive_user", "true", false
+                = " Include Inactive User"
+              .col
   a name="group_members"
   br
   .card
@@ -59,7 +60,7 @@
       br
       = "*This group does not have any group members" if @group.users.count == 0
       br
-      - if current_user.admin? || current_user.group_admin?
+      - if current_user.admin or @group.admin?(current_user)
         = form_tag  add_user_to_group_path, method: :post do
           .row
             .col
