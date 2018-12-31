@@ -122,13 +122,15 @@ class Group < ApplicationRecord
       select(:user_login_id).
       where("id IN (?)", sysadmins).
       collect(&:user_login_id)
+
+    # TODO: extract to query object
     groups = Group.
       select(%Q(
         id,
         name,
         gid,
         (
-          SELECT user_login_id
+          SELECT GROUP_CONCAT(user_login_id)
           FROM users
           INNER JOIN group_associations
             ON users.id = group_associations.user_id
@@ -137,7 +139,7 @@ class Group < ApplicationRecord
       )).
       where("name IN (?)", sysadmins_login_ids).
       map{ |group|
-        members = (group.members.is_a? Array) ? group.members : [group.members]
+        members = group.members.split(',')
         Group.generate_group_response(group.name, group.gid, members)
       }
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
