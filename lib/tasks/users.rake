@@ -49,9 +49,6 @@ namespace :users do
       user.save!
     end
 
-    REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-    REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
-
     @response = Group.get_all_response.to_json
     REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)
     REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
@@ -75,10 +72,6 @@ namespace :users do
       user.groups << group
       user.save!
     end
-
-
-    REDIS_CACHE.del(GROUP_NAME_RESPONSE + group.name)
-    REDIS_CACHE.del(GROUP_GID_RESPONSE + group.gid.to_s)
 
     @response = Group.get_all_response.to_json
     REDIS_CACHE.set(GROUP_ALL_RESPONSE, @response)

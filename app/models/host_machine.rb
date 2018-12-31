@@ -8,7 +8,6 @@ class HostMachine < ApplicationRecord
 
   before_create :set_lower_case_name
   before_create :set_host_access_key
-  before_save :remove_host_cache
 
   def set_host_access_key
     self.access_key = ROTP::Base32.random_base32
@@ -27,24 +26,12 @@ class HostMachine < ApplicationRecord
     response
   end
 
-  def remove_host_cache
-    REDIS_CACHE.del("#{HOST_UID_PREFIX}:#{name}")
-  end
-
   def sysadmins
-    host_users = REDIS_CACHE.get("#{HOST_UID_PREFIX}:#{name}")
-    host_users = JSON.parse(host_users) if host_users.present?
-    users = []
-    if host_users.blank?
-      users = GroupAssociation.
-        joins(:user).
-        where("group_id IN (?)", groups.collect(&:id)).
-        collect(&:user_id)
-      host_users = users.uniq
-      REDIS_CACHE.set("#{HOST_UID_PREFIX}:#{name}", host_users.to_json)
-      REDIS_CACHE.expire("#{HOST_UID_PREFIX}:#{name}", REDIS_KEY_EXPIRY)
-    end
-    host_users
+    users = GroupAssociation.
+      joins(:user).
+      where("group_id IN (?)", groups.collect(&:id)).
+      collect(&:user_id)
+    users.uniq
   end
 
   def add_host_group(name)

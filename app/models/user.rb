@@ -21,10 +21,6 @@ class User < ApplicationRecord
   HOME_DIR = '/home'.freeze
   USER_SHELL = '/bin/bash'.freeze
 
-
-
-  before_save :remove_user_cache
-
   def self.add_user(first_name, last_name, user_role, domain)
     user = User.new(first_name: first_name, last_name: last_name, user_role: user_role)
     user.assign_attributes(
@@ -36,22 +32,6 @@ class User < ApplicationRecord
     user.save
     user.initialise_host_and_group if user.persisted?
     user
-  end
-
-  def remove_user_cache
-    REDIS_CACHE.del("#{USER_CACHE_PREFIX}:#{id}") if id.present?
-  end
-
-  def self.from_cache id
-    user = REDIS_CACHE.get("#{USER_CACHE_PREFIX}:#{id}")
-    user = JSON.parse(user) if user.present?
-    if user.blank?
-      user = User.find(id).to_json
-      REDIS_CACHE.set("#{USER_CACHE_PREFIX}:#{id}", user)
-      REDIS_CACHE.expire("#{USER_CACHE_PREFIX}:#{id}", REDIS_KEY_EXPIRY)
-      user = JSON.parse(user)
-    end
-    return user
   end
 
   def generate_login_id
