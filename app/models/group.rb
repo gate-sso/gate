@@ -73,12 +73,6 @@ class Group < ApplicationRecord
     return response
   end
 
-  def self.response_array group_response
-    response_array = []
-    response_array <<  group_response
-    response_array
-  end
-
   def self.get_gid_response gid
     group = Group.where(gid: gid).first
     return [] if group.blank?
