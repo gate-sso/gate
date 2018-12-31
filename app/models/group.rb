@@ -122,7 +122,30 @@ class Group < ApplicationRecord
       select(:user_login_id).
       where("id IN (?)", sysadmins).
       collect(&:user_login_id)
-    groups = sysadmins_login_ids.map{ |login_id| Group.group_nss_response(login_id) }
+
+    groups = Group.
+      select(%Q(
+        id,
+        name,
+        gid,
+        (
+          SELECT user_login_id
+          FROM users
+          INNER JOIN group_associations
+            ON users.id = group_associations.user_id
+          WHERE group_associations.group_id = groups.id
+        ) AS members
+      )).
+      where("name IN (?)", sysadmins_login_ids).
+      map{ |group| 
+        {
+          gr_name: group.name,
+          gr_passwd: 'x',
+          gr_gid: group.gid,
+          gr_mem: (group.members.is_a? Array) ? group.members : [group.members],
+        }
+      }
+
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
     groups.to_json
   end

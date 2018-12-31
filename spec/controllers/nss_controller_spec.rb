@@ -38,7 +38,6 @@ RSpec.describe NssController, type: :controller do
   end
 
   it "should not create groups and admins again for the same host name" do
-
     create(:access_token, token: access_token)
     json = { token: access_token, name: 'random_host', group_name: 'duplicate_group', format: :json }
     post 'add_host', params: json
@@ -64,7 +63,6 @@ RSpec.describe NssController, type: :controller do
     host = HostMachine.find_by(name: "random_host_01")
     expect(access_key).to eq host.access_key
 
-
     group = create(:group)
     user = create(:user)
     group.host_machines << host
@@ -86,7 +84,6 @@ RSpec.describe NssController, type: :controller do
     expect(body.count).to eq 3
     expect(body[2]["gr_mem"].count).to eq 2
 
-
     get "group", params: { token: access_key, format: json }
     body = JSON.parse(response.body)
 
@@ -97,11 +94,9 @@ RSpec.describe NssController, type: :controller do
 
     expect(Group.find_by(name: "random_group_01")).not_to eq nil
     expect(Group.find_by(name: "random_host_01_host_group")).not_to eq nil
-
   end
 
   it "should return members of sysadmins if no other group exists" do
-
     access_token = create(:access_token)
     group = create(:group, name: "sysadmins")
     user = create(:user)
@@ -112,7 +107,6 @@ RSpec.describe NssController, type: :controller do
     expect(host.name).to eq "random_host_01"
     host.groups << group
 
-
     get "group", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
 
@@ -122,12 +116,9 @@ RSpec.describe NssController, type: :controller do
 
     expect(body[0]["gr_mem"][0]).to eq user.user_login_id
     expect(body[1]["gr_mem"][0]).to eq user.user_login_id
-
-
   end
 
   it "should not return sysadmins if inheritance is off" do
-
     access_token = create(:access_token)
     group = create(:group, name: "sysadmins")
     group_2 = create(:group, name: "random")
@@ -141,7 +132,6 @@ RSpec.describe NssController, type: :controller do
     expect(host.name).to eq "random_host_01"
     host.groups << group_2
 
-
     get "group", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
 
@@ -151,12 +141,9 @@ RSpec.describe NssController, type: :controller do
 
     expect(body[0]["gr_mem"][0]).to eq user.user_login_id
     expect(body[1]["gr_mem"][0]).to eq user.user_login_id
-
-
   end
 
   it "should return all the users for the host" do
-
     access_token = create(:access_token)
     group = create(:group, name: "sysadmins")
     user = create(:user)
@@ -170,7 +157,6 @@ RSpec.describe NssController, type: :controller do
     host.reload
     group.reload
     user.reload
-
 
     get "passwd", params: { token: host.access_key, format: :json }
     body = JSON.parse(response.body)
@@ -192,18 +178,11 @@ RSpec.describe NssController, type: :controller do
       group.burst_host_cache
     end
 
-    cache_count_bfr = REDIS_CACHE.keys("UG*").count
-
+    cache_count_bfr = REDIS_CACHE.keys("#{GROUP_RESPONSE}*").count
     get "group", params: { token: host_machine.access_key, format: :json }
-    cache_count_aft = REDIS_CACHE.keys("UG*").count
+    expect(REDIS_CACHE.keys("#{GROUP_RESPONSE}*").count).to eq cache_count_bfr + 1
 
-    expect(cache_count_aft).to eq cache_count_bfr + 1
     group.burst_host_cache
-
-    cache_count_aft = REDIS_CACHE.keys("UG*").count
-    expect(cache_count_aft).to eq cache_count_bfr + 1
-
+    expect(REDIS_CACHE.keys("#{GROUP_RESPONSE}*").count).to eq cache_count_bfr
   end
-
-
 end
