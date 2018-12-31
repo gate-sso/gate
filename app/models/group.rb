@@ -87,6 +87,15 @@ class Group < ApplicationRecord
     users.exists? user.id
   end
 
+  def self.generate_group_response(name, gid, members)
+    {
+      gr_name: name,
+      gr_passwd: 'x',
+      gr_gid: 'gid',
+      gr_mem: members,
+    }
+  end
+
   def group_response
     return Group.group_nss_response name
   end
@@ -98,11 +107,8 @@ class Group < ApplicationRecord
     if group_response.blank?
       group = Group.find_by(name: name)
       if group.present?
-        response_hash = {}
-        response_hash[:gr_name] = group.name
-        response_hash[:gr_passwd] = "x"
-        response_hash[:gr_gid] = group.gid
-        response_hash[:gr_mem] = group.users.collect { |u| u.user_login_id}
+        members = group.users.collect { |u| u.user_login_id }
+        response_hash = Group.generate_group_response(group.name, group.gid, members)
         REDIS_CACHE.set("#{GROUP_NSS_RESPONSE}:#{group.name}", response_hash.to_json)
         REDIS_CACHE.expire("#{GROUP_NSS_RESPONSE}:#{group.name}", REDIS_KEY_EXPIRY)
         group_response = response_hash
@@ -116,7 +122,6 @@ class Group < ApplicationRecord
       select(:user_login_id).
       where("id IN (?)", sysadmins).
       collect(&:user_login_id)
-
     groups = Group.
       select(%Q(
         id,
@@ -131,15 +136,10 @@ class Group < ApplicationRecord
         ) AS members
       )).
       where("name IN (?)", sysadmins_login_ids).
-      map{ |group| 
-        {
-          gr_name: group.name,
-          gr_passwd: 'x',
-          gr_gid: group.gid,
-          gr_mem: (group.members.is_a? Array) ? group.members : [group.members],
-        }
+      map{ |group|
+        members = (group.members.is_a? Array) ? group.members : [group.members]
+        Group.generate_group_response(group.name, group.gid, members)
       }
-
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
     groups.to_json
   end
@@ -157,7 +157,6 @@ class Group < ApplicationRecord
   end
 
   def self.get_default_sysadmin_group_for_host sysadmins_login_ids, default_admins = true
-    sysadmin_group = {}
     sysadmins = sysadmins_login_ids
 
     if default_admins
@@ -169,10 +168,7 @@ class Group < ApplicationRecord
     end
     group_id = group.blank? ? 8999 : group.id
 
-    sysadmin_group[:gr_gid] = group_id
-    sysadmin_group[:gr_mem] = sysadmins.uniq
-    sysadmin_group[:gr_name] = "sysadmins"
-    sysadmin_group[:gr_passwd] = "x"
+    sysadmin_group = Group.generate_group_response("sysadmins", group_id, sysadmins.uniq)
     return sysadmin_group
   end
 
