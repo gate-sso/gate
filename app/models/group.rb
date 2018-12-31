@@ -22,8 +22,6 @@ class Group < ApplicationRecord
 
   GID_CONSTANT = 9000
 
-
-
   def burst_host_cache
     if host_machines.count > 0
       host_machines.each do |host|
@@ -120,20 +118,13 @@ class Group < ApplicationRecord
   end
 
   def self.get_sysadmins_and_groups sysadmins, default_admins = true
-    groups, sysadmins_login_ids = Group.get_groups_for_host sysadmins
+    sysadmins_login_ids = User.
+      select(:user_login_id).
+      where("id IN (?)", sysadmins).
+      collect(&:user_login_id)
+    groups = sysadmins_login_ids.map{ |login_id| Group.group_nss_response(login_id) }
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
     groups.to_json
-  end
-
-  def self.get_groups_for_host sysadmins
-    groups = []
-    sysadmins_login_ids = []
-    sysadmins.each do |sysadmin|
-      user = User.from_cache(sysadmin)
-      sysadmins_login_ids << user["user_login_id"]
-      groups << Group.group_nss_response(user["user_login_id"])
-    end
-    [groups, sysadmins_login_ids]
   end
 
   def get_user_ids
