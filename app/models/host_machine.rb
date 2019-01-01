@@ -28,10 +28,11 @@ class HostMachine < ApplicationRecord
 
   def sysadmins
     users = GroupAssociation.
+      select(:user_id).
+      distinct.
       joins(:user).
       where("group_id IN (?)", groups.collect(&:id)).
       collect(&:user_id)
-    users.uniq
   end
 
   def add_host_group(name)
