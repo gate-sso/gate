@@ -91,7 +91,7 @@ class Group < ApplicationRecord
     {
       gr_name: name,
       gr_passwd: 'x',
-      gr_gid: 'gid',
+      gr_gid: gid,
       gr_mem: members,
     }
   end
