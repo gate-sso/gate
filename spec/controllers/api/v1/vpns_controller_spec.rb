@@ -17,10 +17,20 @@ RSpec.describe ::Api::V1::VpnsController, type: :controller do
       context 'with valid_attributes' do
         it 'should create vpns' do
           post :create,  params: {vpn: valid_attributes, access_token: @token}
-          expect(response.status).to eq(200)
           vpn = Vpn.where(name: valid_attributes[:name]).first
           expect(vpn.blank?).to eq(false)
           expect(vpn.name).to eq(valid_attributes[:name])
+        end
+
+        it 'should return proper response' do
+          post :create,  params: {vpn: valid_attributes, access_token: @token}
+          expect(response.status).to eq(200)
+          vpn = Vpn.where(name: valid_attributes[:name]).first
+          obj = JSON.parse(response.body)
+          expect(obj['id']).to eq vpn.id
+          expect(obj['name']).to eq vpn.name
+          expect(obj['host_name']).to eq vpn.host_name
+          expect(obj['ip_address']).to eq vpn.ip_address
         end
       end
     end

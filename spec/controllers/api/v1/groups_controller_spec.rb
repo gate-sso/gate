@@ -17,10 +17,18 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
       context 'with valid_attributes' do
         it 'should create groups' do
           post :create,  params: {group: valid_attributes, access_token: @token}
-          expect(response.status).to eq(200)
           group = Group.where(name: valid_attributes[:name]).first
           expect(group.blank?).to eq(false)
           expect(group.name).to eq(valid_attributes[:name])
+        end
+
+        it 'should return proper response' do
+          post :create,  params: {group: valid_attributes, access_token: @token}
+          expect(response.status).to eq(200)
+          group = Group.where(name: valid_attributes[:name]).first
+          obj = JSON.parse(response.body)
+          expect(obj['id']).to eq group.id
+          expect(obj['name']).to eq group.name
         end
       end
     end

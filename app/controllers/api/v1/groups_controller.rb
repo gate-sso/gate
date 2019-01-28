@@ -3,7 +3,10 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
     if current_user.admin?
       @group = Group.new(group_params)
       if @group.save
-        render json: { status: 'created' }, status: :ok
+        render json: { 
+          id: @group.id,
+          name: @group.name,
+        }, status: :ok
       else
         render json: { status: 'error' }, status: :unprocessable_entity
       end
