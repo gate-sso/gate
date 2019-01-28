@@ -1,5 +1,6 @@
-class ::Api::V1::UsersController < ApiController
-  # respond_to :json, only: [:show]
+class ::Api::V1::UsersController < ::Api::V1::BaseController
+  before_action :set_user, only: [:show, :update]
+
   def create
     user = user_params
     if User.add_temp_user user[:name], user[:email]
@@ -10,7 +11,6 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def show
-    @user = current_user
     if @user.present?
       user_attrs = %w(
         email uid name active admin home_dir shell public_key user_login_id
@@ -25,8 +25,19 @@ class ::Api::V1::UsersController < ApiController
   end
 
   def update
-    @user = current_user
     render json: { success: @user.update_profile(user_params) }
+  end
+
+  private
+
+  def set_user
+    @user = if params.key?("email")
+      User.find_by_email(params["email"])
+    elsif params.key?("uid")
+      User.find_by_uid(params["uid"])
+    elsif params.key?("username")
+      User.find_by_user_login_id(params["username"])
+    end
   end
 
   def user_params

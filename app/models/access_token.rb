@@ -7,9 +7,12 @@ class AccessToken < ApplicationRecord
 
   before_save :hash_token!
 
+  def self.find_token challenge_token
+    AccessToken.where(hashed_token: Digest::SHA512.hexdigest(challenge_token)).first
+  end
+
   def self.valid_token challenge_token
-    token = AccessToken.where(hashed_token: Digest::SHA512.hexdigest(challenge_token))
-    return token.present?
+    find_token(challenge_token).present?
   end
 
   private

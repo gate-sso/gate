@@ -17,7 +17,13 @@ RSpec.describe AccessToken, type: :model do
     @access_token.save!
   end
 
-  describe "self.authenticate" do
+  describe "self.find_token" do
+    it "should return access token object if it finds matching token" do
+      expect(AccessToken.find_token(@access_token.token)).to eq @access_token
+    end
+  end
+
+  describe "self.valid_token" do
     it "should return true if it finds matching token" do
       expect(AccessToken.valid_token(@access_token.token)).to eq true
     end
