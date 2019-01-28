@@ -24,6 +24,20 @@ RSpec.describe ::Api::V1::VpnsController, type: :controller do
         end
       end
     end
+
+    describe 'Assign Group to VPN' do
+      it 'should replace existing vpn group with new group' do
+        vpn = create(:vpn)
+        group_1 = create(:group)
+        group_2 = create(:group)
+        vpn.groups << group_1
+        vpn.groups << group_2
+        group_3 = create(:group)
+        post :assign_group,  params: {access_token: @token, id: vpn.id, group_id: group_3.id}
+        expect(vpn.groups.count).to eq 1
+        expect(vpn.groups.first).to eq group_3
+      end
+    end
   end
 
   describe 'Unauthenticated' do

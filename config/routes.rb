@@ -84,7 +84,11 @@ Rails.application.routes.draw do
       post 'users/profile' => 'users#update', format: :json, :constraints => { format: 'json' }
 
       resources :groups, only: [:create], format: :json
-      resources :vpns, only: [:create], format: :json
+      resources :vpns, only: [:create], format: :json do
+        member do
+          post 'assign_group'
+        end
+      end
     end
   end
 
