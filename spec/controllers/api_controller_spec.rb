@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe ApiController, type: :controller do
+RSpec.describe ::Api::V1::BaseController, type: :controller do
 
-  controller(ApiController) do
+  controller(::Api::V1::BaseController) do
     def index
       head :ok
     end

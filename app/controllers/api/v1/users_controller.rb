@@ -1,4 +1,4 @@
-class ::Api::V1::UsersController < ApiController
+class ::Api::V1::UsersController < ::Api::V1::BaseController
   # respond_to :json, only: [:show]
   def create
     user = user_params
