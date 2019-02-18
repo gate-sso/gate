@@ -31,6 +31,19 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
           expect(obj['name']).to eq group.name
         end
       end
+
+      context 'group already exist' do
+        it 'should return existing group id' do
+          existing_group = create(:group, name: valid_attributes[:name])
+          post :create,  params: {group: valid_attributes, access_token: @token}
+          expect(response.status).to eq(422)
+          expect(response.body).to eq({ 
+            status: 'group already exist',
+            id: existing_group.id,
+            name: existing_group.name,
+          }.to_json)
+        end
+      end
     end
   end
 
