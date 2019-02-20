@@ -4,6 +4,7 @@ class ::Api::V1::VpnsController < ::Api::V1::BaseController
   def create
     if current_user.admin?
       @vpn = Vpn.new(vpn_params)
+      @vpn.uuid = SecureRandom.uuid
       if @vpn.save
         render json: { 
           id: @vpn.id,

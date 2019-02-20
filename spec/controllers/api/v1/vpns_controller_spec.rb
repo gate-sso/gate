@@ -20,6 +20,7 @@ RSpec.describe ::Api::V1::VpnsController, type: :controller do
           vpn = Vpn.where(name: valid_attributes[:name]).first
           expect(vpn.blank?).to eq(false)
           expect(vpn.name).to eq(valid_attributes[:name])
+          expect(UUID.validate(vpn.uuid)).to eq(true)
         end
 
         it 'should return proper response' do
