@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'ansi', '~> 1.5.0'
-gem 'bootstrap', '~> 4.1.3'
+gem 'bootstrap', '~> 4.3.1'
 gem 'coffee-rails'
 gem 'countries', require: 'countries/global'
 gem 'devise'
