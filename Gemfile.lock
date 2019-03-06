@@ -174,8 +174,8 @@ GEM
     omniauth (1.8.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
-    omniauth-google-oauth2 (0.5.3)
-      jwt (>= 1.5)
+    omniauth-google-oauth2 (0.6.0)
+      jwt (>= 2.0)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.5)
     omniauth-oauth2 (1.5.0)
@@ -383,7 +383,7 @@ DEPENDENCIES
   mysql2 (~> 0.4.10)
   newrelic_rpm
   omniauth
-  omniauth-google-oauth2
+  omniauth-google-oauth2 (~> 0.6.0)
   paper_trail
   paranoia
   pry
