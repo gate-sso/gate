@@ -12,7 +12,10 @@ class ProfileController < ApplicationController
   end
 
   def show
-    @token_qr = RQRCode::QRCode.new(current_user.provisioning_uri, :size => 10, :level => :h)
+    @token_qr = ''
+    unless current_user.provisioning_uri.blank?
+      @token_qr = RQRCode::QRCode.new(current_user.provisioning_uri, :size => 10, :level => :h)
+    end
   end
 
   def user_admin
