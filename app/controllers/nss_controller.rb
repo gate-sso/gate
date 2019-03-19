@@ -110,4 +110,18 @@ class NssController < ApplicationController
       render json: { success: false }
     end
   end
+
+  def group_member_list
+    token = AccessToken.valid_token params[:token]
+    if token
+      members = Group.group_nss_response(params[:group_name]).try(:[], :gr_mem)
+      if members.blank?
+        render json: { success: false }
+      else
+        render json: { success: true, members: members }
+      end
+    else
+      render json: { success: false }
+    end
+  end
 end

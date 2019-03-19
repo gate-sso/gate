@@ -30,6 +30,16 @@ RSpec.describe NssController, type: :controller do
     expect(data["success"]).to eq(true)
   end
 
+  it "should return member list of group for group name" do
+    create(:access_token, token: access_token)
+    user = create(:user)
+    group = create(:group, name: "group_name")
+    create(:group_association, user: user, group: group)
+    get :group_member_list, params: { token: access_token, group_name: "group_name" }
+    data = JSON.parse(response.body)
+    expect(data["success"]).to eq(true)
+  end
+
   it 'should not return sysadmins for invalid token' do
     json = { token: '', name: 'random_host', group_name: '', format: :json }
     post 'add_host', params: json
