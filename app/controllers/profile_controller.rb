@@ -11,7 +11,9 @@ class ProfileController < ApplicationController
     redirect_to profile_path
   end
 
-  def show; end
+  def show
+    @token_qr = RQRCode::QRCode.new(current_user.provisioning_uri, :size => 10, :level => :h)
+  end
 
   def user_admin
     @users = []
