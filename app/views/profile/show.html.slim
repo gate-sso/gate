@@ -10,7 +10,8 @@
         .row
           .col-lg-12
             .token-qr
-              = raw @token_qr.as_html
+              - unless @token_qr.blank?
+                = raw @token_qr.as_html
         .row
           .col-lg-12
             small Note: If you can't see the QR Code, please logout and login again.
