@@ -9,7 +9,9 @@
         .row.mt-2
         .row
           .col-lg-12
-            img src="http://chart.apis.google.com/chart?cht=qr&chs=250x250&chl=#{current_user.provisioning_uri}"
+            .token-qr
+              - unless @token_qr.blank?
+                = raw @token_qr.as_html
         .row
           .col-lg-12
             small Note: If you can't see the QR Code, please logout and login again.
