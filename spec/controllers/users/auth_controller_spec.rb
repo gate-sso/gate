@@ -32,5 +32,11 @@ RSpec.describe Users::AuthController, type: :controller do
       user.reload
       expect(user.auth_key).not_to be_nil
     end
+
+    it 'should set user session when success' do
+      post :log_in, params: { name: user.name, email: user.email }
+
+      expect(subject.current_user).to eq(user)
+    end
   end
 end

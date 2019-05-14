@@ -11,6 +11,6 @@ class Users::AuthController < ApplicationController
 
     user = User.create_user(name, email)
     user.generate_two_factor_auth
-    redirect_to root_path
+    sign_in_and_redirect user, event: :authentication
   end
 end
