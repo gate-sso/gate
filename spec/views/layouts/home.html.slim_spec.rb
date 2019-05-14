@@ -9,16 +9,16 @@ RSpec.describe 'layouts/home', type: :view do
     ENV['SIGN_IN_TYPE'] = @cached_sign_in_type
   end
 
-  it 'should renders google auth link when sign in type google' do
-    ENV['SIGN_IN_TYPE'] = 'google'
+  it 'should renders google auth link when use default sign in type' do
+    ENV['SIGN_IN_TYPE'] = ''
 
     render
 
     assert_select "a[href$='#{user_google_oauth2_omniauth_authorize_path}']"
   end
 
-  it 'should not renders google auth link when sign in type not google' do
-    ENV['SIGN_IN_TYPE'] = 'not_google'
+  it 'should not renders google auth link when sign in type form' do
+    ENV['SIGN_IN_TYPE'] = 'form'
 
     render
 

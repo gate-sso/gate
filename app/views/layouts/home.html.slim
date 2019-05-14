@@ -33,14 +33,6 @@ html lang="en"
         br
         br
         - case Figaro.env.sign_in_type
-        - when 'google'
-          .row
-            .col
-            .col
-              a.btn.btn-block.btn-social.btn-google href="#{url_for  user_google_oauth2_omniauth_authorize_path}"
-                span.fa.fa-google
-                | Sign in with Google
-            .col
         - when 'form'
           = form_tag user_sign_in_path, method: :post do
             .row
@@ -48,5 +40,12 @@ html lang="en"
                 = text_field_tag :name, '', class: 'form-control', placeholder: 'Name', required: true
                 = text_field_tag :email, '', class: 'form-control', placeholder: 'Email', required: true, type: 'email'
                 = submit_tag 'Sign in', class: 'form-control btn-md btn-primary'
-
+        - else
+          .row
+            .col
+            .col
+              a.btn.btn-block.btn-social.btn-google href="#{url_for user_google_oauth2_omniauth_authorize_path}"
+                span.fa.fa-google
+                | Sign in with Google
+            .col
        
