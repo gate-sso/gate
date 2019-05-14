@@ -30,12 +30,6 @@ html lang="en"
             h3 Single Sign-On
         br
         br
-        = form_tag user_sign_in_path, method: :post do
-          .row
-            .col-sm-10.offset-sm-1
-              = text_field_tag :name, '', class: 'form-control', placeholder: 'Name', required: true
-              = text_field_tag :email, '', class: 'form-control', placeholder: 'Email', required: true, type: 'email'
-              = submit_tag 'Sign in', class: 'form-control btn-md btn-primary'
         br
         br
         - case Figaro.env.sign_in_type
@@ -47,6 +41,12 @@ html lang="en"
                 span.fa.fa-google
                 | Sign in with Google
             .col
-
+        - when 'form'
+          = form_tag user_sign_in_path, method: :post do
+            .row
+              .col-sm-10.offset-sm-1
+                = text_field_tag :name, '', class: 'form-control', placeholder: 'Name', required: true
+                = text_field_tag :email, '', class: 'form-control', placeholder: 'Email', required: true, type: 'email'
+                = submit_tag 'Sign in', class: 'form-control btn-md btn-primary'
 
        
