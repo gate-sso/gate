@@ -1,7 +1,7 @@
 class Users::AuthController < ApplicationController
   before_action :set_paper_trail_whodunnit
 
-  def sign_in
+  def log_in
     email = params.require(:email)
     name = params.require(:name)
 
