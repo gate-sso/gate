@@ -2,6 +2,10 @@ class Users::AuthController < ApplicationController
   before_action :set_paper_trail_whodunnit
 
   def log_in
+    unless Figaro.env.sign_in_type == 'form'
+      return redirect_to root_path
+    end
+
     email = params.require(:email)
     name = params.require(:name)
 

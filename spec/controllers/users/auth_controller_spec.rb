@@ -6,11 +6,14 @@ RSpec.describe Users::AuthController, type: :controller do
   context 'sign in' do
     before(:each) do
       @cached_domain_env = Figaro.env.GATE_HOSTED_DOMAINS
+      @cached_sign_in_type = Figaro.env.sign_in_type
       ENV['GATE_HOSTED_DOMAINS'] = 'foobar.com'
+      ENV['SIGN_IN_TYPE'] = 'form'
     end
 
     after(:each) do
       ENV['GATE_HOSTED_DOMAINS'] = @cached_domain_env
+      ENV['SIGN_IN_TYPE'] = @cached_sign_in_type
     end
 
     it 'should redirect to home when success' do
@@ -37,6 +40,14 @@ RSpec.describe Users::AuthController, type: :controller do
       post :log_in, params: { name: user.name, email: user.email }
 
       expect(subject.current_user).to eq(user)
+    end
+
+    it 'should redirect to home when sign in type is not form' do
+      ENV['SIGN_IN_TYPE'] = 'not_form'
+
+      post :log_in, params: { name: user.name, email: user.email }
+
+      expect(response).to redirect_to(root_path)
     end
   end
 end
