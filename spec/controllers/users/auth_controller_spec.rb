@@ -5,7 +5,7 @@ RSpec.describe Users::AuthController, type: :controller do
 
   context 'sign in' do
     before(:each) do
-      @cached_domain_env = Figaro.env.GATE_HOSTED_DOMAINS
+      @cached_domain_env = Figaro.env.gate_hosted_domains
       @cached_sign_in_type = Figaro.env.sign_in_type
       ENV['GATE_HOSTED_DOMAINS'] = 'foobar.com'
       ENV['SIGN_IN_TYPE'] = 'form'
