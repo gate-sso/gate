@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       end
     end
 
+    post '/users/sign_in' => 'users/auth#log_in', as: 'user_sign_in'
     delete "/users/sign_out" => "devise/sessions#destroy"
     match 'download_vpn', to: 'profile#download_vpn', via: :get, format: :html
     match 'download_vpn_for_ios_and_mac', to: 'profile#download_vpn_for_ios_and_mac', via: :get, format: :html

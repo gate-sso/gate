@@ -17,3 +17,4 @@ DEFAULT_HOST_PATTERN: 's*'
 UID_BUFFER: 5000
 SAML_APPS: 'datadog'
 GATE_URL: 'https://gate.gojek.co.id/'
+SIGN_IN_TYPE: ''

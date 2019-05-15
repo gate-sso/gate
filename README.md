@@ -37,6 +37,7 @@ Gate works by automating OpenVPN profile creation for you and also providing you
   * Update the client_id and client_secret to `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
   * Update your `GATE_SERVER_URL` to `http://localhost:3000`
   * Specify your email domain for `GATE_EMAIL_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if you are your email address is  `test123@gmail.com` then the values would be `gmail.com`
+  * Leave `SIGN_IN_TYPE` to empty value
 
 #### Finishing Setup
 To finish with your setup you just need to run `rake app:setup` this would setup your database and also run the inital set of tests to make sure you have a successful setup.
@@ -101,3 +102,8 @@ NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to 
 Gate has several tasks that can be scheduled for maintenance purpose. Please see `config/scheduler.rb` to see the list of tasks.
 
 You may have to run `whenever --update-crontab` to update cronjob so that it run these tasks. Gate utilize `whenever` gem for maintaining scheduled tasks, which in turn utilize cronjob as its backend.
+
+### Development note
+When you're in development and need to bypass oAuth sign in you can update your `SIGN_IN_TYPE` to `form`. Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your email domain.
+
+This option will provide you with sign in form in the homepage that you can fill with your email and name to sign in.
