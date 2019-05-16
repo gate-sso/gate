@@ -1,0 +1,11 @@
+/log/*
+!/log/.keep
+/tmp
+.idea
+.env
+*.swp
+config/application.yml
+public/assets/*
+dump.rdb
+coverage
+.git
