@@ -32,7 +32,7 @@ html lang="en"
         br
         br
         br
-        - case Figaro.env.sign_in_type
+        - case ENV['SIGN_IN_TYPE']
         - when 'form'
           = form_tag user_sign_in_path, method: :post do
             .row
