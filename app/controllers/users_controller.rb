@@ -36,8 +36,8 @@ class UsersController < ApplicationController
   def new
     if current_user.admin
       render :new, locals: {
-          roles: Figaro.env.user_roles.split(','),
-          domains: Figaro.env.gate_hosted_domains.split(','),
+        roles: ENV['USER_ROLES'].split(','),
+        domains: ENV['GATE_HOSTED_DOMAINS'].split(','),
       }
     else
       redirect_to profile_path
