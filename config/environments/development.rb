@@ -1,5 +1,5 @@
 Rails.application.configure do
-  OmniAuth.config.full_host = Figaro.env.GATE_SERVER_URL
+  OmniAuth.config.full_host = ENV['GATE_SERVER_URL']
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
   Slim::Engine.set_options pretty: true, sort_attrs: false
