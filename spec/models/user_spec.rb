@@ -71,7 +71,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'should use configured uid buffer rather than the default value' do
-      allow(Figaro.env).to receive(:uid_buffer).and_return(6000)
+      allow(ENV).to receive(:[]).with('UID_BUFFER').and_return(6000)
       expect(user.generate_uid).to eq(6000)
     end
   end
@@ -89,7 +89,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'should set the host pattern if configured' do
-      allow(Figaro.env).to receive(:default_host_pattern).and_return('S*')
+      allow(ENV).to receive(:[]).with('DEFAULT_HOST_PATTERN').and_return('S*')
       user.initialise_host_and_group
       expect(user.hosts.first.host_pattern).to eq('S*')
     end
@@ -187,8 +187,13 @@ RSpec.describe User, type: :model do
     let(:rotp_key) { ROTP::Base32.random_base32 }
     let(:domain) { 'test.com' }
     before(:each) do
-      allow(Figaro.env).to receive(:gate_hosted_domain).and_return(domain)
+      @cached_gate_hosted_domain = ENV['GATE_HOSTED_DOMAIN']
+      ENV['GATE_HOSTED_DOMAIN'] = domain
       allow(ROTP::Base32).to receive(:random_base32).and_return(rotp_key)
+    end
+
+    after(:each) do
+      ENV['GATE_HOSTED_DOMAIN'] = @cached_gate_hosted_domain
     end
 
     it 'the email should be appended with the configured hosted domain' do
@@ -369,14 +374,14 @@ RSpec.describe User, type: :model do
     expect(user.group_names_list.include?(user.user_login_id)).to eq(true)
   end
 
-  it "should check valid hosted domain" do
-    allow(Figaro.env).to receive(:GATE_HOSTED_DOMAINS).and_return("alfa.com,beta.com")
-    expect(User.valid_domain? "alfa.com").to be true
-    expect(User.valid_domain? "beta.com").to be true
-    expect(User.valid_domain? "gama.com").to be false
+  it 'should check valid hosted domain' do
+    allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('alfa.com,beta.com')
+    expect(User.valid_domain?('alfa.com')).to be true
+    expect(User.valid_domain?('beta.com')).to be true
+    expect(User.valid_domain?('gama.com')).to be false
 
-    allow(Figaro.env).to receive(:GATE_HOSTED_DOMAINS).and_return("")
-    expect(User.valid_domain? "alfa.com").to be false
+    allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('')
+    expect(User.valid_domain?('alfa.com')).to be false
   end
 
   it "should fails host address if it's not permitted" do
