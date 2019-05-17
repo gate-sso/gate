@@ -2,10 +2,10 @@ default: &default
   adapter: mysql2
   pool: 5
   timeout: 5000
-  host: <%= Figaro.env.GATE_DB_HOST %>
-  port: <%= Figaro.env.GATE_DB_PORT %>
-  username: <%= Figaro.env.GATE_DB_USER %>
-  password: <%= Figaro.env.GATE_DB_PASSWORD %>
+  host: <%= ENV['GATE_DB_HOST'] %>
+  port: <%= ENV['GATE_DB_PORT'] %>
+  username: <%= ENV['GATE_DB_USER'] %>
+  password: <%= ENV['GATE_DB_PASSWORD'] %>
 
 
 development:
@@ -22,9 +22,9 @@ test:
 
 integration:
   <<: *default
-  database: <%= Figaro.env.GATE_DB_NAME %>
+  database: <%= ENV['GATE_DB_NAME'] %>
 
 production:
   <<: *default
   pool: 16
-  database: <%= Figaro.env.GATE_DB_NAME %>
+  database: <%= ENV['GATE_DB_NAME'] %>
