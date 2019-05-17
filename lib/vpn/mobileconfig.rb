@@ -26,30 +26,30 @@ class Mobileconfig
     end
 
     confighash = {
-      organization_name: Figaro.env.GATE_ORGANIZATION_NAME+" IKEv2 VPN Configuration",
-      reverse_vpn_url: Figaro.env.GATE_URL.split('.').reverse.join('.'),
-      organization_static: Figaro.env.GATE_ORGANIZATION_STATIC,
-      payload_content: vpn_hash
+      organization_name: ENV['GATE_ORGANIZATION_NAME'] + ' IKEv2 VPN Configuration',
+      reverse_vpn_url: ENV['GATE_URL'].split('.').reverse.join('.'),
+      organization_static: ENV['GATE_ORGANIZATION_STATIC'],
+      payload_content: vpn_hash,
     }
 
     namespace = Namespace.new(confighash)
 
     mobileconfig_unsigned = ERB.new(mobileconfig_template).result(namespace.get_binding)
 
-    return sign_mobileconfig(mobileconfig_unsigned)
+    sign_mobileconfig(mobileconfig_unsigned)
   end
 
   private
 
   def sign_mobileconfig(mobileconfig)
-    private_key = Base64.decode64(Figaro.env.GATE_VPN_SSL_PVTKEY)
-    signing_cert = Base64.decode64(Figaro.env.GATE_VPN_SSL_CERT)
-    cross_signed_cert = Base64.decode64(Figaro.env.GATE_VPN_SSL_XSIGNED)
+    private_key = Base64.decode64(ENV['GATE_VPN_SSL_PVTKEY'])
+    signing_cert = Base64.decode64(ENV['GATE_VPN_SSL_CERT'])
+    cross_signed_cert = Base64.decode64(ENV['GATE_VPN_SSL_XSIGNED'])
 
     key = OpenSSL::PKey::RSA.new private_key
     cert = OpenSSL::X509::Certificate.new signing_cert
     cross_signed = OpenSSL::X509::Certificate.new cross_signed_cert
 
-    return OpenSSL::PKCS7.sign(cert, key, mobileconfig, [cross_signed] ).to_der
+    OpenSSL::PKCS7.sign(cert, key, mobileconfig, [cross_signed]).to_der
   end
 end
