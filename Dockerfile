@@ -10,7 +10,7 @@ WORKDIR /app
 COPY Gemfile /app
 COPY Gemfile.lock /app
 
-RUN gem install bundler -v 1.17.3
+RUN gem install bundler -v '>= 2.0'
 RUN bundle install --without development
 COPY . /app
 
