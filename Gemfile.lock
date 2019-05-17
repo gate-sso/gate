@@ -120,8 +120,6 @@ GEM
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
-    figaro (1.1.1)
-      thor (~> 0.14)
     font-awesome-rails (4.7.0.4)
       railties (>= 3.2, < 6.0)
     globalid (0.4.2)
@@ -382,7 +380,6 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  figaro
   font-awesome-rails
   httparty
   jbuilder
