@@ -24,7 +24,7 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 #### Initializing Your Application
 * Checkout gate
 * Run `bundle install --path .local`
-* Run `rake app:init` to copy your environment file (we use Figaro to manage environment variables)
+* Run `rake app:init` to copy your environment file (we use dotenv to manage environment variables)
 
 #### Setting up your Environment Variables
 * Setup your database (mysql) and update the following values (GATE_DB_HOST, GATE_DB_PORT, GATE_DB_USER, GATE_DB_PASSWORD)
