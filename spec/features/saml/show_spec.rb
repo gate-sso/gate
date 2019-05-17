@@ -2,7 +2,7 @@ require 'rails_helper'
 RSpec.feature 'Config Saml App', type: :feature do
   let(:org) { create(:organisation) }
   let(:user) { create(:user) }
-  let(:saml_apps) { Figaro.env.saml_apps.split(',') }
+  let(:saml_apps) { ENV['SAML_APPS'].split(',') }
   let(:xml_content) { Nokogiri::XML::Builder.new { |xml| xml.foo_bar 'hello' }.to_xml }
 
   before do
