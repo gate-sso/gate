@@ -49,6 +49,11 @@ If you want gate to setup VPN for your, then just install OpenVPN with easy rsa,
 
 > **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
 
+#### Run on docker
+* Build the docker image using `docker build -t gate .`
+* Create and update `.env` file according to `.env.example` with appropriate values
+* Run the image using `docker run -p 3000:3000 --env-file=.env -it gate`
+
 ### Modules
 * pam_gate - for Linux/Unix
 * nss_gate - for Linux Name Service Switch
