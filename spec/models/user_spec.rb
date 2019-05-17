@@ -71,8 +71,10 @@ RSpec.describe User, type: :model do
     end
 
     it 'should use configured uid buffer rather than the default value' do
-      allow(ENV).to receive(:[]).with('UID_BUFFER').and_return(6000)
+      cached_uid_buffer = ENV['UID_BUFFER']
+      ENV['UID_BUFFER'] = '6000'
       expect(user.generate_uid).to eq(6000)
+      ENV['UID_BUFFER'] = cached_uid_buffer
     end
   end
 
@@ -89,9 +91,11 @@ RSpec.describe User, type: :model do
     end
 
     it 'should set the host pattern if configured' do
-      allow(ENV).to receive(:[]).with('DEFAULT_HOST_PATTERN').and_return('S*')
+      cached_default_host_pattern = ENV['DEFAULT_HOST_PATTERN']
+      ENV['DEFAULT_HOST_PATTERN'] = 'S*'
       user.initialise_host_and_group
       expect(user.hosts.first.host_pattern).to eq('S*')
+      ENV['DEFAULT_HOST_PATTERN'] = cached_default_host_pattern
     end
   end
 
