@@ -1,9 +1,9 @@
 # Gate
 
-> Note: Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check the bottom of this document for guidelines.
-
 ![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
 [![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
+
+> Note: Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check the bottom of this document for guidelines.
 
 Gate is Single Sign On platform for centralised authentication across Linux, OpenVPN and CAS.
 
