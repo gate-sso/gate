@@ -29,12 +29,6 @@ gem 'slim-rails'
 gem 'turbolinks'
 gem 'uglifier'
 gem 'whenever', require: false
-# platform :jruby do
-#  gem 'activerecord', '4.2.8'
-#  gem 'jdbc-mysql'
-#  gem 'activerecord-jdbc-adapter', '~> 1.3.2', platform: :jruby
-#  gem 'therubyrhino', platform: :jruby
-# end
 
 group :development, :test do
   gem 'capybara'
