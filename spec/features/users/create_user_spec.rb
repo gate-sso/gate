@@ -12,8 +12,8 @@ RSpec.feature 'Create User', type: :feature do
   end
 
   scenario 'If admin view user creation form' do
-    roles = Figaro.env.user_roles.split(',').map(&:titleize).insert(0, "Select A Role")
-    domains = Figaro.env.gate_hosted_domains.split(',').insert(0, "Select A Domain")
+    roles = ENV['USER_ROLES'].split(',').map(&:titleize).insert(0, 'Select A Role')
+    domains = ENV['GATE_HOSTED_DOMAINS'].split(',').insert(0, 'Select A Domain')
     visit new_user_path
     expect(page.find_field('user_first_name').value.blank?).to eq(true)
     expect(page.find_field('user_last_name').value.blank?).to eq(true)

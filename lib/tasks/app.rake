@@ -2,7 +2,7 @@ namespace :app do
   desc "Common app related tasks"
 
   task :init do
-    cp 'config/application.yml.sample', 'config/application.yml'
+    cp '.env.example', '.env'
     p 'Please read information @ README.md - Setting up Configuration'
   end
 

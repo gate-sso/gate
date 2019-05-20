@@ -12,7 +12,7 @@ class User < ApplicationRecord
   # TODO: Need to add the validations for the user model, right now a lot of tests fail due to enabling this
   # validates :first_name, :last_name, :mobile, :user_role, presence: true
   # validates :first_name, :last_name, format: { with: /[a-zA-Z]/}, allow_blank: true
-  # validates :user_role, inclusion: { in: Figaro.env.user_roles.split(',') }
+  # validates :user_role, inclusion: { in: ENV['USER_ROLES'].split(',') }
   # validate :validate_email_domain
   validates :email, uniqueness: true
 
@@ -39,14 +39,14 @@ class User < ApplicationRecord
   end
 
   def generate_uid(uid_buffer = 5000)
-    uid_buffer = Figaro.env.uid_buffer.present? ? Figaro.env.uid_buffer.to_i : uid_buffer
+    uid_buffer = ENV['UID_BUFFER'].present? ? ENV['UID_BUFFER'].to_i : uid_buffer
     User.last.blank? ? uid_buffer : User.last.id.to_i + uid_buffer
   end
 
   def initialise_host_and_group
     host = Host.find_or_initialize_by(user: self)
-    unless Figaro.env.default_host_pattern.blank?
-      host.host_pattern = Figaro.env.default_host_pattern
+    unless ENV['DEFAULT_HOST_PATTERN'].blank?
+      host.host_pattern = ENV['DEFAULT_HOST_PATTERN']
     end
     hosts << host
     groups << Group.find_or_initialize_by(name: user_login_id)
@@ -75,7 +75,7 @@ class User < ApplicationRecord
   end
 
   def self.add_temp_user(name, email)
-    email += "@#{Figaro.env.gate_hosted_domain}"
+    email += "@#{ENV['GATE_HOSTED_DOMAIN']}"
     user = User.create_user(name, email)
     user.generate_two_factor_auth
     user.auth_key
@@ -142,7 +142,7 @@ class User < ApplicationRecord
   end
 
   def self.valid_domain? domain
-    hosted_domains = Figaro.env.GATE_HOSTED_DOMAINS.split(",")
+    hosted_domains = ENV['GATE_HOSTED_DOMAINS'].split(',')
     hosted_domains.include?(domain)
   end
 
@@ -404,7 +404,7 @@ class User < ApplicationRecord
   end
 
   def validate_email_domain
-    domain_list = Figaro.env.gate_hosted_domains.split(',')
+    domain_list = ENV['GATE_HOSTED_DOMAINS'].split(',')
     domain = email.split('@').last
     errors.add(:email, "Invalid Domain for Email Address") unless domain_list.include?(domain)
   end

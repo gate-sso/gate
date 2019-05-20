@@ -2,7 +2,7 @@ require 'rails_helper'
 RSpec.feature 'Config Saml App', type: :feature do
   let(:org) { create(:organisation) }
   let(:user) { create(:user) }
-  let(:saml_apps) { Figaro.env.saml_apps.split(',') }
+  let(:saml_apps) { ENV['SAML_APPS'].split(',') }
 
   before do
     sign_in(user)

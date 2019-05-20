@@ -25,7 +25,7 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 #### Initializing Your Application
 * Checkout gate
 * Run `bundle install --path .local`
-* Run `rake app:init` to copy your environment file (we use Figaro to manage environment variables)
+* Run `rake app:init` to copy your environment file (we use dotenv to manage environment variables)
 
 #### Setting up your Environment Variables
 * Setup your database (mysql) and update the following values (GATE_DB_HOST, GATE_DB_PORT, GATE_DB_USER, GATE_DB_PASSWORD)
@@ -37,7 +37,7 @@ Gate works by automating OpenVPN profile creation for you and also providing you
   * If you are running on `localhost:3000`, specify that for the `Authorized Javascript Origins` and `Authorized Redirect URIs` following which you can generate your client_id and client_secret
   * Update the client_id and client_secret to `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
   * Update your `GATE_SERVER_URL` to `http://localhost:3000`
-  * Specify your email domain for `GATE_EMAIL_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if you are your email address is  `test123@gmail.com` then the values would be `gmail.com`
+  * Specify your email domain for `GATE_HOSTED_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if you are your email address is  `test123@gmail.com` then the values would be `gmail.com`
   * Leave `SIGN_IN_TYPE` to empty value
 
 #### Finishing Setup

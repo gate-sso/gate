@@ -110,7 +110,7 @@ class OrganisationsController < ApplicationController
   end
 
   def validate_app_name
-    saml_apps = Figaro.env.saml_apps.split(',').map(&:downcase)
+    saml_apps = ENV['SAML_APPS'].split(',').map(&:downcase)
     unless saml_apps.include?(params[:app_name].downcase)
       redirect_to organisation_path(id: params[:organisation_id])
     end

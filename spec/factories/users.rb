@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :user do
     transient do
-      user_roles_list { Figaro.env.user_roles.split(',') }
-      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+      user_roles_list { ENV['USER_ROLES'].split(',') }
+      hosted_domains_list { ENV['GATE_HOSTED_DOMAINS'].split(',') }
     end
     first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
     last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }
@@ -25,8 +25,8 @@ FactoryBot.define do
 
   factory :group_admin, class: User do
     transient do
-      user_roles_list { Figaro.env.user_roles.split(',') }
-      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+      user_roles_list { ENV['USER_ROLES'].split(',') }
+      hosted_domains_list { ENV['GATE_HOSTED_DOMAINS'].split(',') }
     end
     first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
     last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }
@@ -49,8 +49,8 @@ FactoryBot.define do
 
   factory :admin_user, class: User do
     transient do
-      user_roles_list { Figaro.env.user_roles.split(',') }
-      hosted_domains_list { Figaro.env.gate_hosted_domains.split(',') }
+      user_roles_list { ENV['USER_ROLES'].split(',') }
+      hosted_domains_list { ENV['GATE_HOSTED_DOMAINS'].split(',') }
     end
     first_name { Faker::Name.first_name.gsub(/[^A-Za-z]/, '') }
     last_name { Faker::Name.last_name.gsub(/[^A-Za-z]/, '') }

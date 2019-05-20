@@ -19,7 +19,6 @@ env:
   - GATE_HOSTED_DOMAIN=gate.domain
   - GATE_SERVER_URL=gate.server/url
   - GATE_CONFIG_SECRET=gate_pw_secret
-  - GATE_EMAIL_DOMAIN=gate.domain
   - GATE_HOSTED_DOMAINS="test1.com,test2.com"
   - PRODUCT_LIST=pr1,pr2
   - CACHE_PORT=6379

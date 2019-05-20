@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'layouts/home', type: :view do
   before(:each) do
-    @cached_sign_in_type = Figaro.env.sign_in_type
+    @cached_sign_in_type = ENV['SIGN_IN_TYPE']
   end
 
   after(:each) do
