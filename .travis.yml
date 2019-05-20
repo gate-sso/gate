@@ -48,12 +48,8 @@ script:
   - bundle exec rake assets:precompile RAILS_ENV=production
 after_success:
 before_deploy:
-  # Set up git user name and tag this commit
-  - git config --local user.name "ajeygore"
-  - git config --local user.email "ajeygore@gmail.com"
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
   - "rm -rf $TRAVIS_BUILD_DIR/*.tar.gz"
-  - "tar zcf release-$(git log --format=%h -1).tar.gz -C $TRAVIS_BUILD_DIR ./*"
+  - "tar zcf gate-$TRAVIS_TAG.tar.gz -C $TRAVIS_BUILD_DIR ./*"
 deploy:
   provider: releases
   skip_cleanup: true
@@ -62,4 +58,6 @@ deploy:
   file_glob: true
   file: $TRAVIS_BUILD_DIR/*.tar.gz
   on:
+    tags: true
     repo: gate-sso/gate
+    all_branches: true
