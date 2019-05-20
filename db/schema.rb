@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20181208184236) do
   create_table "group_admins", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "group_id"
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["group_id"], name: "fk_rails_1a1d29d2d3"
     t.index ["user_id"], name: "fk_rails_0ac5a6fa32"
   end
@@ -48,6 +48,8 @@ ActiveRecord::Schema.define(version: 20181208184236) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id", "user_id"], name: "index_group_associations_on_group_id_and_user_id"
+    t.index ["group_id"], name: "index_group_associations_on_group_id"
+    t.index ["user_id"], name: "index_group_associations_on_user_id"
   end
 
   create_table "groups", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -67,7 +69,9 @@ ActiveRecord::Schema.define(version: 20181208184236) do
     t.integer "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_host_access_groups_on_group_id"
     t.index ["host_machine_id", "group_id"], name: "index_host_access_groups_on_host_machine_id_and_group_id"
+    t.index ["host_machine_id"], name: "index_host_access_groups_on_host_machine_id"
   end
 
   create_table "host_machines", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -185,15 +189,15 @@ ActiveRecord::Schema.define(version: 20181208184236) do
   create_table "vpn_domain_name_servers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "vpn_id"
     t.string "server_address"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "vpn_group_associations", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "group_id"
     t.integer "vpn_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["group_id"], name: "fk_rails_67a460ac90"
     t.index ["vpn_id"], name: "fk_rails_9be3690c1d"
   end
@@ -202,8 +206,8 @@ ActiveRecord::Schema.define(version: 20181208184236) do
     t.integer "user_id"
     t.integer "vpn_id"
     t.integer "group_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["group_id"], name: "fk_rails_30de0bd58e"
     t.index ["user_id"], name: "fk_rails_275419a627"
     t.index ["vpn_id"], name: "fk_rails_dbd29a5c87"
@@ -212,22 +216,22 @@ ActiveRecord::Schema.define(version: 20181208184236) do
   create_table "vpn_search_domains", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "vpn_id"
     t.string "search_domain"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "vpn_supplemental_match_domains", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "vpn_id"
     t.string "supplemental_match_domain"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "vpns", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.string "host_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "ip_address"
     t.string "uuid"
   end
