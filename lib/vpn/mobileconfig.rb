@@ -27,7 +27,7 @@ class Mobileconfig
 
     confighash = {
       organization_name: ENV['GATE_ORGANIZATION_NAME'] + ' IKEv2 VPN Configuration',
-      reverse_vpn_url: ENV['GATE_URL'].split('.').reverse.join('.'),
+      reverse_vpn_url: ENV['GATE_SERVER_URL'].split('.').reverse.join('.'),
       organization_static: ENV['GATE_ORGANIZATION_STATIC'],
       payload_content: vpn_hash,
     }

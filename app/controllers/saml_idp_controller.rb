@@ -33,7 +33,7 @@ class SamlIdpController < SamlIdp::IdpController
     slug = params[:slug]
     app = params[:app]
     org = Organisation.find_by_slug(slug)
-    saml_url = "#{ENV['GATE_URL']}#{slug}/#{app}/saml"
+    saml_url = "#{ENV['GATE_SERVER_URL']}/#{slug}/#{app}/saml"
     SamlIdp.configure do |config|
       config.x509_certificate = org.cert_key
       config.secret_key = org.cert_private_key
