@@ -19,6 +19,7 @@ vendor/*
 /tmp
 .idea
 .env
+.ruby-gemset
 *.swp
 config/application.yml
 public/assets/*
