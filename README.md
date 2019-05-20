@@ -1,4 +1,6 @@
-# gate
+# Gate
+
+> Note: Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check the bottom of this document for guidelines.
 
 ![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
 [![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
@@ -19,7 +21,6 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 > Gate provides you with single sign on solution plus centralised user managment across your applications. It not only helps you control user's access but also makes most of it automated.
 
 ### Setup
-
 
 #### Initializing Your Application
 * Checkout gate
@@ -78,8 +79,6 @@ AuthorizedKeysCommandUser nobody
 
 > **Please Note** Adjust URL for GateServer and test by executing `gate_ssh.sh <username>` to see if this prints the public key
 
-
-
 ### Administration
 You might have to open rails console and give one user admin privileges by setting up `user.admin = true` in console. Then Gate will open up Administration URL for you. You can do following with Gate's admin web UI
 
@@ -108,7 +107,19 @@ Gate has several tasks that can be scheduled for maintenance purpose. Please see
 
 You may have to run `whenever --update-crontab` to update cronjob so that it run these tasks. Gate utilize `whenever` gem for maintaining scheduled tasks, which in turn utilize cronjob as its backend.
 
-### Development note
+### Development Note
 When you're in development and need to bypass oAuth sign in you can update your `SIGN_IN_TYPE` to `form`. Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your email domain.
 
 This option will provide you with sign in form in the homepage that you can fill with your email and name to sign in.
+
+## Contributor Guidelines
+
+### Releasing Gate
+
+> Gate uses semantic versioning, check [this page](https://semver.org/) for more details on how to bump the version number.
+
+Steps on releasing Gate.
+
+1. Bump version on [VERSION](VERSION) file.
+2. Add appropriate changelogs on [CHANGELOG.md](CHANGELOG.md) file. Please follow existing format.
+3. Tag the commit by the new version number and push it, travis will automatically build and release Gate.
