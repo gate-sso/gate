@@ -3,123 +3,101 @@
 ![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
 [![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
 
-> Note: Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check the bottom of this document for guidelines.
+> Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Gate is Single Sign On platform for centralised authentication across Linux, OpenVPN and CAS.
+Gate is a single sign-on (SSO) platform for centralised authentication across Linux, OpenVPN and CAS.
 
-Gate works by automating OpenVPN profile creation for you and also providing you with google multi factor authentication(MFA) integration. Gate provides single MFA Token authorisation across your organisation for following services.
+Gate works by automating OpenVPN profile creation for you and also providing you with google multi-factor authentication (MFA) integration. Gate provides single MFA Token authorisation across your organisation. Following scenarios can be handled by Gate:
 
-> The entry point for self-signin is Google Email authentication. If you don't use Google Email authentication, you can point gate to any existing oAuth provider and it should straight forward.
-
-1. Setup OpenVPN with Gate's authentication.
-2. Automatically create VPN profiles for each of the users.
+1. Setup OpenVPN with Gate authentication.
+2. Automatically create VPN profiles for each users.
 3. Provide you with JaSig CAS Custom Authentication Handler to authenticate with Gate SSO and in turn enabling MFA for JaSig CAS.
-4. Enable Linux authentication with gate-pam - which sits like small module with Linux and allow authentication.
-5. Enable Name Service Switch on Linux - so that Gate User's can be discovered and authenticated on Linux.
-6. **Access Control on Linux** Gate also allows you to control access to specific machines, like which hosts a user can login. And that can be controlled by reg-ex pattern on host name or IP addresses. Please note pattern * matches everything.
+4. Enable Linux authentication with [pam_gate](https://github.com/gate-sso/pam_gate), which sits like a small module with Linux and allow authentication.
+5. Enable Name Service Switch (NSS) on Linux, so that Gate users can be discovered and authenticated on Linux.
+6. **Access Control on Linux** Gate also allows you to control access to specific machines, like which hosts a user can login. And that can be controlled by reg-ex pattern on host name or IP addresses. (Note: pattern * matches everything).
 
-> Gate provides you with single sign on solution plus centralised user managment across your applications. It not only helps you control user's access but also makes most of it automated.
+> The entry point for self sign-in is Google mail authentication. If you don't use Google mail authentication, you can point gate to any OAuth provider and it should work.
 
-### Setup
+> Gate provides you with single sign-on solution plus centralised user management across your applications and services. Not only it helps in controlling users access but it also helps in making most of it automated.
+
+### Modules
+
+* [pam_gate](https://github.com/gate-sso/pam_gate) - Gate module for Linux PAM
+* [nss_gate](https://github.com/gate-sso/nss_gate) - Gate module for Linux Name Server Switch (NSS)
+* [cas_gate](https://github.com/gate-sso/cas_gate) - CAS Customer MFA authentication handler for Gate
+* open_vpn_gate - for OpenVPN setup, it is not extracted yet.
+
+## Development Setup
+
+> We are in the process of improving Gate setup process, please check back for updated instructions.
+
+### Manual Setup
 
 #### Initializing Your Application
-* Checkout gate
-* Run `bundle install --path .local`
-* Run `rake app:init` to copy your environment file (we use dotenv to manage environment variables)
 
-#### Setting up your Environment Variables
-* Setup your database (mysql) and update the following values (GATE_DB_HOST, GATE_DB_PORT, GATE_DB_USER, GATE_DB_PASSWORD)
-* Setup your cache (redis) and update the following values (CACHE_DB, CACHE_HOST)
-* Add dummy values to `PRODUCT_LIST`, can be any string (we would be removing this soon)
-* Configuring oAuth
-  * Head to https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[ACCOUNT-ID]
- to setup your oAuth credentials, you might need to enable **Google+**
-  * If you are running on `localhost:3000`, specify that for the `Authorized Javascript Origins` and `Authorized Redirect URIs` following which you can generate your client_id and client_secret
-  * Update the client_id and client_secret to `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
-  * Update your `GATE_SERVER_URL` to `http://localhost:3000`
-  * Specify your email domain for `GATE_HOSTED_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if you are your email address is  `test123@gmail.com` then the values would be `gmail.com`
-  * Leave `SIGN_IN_TYPE` to empty value
+* Ensure that ruby is installed (>= 2.4) and `bundler` gem is installed.
+* Clone [Gate repository](https://github.com/gate-sso/gate)
+* Run `bundle install`
+* Run `rake app:init` to create environment file based on sample (we use dotenv to manage environment variables).
 
-#### Finishing Setup
-To finish with your setup you just need to run `rake app:setup` this would setup your database and also run the inital set of tests to make sure you have a successful setup.
+#### Setting up OAuth (Optional)
 
-#### Additional Steps
-Once Gate is setup, sign up with your user and you should see welcome page with a VPN profile download and VPN MFA Scanning.
+> If you setup Gate for development purpose and you want to avoid setting up OAuth, you can fill `SIGN_IN_TYPE` environment variable with `form`. This option will provide you with sign-in form in Gate homepage that you can fill with e-mail and name to sign-in.
 
-If you want gate to setup VPN for your, then just install OpenVPN with easy rsa, Gate should just work fine with it.
+> Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your e-mail domain as instructed below.
 
-> **NOTE** We will be putting some more effort to automate VPN setup using Gate as well. Or you can start creating pull request to help us with this.
+* Ensure that you have a registered account in Google Cloud Platform.
+* Enable `plus.googleapis.com` API at the following URL:
 
-#### Run on docker
-* Build the docker image using `docker build -t gate .`
+    https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[YOUR-PROJECT-NAME]
+* Create OAuth Client ID credentials at the following URL (with type `Web Application`):
+
+    https://console.developers.google.com/apis/credentials?project=[YOUR-PROJECT-NAME]
+* Configure Restrictions (Origins & Redirect URIs). We cannot use localhost in this section, therefore you can specify any arbitrary domain then configure your computer `/etc/hosts` file.
+
+    Example if you are running on `http://example.com:4000`:
+    * http://example.com:4000
+    * http://example.com:4000/users/auth/google_oauth2/callback
+* Put client_id and client_secret on `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
+* Update your `GATE_SERVER_URL` to `http://example.com:4000`
+* Specify your e-mail domain on `GATE_HOSTED_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if your e-mail address is  `test123@gmail.com` then the value should be `gmail.com`
+* Leave `SIGN_IN_TYPE` empty
+
+#### Setting up Environment Variables
+
+* Install and setup database (mysql) and update the following values (`GATE_DB_HOST`, `GATE_DB_PORT`, `GATE_DB_USER`, `GATE_DB_PASSWORD`) on `.env`.
+* Install and setup cache (redis) and update the following values (`CACHE_DB`, `CACHE_HOST`).
+
+#### Finishing Steps
+
+To finalize your setup you just need to run `rake app:setup`. This command will setup your database and also run inital set of tests to make sure you have a successful setup.
+
+Once Gate is setup, sign-in with your user and you should see welcome page with VPN profile download and VPN MFA Scanning.
+
+If you want Gate to setup VPN for you then just install OpenVPN with easy rsa. Gate should just work fine with it.
+
+> **NOTE** We will be putting more effort to automate VPN setup using Gate as well. Or you can send a pull request to help us with this.
+
+### Docker Setup
+
+* Build docker image using `docker build -t gate .`
 * Create and update `.env` file according to `.env.example` with appropriate values
 * Run the image using `docker run -p 3000:3000 --env-file=.env -it gate`
 
-### Modules
-* pam_gate - for Linux/Unix
-* nss_gate - for Linux Name Service Switch
-* cas_gate - for JaSig CAS Server
-* open_vpn_gate - for OpenVPN setup, it's not extracted yet.
-* ssh_gate
+## Additional Topics
 
-### Setting up public key lookup
-Given user has uploaded public key into gate
-* Add following lines to your sshd_config - It's located at `/etc/ssh/sshd_config` on most linux distros
+* [Additional Setup](docs/additional_setup.md)
+* [Administration](docs/administration.md)
+* [Newrelic Integration](docs/newrelic.md)
 
-```
-AuthorizedKeysCommand /usr/bin/gate_ssh.sh
-AuthorizedKeysCommandUser nobody
-```
-* Add a file with following content to `/usr/bin/` with name `gate_ssh.sh` owned by root
+### Changelog
 
-```
-#!/bin/sh
-/usr/bin/curl -k --silent "https://<gate server name or IP>/profile/$1/key"
-```
+See [CHANGELOG.md](CHANGELOG.md)
 
-> **Please Note** Adjust URL for GateServer and test by executing `gate_ssh.sh <username>` to see if this prints the public key
+### Contributing
 
-### Administration
-You might have to open rails console and give one user admin privileges by setting up `user.admin = true` in console. Then Gate will open up Administration URL for you. You can do following with Gate's admin web UI
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-* Enable/Disable User account
-* Make user administrator
-* Control what host user's are allowed to login via host patterns, by default they are allowed everyhost which starts with s-* (we use s- for staging, p- for production)
-* Make user part of group, by default they are part of 'people' group.
+### License
 
-> **DNS Alert** Please note gate heavily relies on DNS and host supplied IP addresses, so it authenticates against host's native IP address rather than natted IP address. It does reverse name lookup on supplied IP address, if that fails then it will be looking at matching IP address itself.
-
-
-#### Logs
-The puma logs are in `shared/log/puma.stdout.log`  and `shared/log/puma.stderr.log` and the app logs are in `log/<env>.log`, some errors may be being written directly to stdout/stderr and may not be available in the application's log file
-
-#### Newrelic Support
-If you want to enable Newrelic monitoring on your Gate deployment, you just have to create these additional keys on your environment variables:
-
-```
-NEWRELIC_LICENSE_KEY                - Your Newrelic license key
-NEWRELIC_APP_NAME                   - Your application name (identifer) on Newrelic
-NEWRELIC_AGENT_ENABLED              - Set it true if you want Newrelic agent to runs
-```
-
-#### Scheduler
-Gate has several tasks that can be scheduled for maintenance purpose. Please see `config/scheduler.rb` to see the list of tasks.
-
-You may have to run `whenever --update-crontab` to update cronjob so that it run these tasks. Gate utilize `whenever` gem for maintaining scheduled tasks, which in turn utilize cronjob as its backend.
-
-### Development Note
-When you're in development and need to bypass oAuth sign in you can update your `SIGN_IN_TYPE` to `form`. Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your email domain.
-
-This option will provide you with sign in form in the homepage that you can fill with your email and name to sign in.
-
-## Contributor Guidelines
-
-### Releasing Gate
-
-> Gate uses semantic versioning, check [this page](https://semver.org/) for more details on how to bump the version number.
-
-Steps on releasing Gate.
-
-1. Bump version on [VERSION](VERSION) file.
-2. Add appropriate changelogs on [CHANGELOG.md](CHANGELOG.md) file. Please follow existing format.
-3. Tag the commit by the new version number and push it, travis will automatically build and release Gate.
+MIT License, See [LICENSE](LICENSE).

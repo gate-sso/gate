@@ -3,7 +3,7 @@ namespace :app do
 
   task :init do
     cp '.env.example', '.env'
-    p 'Please read information @ README.md - Setting up Configuration'
+    p 'Please read information @ README.md - Setting up Environment Variables'
   end
 
   task :setup do
