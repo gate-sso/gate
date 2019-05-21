@@ -44,26 +44,11 @@ Gate works by automating OpenVPN profile creation for you and also providing you
 
 > If you setup Gate for development purpose and you want to avoid setting up OAuth, you can fill `SIGN_IN_TYPE` environment variable with `form`. This option will provide you with sign-in form in Gate homepage that you can fill with e-mail and name to sign-in.
 
-> Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your e-mail domain as instructed below.
+> Note that you still need to update `GATE_HOSTED_DOMAINS` to serve your e-mail domain.
 
-* Ensure that you have a registered account in Google Cloud Platform.
-* Enable `plus.googleapis.com` API at the following URL:
+Check [this guide](docs/oauth_setup.md) For detailed information on how to setup OAuth.
 
-    https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=[YOUR-PROJECT-NAME]
-* Create OAuth Client ID credentials at the following URL (with type `Web Application`):
-
-    https://console.developers.google.com/apis/credentials?project=[YOUR-PROJECT-NAME]
-* Configure Restrictions (Origins & Redirect URIs). We cannot use localhost in this section, therefore you can specify any arbitrary domain then configure your computer `/etc/hosts` file.
-
-    Example if you are running on `http://example.com:4000`:
-    * http://example.com:4000
-    * http://example.com:4000/users/auth/google_oauth2/callback
-* Put client_id and client_secret on `GATE_OAUTH_CLIENT_ID` and `GATE_OAUTH_CLIENT_SECRET` respectively
-* Update your `GATE_SERVER_URL` to `http://example.com:4000`
-* Specify your e-mail domain on `GATE_HOSTED_DOMAIN` and `GATE_HOSTED_DOMAINS`, for instance if your e-mail address is  `test123@gmail.com` then the value should be `gmail.com`
-* Leave `SIGN_IN_TYPE` empty
-
-#### Setting up Environment Variables
+#### Setting up Database and Cache
 
 * Install and setup database (mysql) and update the following values (`GATE_DB_HOST`, `GATE_DB_PORT`, `GATE_DB_USER`, `GATE_DB_PASSWORD`) on `.env`.
 * Install and setup cache (redis) and update the following values (`CACHE_DB`, `CACHE_HOST`).
