@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :set_group, only: [:show, :edit, :update, :destroy, :add_user, :add_machine, :add_vpn, :add_admin, :remove_admin, :delete_user, :delete_vpn, :delete_machine]
+  before_action :set_group, only: %i[show edit update destroy add_user add_machine add_vpn add_admin remove_admin delete_user delete_vpn delete_machine]
   before_action :authenticate_user!
 
   prepend_before_action :setup_user if Rails.env.development?
@@ -9,9 +9,9 @@ class GroupsController < ApplicationController
     @groups = []
     @group_search = params[:group_search]
     if current_user.admin && @group_search.present?
-        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
+      @groups = Group.where('name LIKE ?', "%#{@group_search}%")
     elsif current_user.group_admin? && !current_user.admin
-        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
+      @groups = GroupAdmin.where(user_id: current_user.id).map(&:group)
     end
   end
 
@@ -38,9 +38,9 @@ class GroupsController < ApplicationController
   end
 
   def show
-    #This is set in before_action filter
-    #@group = Group.find(params[:id])
-    @vpns = Vpn.all.select {|vpn| vpn.groups.count == 0}
+    # This is set in before_action filter
+    # @group = Group.find(params[:id])
+    @vpns = Vpn.all.select { |vpn| vpn.groups.count.zero? }
     @users = User.where(active: true)
     @host_machines = HostMachine.all
   end
@@ -64,20 +64,20 @@ class GroupsController < ApplicationController
       end
 
     end
-    redirect_to group_path(@group, anchor: "group_members")
+    redirect_to group_path(@group, anchor: 'group_members')
   end
 
   def add_user
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
-      user.groups << @group if user.present? and user.groups.find_by_id(@group.id).blank?
+      user.groups << @group if user.present? && user.groups.find_by_id(@group.id).blank?
       user.save!
       @group.burst_host_cache
     end
 
     respond_to do |format|
       format.html do
-        redirect_to group_path(@group, anchor: "group_members")
+        redirect_to group_path(@group, anchor: 'group_members')
       end
     end
   end
@@ -85,7 +85,7 @@ class GroupsController < ApplicationController
   def add_machine
     if current_user.admin?
       machine = HostMachine.find(params[:machine_id])
-      machine.groups << @group if machine.present? and machine.groups.find_by_id(@group.id).blank?
+      machine.groups << @group if machine.present? && machine.groups.find_by_id(@group.id).blank?
       machine.save!
     end
 
@@ -120,7 +120,6 @@ class GroupsController < ApplicationController
     end
   end
 
-
   def add_vpn
     if current_user.admin?
       VpnGroupAssociation.find_or_create_by(group_id: @group.id, vpn_id: params[:vpn_id])
@@ -134,17 +133,18 @@ class GroupsController < ApplicationController
   end
 
   def delete_vpn
-    if current_user.admin? || @group.group_admin.user == current_user
-      VpnGroupAssociation.where(group_id: @group.id, vpn_id: params[:vpn_id]).destroy_all
-      VpnGroupUserAssociation.where(group_id: @group.id, vpn_id: params[:vpn_id]).destroy_all
+    return unless current_user.admin? || @group.group_admin.user == current_user
 
-      respond_to do |format|
-        format.html do
-          redirect_to group_path @group
-        end
+    VpnGroupAssociation.where(group_id: @group.id, vpn_id: params[:vpn_id]).destroy_all
+    VpnGroupUserAssociation.where(group_id: @group.id, vpn_id: params[:vpn_id]).destroy_all
+
+    respond_to do |format|
+      format.html do
+        redirect_to group_path @group
       end
     end
   end
+
   def add_group
     @user = User.find(params[:id])
     if current_user.admin?
@@ -174,25 +174,26 @@ class GroupsController < ApplicationController
   def list
     @groups = []
     @group_search = params[:group_search]
-    if @group_search.present?
-      if current_user.admin?
-        @groups = Group.where("name LIKE ?", "%#{@group_search}%" )
-      elsif current_user.group_admin?
-        @groups = GroupAdmin.where(user_id: current_user.id).map{ |ga| ga.group }
-      end
+    return unless @group_search.present?
+
+    if current_user.admin?
+      @groups = Group.where('name LIKE ?', "%#{@group_search}%")
+    elsif current_user.group_admin?
+      @groups = GroupAdmin.where(user_id: current_user.id).map(&:group)
     end
   end
 
   def search
     @groups = Group.
-      where("name LIKE ?", "%#{params[:q]}%").
-      order("name ASC").
+      where('name LIKE ?', "%#{params[:q]}%").
+      order('name ASC').
       limit(20)
-    data = @groups.map{ |group| {id: group.id, name: group.name} }
+    data = @groups.map { |group| { id: group.id, name: group.name } }
     render json: data
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_group
     @group = Group.find(params[:id])
@@ -202,5 +203,4 @@ class GroupsController < ApplicationController
   def group_params
     params.require(:group).permit(:name)
   end
-
 end
