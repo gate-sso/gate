@@ -6,7 +6,7 @@ class ::Api::V1::VpnsController < ::Api::V1::BaseController
       @vpn = Vpn.new(vpn_params)
       @vpn.uuid = SecureRandom.uuid
       if @vpn.save
-        render json: { 
+        render json: {
           id: @vpn.id,
           name: @vpn.name,
           host_name: @vpn.host_name,

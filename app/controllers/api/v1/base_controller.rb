@@ -12,18 +12,18 @@ class ::Api::V1::BaseController < ActionController::Base
 
   def current_user
     access_token = AccessToken.find_token(get_token)
-    return access_token.user
+    access_token.user
   end
 
   private
 
   def get_token
     if params.key?(:access_token)
-      return params[:access_token]
+      params[:access_token]
     elsif params.key?(:token)
-      return params[:token]
+      params[:token]
     elsif request.headers.key?(:Authorization)
-      return request.headers[:Authorization].split(' ').last
+      request.headers[:Authorization].split(' ').last
     end
   end
 
