@@ -3,22 +3,22 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
     if current_user.admin?
       @group = Group.new(group_params)
       if @group.save
-        render json: { 
+        render json: {
           id: @group.id,
           name: @group.name,
         }, status: :ok
       else
-        is_taken = @group.errors.details[:name].select{|x| x[:error] == :taken}
+        is_taken = @group.errors.details[:name].select { |x| x[:error] == :taken }
 
         if !is_taken.blank?
           existing_group = Group.find_by(name: @group.name)
-          render json: { 
+          render json: {
             status: 'group already exist',
             id: existing_group.id,
             name: existing_group.name,
           }, status: :unprocessable_entity
         else
-          render json: { 
+          render json: {
             status: 'error',
           }, status: :unprocessable_entity
         end

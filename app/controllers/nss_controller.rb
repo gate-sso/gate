@@ -1,9 +1,9 @@
 class NssController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [ :add_host, :add_user_to_group ]
+  skip_before_action :verify_authenticity_token, only: %i[add_host add_user_to_group]
   before_action :authenticate_access_token!, only: %i[add_host]
 
   def host
-    token =  AccessToken.valid_token params[:token]
+    token = AccessToken.valid_token params[:token]
     @response = nil
     if token
       @response = HostMachine.get_group_response(params[:name]) if params[:name].present?
@@ -13,12 +13,11 @@ class NssController < ApplicationController
 
     host_machine = HostMachine.find_by(access_key: params[:token])
     sysadmins = host_machine.sysadmins if host_machine.present?
-    if sysadmins.present? && sysadmins.count > 0
+    if sysadmins.present? && sysadmins.count.positive?
       @response = Group.get_sysadmins_and_groups sysadmins, host_machine.default_admins
     end
     render json: @response
-    return
-
+    nil
   end
 
   def add_host
@@ -44,7 +43,7 @@ class NssController < ApplicationController
     if @response.blank?
       host_machine = HostMachine.find_by(access_key: params[:token])
       sysadmins = host_machine.sysadmins if host_machine.present?
-      if sysadmins.present? && sysadmins.count > 0
+      if sysadmins.present? && sysadmins.count.positive?
         @response = Group.get_sysadmins_and_groups sysadmins, host_machine.default_admins
         REDIS_CACHE.set("#{GROUP_RESPONSE}:#{params[:token]}", @response.to_json)
         REDIS_CACHE.expire("#{GROUP_RESPONSE}:#{params[:token]}", REDIS_KEY_EXPIRY)
@@ -54,14 +53,13 @@ class NssController < ApplicationController
     render json: @response
   end
 
-
   def passwd
     @response = REDIS_CACHE.get("#{PASSWD_RESPONSE}:#{params[:token]}")
     @response = JSON.parse(@response) if @response.present?
     if @response.blank?
       host_machine = HostMachine.find_by(access_key: params[:token])
       sysadmins = host_machine.sysadmins if host_machine.present?
-      if sysadmins.present? && sysadmins.count > 0
+      if sysadmins.present? && sysadmins.count.positive?
         @response = User.get_sysadmins sysadmins
         REDIS_CACHE.set("#{PASSWD_RESPONSE}:#{params[:token]}", @response.to_json)
         REDIS_CACHE.expire("#{PASSWD_RESPONSE}:#{params[:token]}", REDIS_KEY_EXPIRY)

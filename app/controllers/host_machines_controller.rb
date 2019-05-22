@@ -1,20 +1,18 @@
 class HostMachinesController < ApplicationController
   before_action :set_paper_trail_whodunnit
-  before_action :set_host_machine, only: [:add_group, :show, :edit, :update, :destroy, :delete_group]
+  before_action :set_host_machine, only: %i[add_group show edit update destroy delete_group]
   prepend_before_action :setup_user if Rails.env.development?
   before_action :authenticate_user!
   def index
-    @title = "Host"
+    @title = 'Host'
     @host_machines = HostMachine.all
     @host_machines = []
     @host_machine_search = params[:host_machine_search]
     if @host_machine_search.present?
       if current_user.admin?
-        @host_machines = HostMachine.where("name LIKE ?", "%#{@host_machine_search}%" )
+        @host_machines = HostMachine.where('name LIKE ?', "%#{@host_machine_search}%")
       end
     end
-
-
   end
 
   def create
@@ -44,7 +42,7 @@ class HostMachinesController < ApplicationController
     @machine = @host_machine
     if current_user.admin?
       group = Group.find(params[:group_id])
-      @machine.groups << group if @machine.present? and @machine.groups.find_by_id(group.id).blank?
+      @machine.groups << group if @machine.present? && @machine.groups.find_by_id(group.id).blank?
       @machine.save!
     end
 
@@ -64,14 +62,15 @@ class HostMachinesController < ApplicationController
 
   def search
     @host_machines = HostMachine.
-      where("name LIKE ?", "%#{params[:q]}%").
-      order("name ASC").
+      where('name LIKE ?', "%#{params[:q]}%").
+      order('name ASC').
       limit(20)
-    data = @host_machines.map{ |host_machine| {id: host_machine.id, name: host_machine.name} }
+    data = @host_machines.map { |host_machine| { id: host_machine.id, name: host_machine.name } }
     render json: data
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_host_machine
     @host_machine = HostMachine.find(params[:id])
@@ -81,5 +80,4 @@ class HostMachinesController < ApplicationController
   def host_machine_params
     params.require(:host_machine).permit(:name)
   end
-
 end

@@ -11,7 +11,6 @@ class HostController < ApplicationController
 
     end
     redirect_to user_path
-
   end
 
   def delete_host

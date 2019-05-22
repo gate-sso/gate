@@ -1,5 +1,5 @@
 class PingsController < ApplicationController
   def show
-    render :plain => "pong"
+    render plain: 'pong'
   end
 end

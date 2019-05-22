@@ -1,5 +1,5 @@
 class ::Api::V1::UsersController < ::Api::V1::BaseController
-  before_action :set_user, only: [:show, :update]
+  before_action :set_user, only: %i[show update]
 
   def create
     user = user_params
@@ -16,8 +16,8 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
         email uid name active admin home_dir shell public_key user_login_id
         product_name
       )
-      data = @user.attributes.select { |k,v| user_attrs.include?(k) }
-      data["groups"] = @user.groups.map { |g| { "id" => g.gid, "name" => g.name } }
+      data = @user.attributes.select { |k, _v| user_attrs.include?(k) }
+      data['groups'] = @user.groups.map { |g| { 'id' => g.gid, 'name' => g.name } }
       render json: data
     else
       head :not_found
@@ -31,13 +31,13 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   private
 
   def set_user
-    @user = if params.key?("email")
-      User.find_by_email(params["email"])
-    elsif params.key?("uid")
-      User.find_by_uid(params["uid"])
-    elsif params.key?("username")
-      User.find_by_user_login_id(params["username"])
-    end
+    @user = if params.key?('email')
+              User.find_by_email(params['email'])
+            elsif params.key?('uid')
+              User.find_by_uid(params['uid'])
+            elsif params.key?('username')
+              User.find_by_user_login_id(params['username'])
+            end
   end
 
   def user_params
