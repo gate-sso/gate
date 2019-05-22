@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
   before_action :set_paper_trail_whodunnit
 
-  before_action :authenticate_user!, :except => [:user_id, :verify, :authenticate, :authenticate_cas, :authenticate_ms_chap, :authenticate_pam, :public_key]
+  before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key]
 
   def index
     @user_search = params[:user_search]
     @users = []
-    @users = User.where("name like ?", "%#{@user_search}%").take(20) if @user_search.present?
+    @users = User.where('name like ?', "%#{@user_search}%").take(20) if @user_search.present?
   end
 
   def show
@@ -21,15 +21,15 @@ class UsersController < ApplicationController
 
     @vpns = Vpn.user_vpns @user
 
-    if current_user.admin? || current_user == @user
-      @groups = Group.all
-      render_404 if @user.blank?
+    return unless current_user.admin? || current_user == @user
 
-      if @user.present? && ( current_user.admin? || current_user.id == @user.id)
-        respond_to do |format|
-          format.html { render :show, flash: {token: access_token.try(:token)} }
-        end
-      end
+    @groups = Group.all
+    render_404 if @user.blank?
+
+    return unless @user.present? && (current_user.admin? || current_user.id == @user.id)
+
+    respond_to do |format|
+      format.html { render :show, flash: { token: access_token.try(:token) } }
     end
   end
 
@@ -46,11 +46,11 @@ class UsersController < ApplicationController
 
   def create
     user = User.add_user(
-        user_params[:first_name],
+      user_params[:first_name],
         user_params[:last_name],
         user_params[:user_role],
         params[:user_domain]
-    )
+      )
     if user.errors.present?
       flash[:errors] = user.errors.full_messages
       redirect_to(new_user_path)
@@ -64,9 +64,9 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     begin
       @user.update(product_name: product_name)
-      response_message = "product name updated successfully!!"
-    rescue ActionController::ParameterMissing => e
-      response_message = "Params are missing"
+      response_message = 'product name updated successfully!!'
+    rescue ActionController::ParameterMissing
+      response_message = 'Params are missing'
     end
 
     form_response(response_message)
@@ -74,18 +74,20 @@ class UsersController < ApplicationController
 
   def search
     @users = User.
-      where("name LIKE :q OR email LIKE :q", q: "%#{params[:q]}%").
-      order("name ASC").
+      where('name LIKE :q OR email LIKE :q', q: "%#{params[:q]}%").
+      order('name ASC').
       limit(20)
     unless params[:include_inactive] == 'true'
       @users = @users.where(active: true)
     end
-    data = @users.map{ |user| {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      name_email: "#{user.name} - #{user.email}"
-    }}
+    data = @users.map do |user|
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        name_email: "#{user.name} - #{user.email}",
+      }
+    end
     render json: data
   end
 
@@ -93,12 +95,12 @@ class UsersController < ApplicationController
   def regenerate_token
     @user = User.find(params[:id])
 
-    if (current_user.admin? or (current_user.id == @user.id))
+    if current_user.admin? || (current_user.id == @user.id)
       @access_token = @user.access_token
       @access_token.token = ROTP::Base32.random_base32
       respond_to do |format|
         if @access_token.save
-          format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: {token: @access_token.token} }
+          format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: { token: @access_token.token } }
           format.json { render :show, status: :ok, location: @user }
         else
           format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
@@ -114,9 +116,10 @@ class UsersController < ApplicationController
   end
 
   private
+
   def user_params
     params.require(:user).permit(
-        :first_name, :last_name, :user_role
+      :first_name, :last_name, :user_role
     )
   end
 
