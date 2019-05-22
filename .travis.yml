@@ -74,6 +74,7 @@ jobs:
           repo: gate-sso/gate
           branch: master
     - stage: build and publish docker
+      install: skip
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t gatesso/gate:$TRAVIS_COMMIT -t gatesso/gate:latest .
