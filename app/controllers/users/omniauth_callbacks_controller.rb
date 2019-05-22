@@ -9,6 +9,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     unless User.valid_domain? domain
       return render plain: 'Your domain is unauthorized', status: :unauthorized
     end
+
     @user = User.create_user(data.info['name'], data.info['email'])
 
     if @user.persisted?
