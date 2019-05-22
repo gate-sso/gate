@@ -44,7 +44,8 @@ env:
 
 stages:
   - build, test and releases
-  - build and publish docker
+  - name: build and publish docker
+    if: branch = master AND tag IS present
 
 jobs:
   include:
@@ -77,6 +78,6 @@ jobs:
       install: skip
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker build -t gatesso/gate:$TRAVIS_COMMIT -t gatesso/gate:latest .
+        - docker build -t gatesso/gate:$TRAVIS_TAG -t gatesso/gate:latest .
         - docker images
         - docker push gatesso/gate
