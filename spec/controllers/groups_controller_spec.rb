@@ -78,6 +78,16 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe 'POST #add_group' do
+    context 'unauthenticated' do
+      it 'should return 302' do
+        group = create(:group)
+
+        post :add_group, params: { id: user.id, group_id: group.id }
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
     context 'authenticated as admin' do
       it 'should add user to group' do
         sign_in admin
