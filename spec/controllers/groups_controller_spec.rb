@@ -41,6 +41,18 @@ RSpec.describe GroupsController, type: :controller do
     end
   end
 
+  describe 'POST #add_user' do
+    context 'unauthenticated' do
+      it 'should return 302' do
+        group = create(:group)
+
+        post :add_user, params: { id: group.id }
+
+        expect(response).to have_http_status(302)
+      end
+    end
+  end
+
   describe 'Search for Groups' do
     it 'should return groups according to supplied search string' do
       sign_in user
