@@ -72,7 +72,6 @@ class GroupsController < ApplicationController
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
       @group.add_user(user.id) if user.present?
-      @group.burst_host_cache
     end
 
     respond_to do |format|
