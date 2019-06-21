@@ -77,5 +77,13 @@ RSpec.describe Group, type: :model do
       group.remove_user(user.id)
       expect(group.users.map(&:id).include?(user.id)).to eq(false)
     end
+
+    it 'should burst host cache' do
+      group.add_user(user.id)
+
+      expect(group).to receive(:burst_host_cache)
+
+      group.remove_user(user.id)
+    end
   end
 end
