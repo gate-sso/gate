@@ -23,31 +23,31 @@ class Group < ApplicationRecord
   GID_CONSTANT = 9000
 
   def burst_host_cache
-    if host_machines.count > 0
+    if host_machines.count.positive?
       host_machines.each do |host|
         if host.access_key.present?
-          REDIS_CACHE.del ("#{GROUP_RESPONSE}:#{host.access_key}")
-          REDIS_CACHE.del ("#{PASSWD_RESPONSE}:#{host.access_key}")
+          REDIS_CACHE.del "#{GROUP_RESPONSE}:#{host.access_key}"
+          REDIS_CACHE.del "#{PASSWD_RESPONSE}:#{host.access_key}"
           Rails.logger.info "hello #{host.name} #{host.access_key}"
         end
       end
     end
   end
 
-  def add_admin user
+  def add_admin(user)
     GroupAdmin.find_or_create_by(group_id: id, user: user)
   end
 
   def set_lower_case_name
-    self.name = self.name.downcase
+    self.name = name.downcase
   end
 
   def add_gid
-    self.gid = self.id + GID_CONSTANT
-    self.save!
+    self.gid = id + GID_CONSTANT
+    save!
   end
 
-  def self.get_name_response name
+  def self.get_name_response(name)
     response = REDIS_CACHE.get(GROUP_NSS_RESPONSE + name)
     if response.blank?
       group = Group.where(name: name).first
@@ -56,7 +56,7 @@ class Group < ApplicationRecord
       REDIS_CACHE.set(GROUP_NSS_RESPONSE + name, response)
       REDIS_CACHE.expire(GROUP_NSS_RESPONSE + name, REDIS_KEY_EXPIRY)
     end
-    return JSON.parse(response, symbolize_names: true)
+    JSON.parse(response, symbolize_names: true)
   end
 
   def self.get_all_response
@@ -70,20 +70,21 @@ class Group < ApplicationRecord
       REDIS_CACHE.set(GROUP_ALL_RESPONSE, response)
       REDIS_CACHE.expire(GROUP_ALL_RESPONSE, REDIS_KEY_EXPIRY)
     end
-    return response
+    response
   end
 
-  def self.get_gid_response gid
+  def self.get_gid_response(gid)
     group = Group.where(gid: gid).first
     return [] if group.blank?
+
     group.group_response
   end
 
-  def admin? user
+  def admin?(user)
     GroupAdmin.where(group_id: self, user_id: user).first.present?
   end
 
-  def member? user
+  def member?(user)
     users.exists? user.id
   end
 
@@ -97,35 +98,35 @@ class Group < ApplicationRecord
   end
 
   def group_response
-    return Group.group_nss_response name
+    Group.group_nss_response name
   end
 
-  def self.group_nss_response name
+  def self.group_nss_response(name)
     group_response = REDIS_CACHE.get("#{GROUP_NSS_RESPONSE}:#{name}")
     group_response = JSON.parse(group_response) if group_response.present?
 
     if group_response.blank?
       group = Group.find_by(name: name)
       if group.present?
-        members = group.users.collect { |u| u.user_login_id }
+        members = group.users.map(&:user_login_id)
         response_hash = Group.generate_group_response(group.name, group.gid, members)
         REDIS_CACHE.set("#{GROUP_NSS_RESPONSE}:#{group.name}", response_hash.to_json)
         REDIS_CACHE.expire("#{GROUP_NSS_RESPONSE}:#{group.name}", REDIS_KEY_EXPIRY)
         group_response = response_hash
       end
     end
-    return group_response
+    group_response
   end
 
-  def self.get_sysadmins_and_groups sysadmins, default_admins = true
+  def self.get_sysadmins_and_groups(sysadmins, default_admins = true)
     sysadmins_login_ids = User.
       select(:user_login_id).
-      where("id IN (?)", sysadmins).
-      collect(&:user_login_id)
+      where('id IN (?)', sysadmins).
+      map(&:user_login_id)
 
     # TODO: extract to query object
     groups = Group.
-      select(%Q(
+      select(%(
         id,
         name,
         gid,
@@ -137,11 +138,11 @@ class Group < ApplicationRecord
           WHERE group_associations.group_id = groups.id
         ) AS members
       )).
-      where("name IN (?)", sysadmins_login_ids).
-      map{ |group|
+      where('name IN (?)', sysadmins_login_ids).
+      map do |group|
         members = group.members.split(',')
         Group.generate_group_response(group.name, group.gid, members)
-      }
+      end
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)
     groups.to_json
   end
@@ -151,18 +152,18 @@ class Group < ApplicationRecord
     user_ids = JSON.parse(user_ids) if user_ids.present?
 
     if user_ids.blank?
-      user_ids = users.collect {|u| u.user_login_id}
+      user_ids = users.map(&:user_login_id)
       REDIS_CACHE.set("#{GROUP_UID_RESPONSE}:#{name}", user_ids.to_json)
       REDIS_CACHE.expire("#{GROUP_UID_RESPONSE}:#{name}", REDIS_KEY_EXPIRY)
     end
-    return user_ids
+    user_ids
   end
 
-  def self.get_default_sysadmin_group_for_host sysadmins_login_ids, default_admins = true
+  def self.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins = true)
     sysadmins = sysadmins_login_ids
 
     if default_admins
-      group = Group.find_by(name: "sysadmins")
+      group = Group.find_by(name: 'sysadmins')
 
       if group.present?
         sysadmins = sysadmins + group.get_user_ids
@@ -170,8 +171,8 @@ class Group < ApplicationRecord
     end
     group_id = group.blank? ? 8999 : group.id
 
-    sysadmin_group = Group.generate_group_response("sysadmins", group_id, sysadmins.uniq)
-    return sysadmin_group
+    sysadmin_group = Group.generate_group_response('sysadmins', group_id, sysadmins.uniq)
+    sysadmin_group
   end
 
   def add_user(user_id)
