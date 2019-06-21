@@ -61,8 +61,7 @@ class GroupsController < ApplicationController
       @user = User.find(params[:user_id])
 
       if @user.email.split('@').first != @group.name
-        @user.groups.delete(@group)
-        @group.burst_host_cache
+        @group.remove_user @user
       end
 
     end
