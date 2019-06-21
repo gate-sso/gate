@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
   let(:product_name) { 'product-name'  }
-  let(:admin) { create(:admin_user) }
-  let(:user) { create(:user, name: 'foobar', user_login_id: 'foobar', email: 'foobar@foobar.com') }
+  let!(:admin) { create(:admin_user) }
+  let(:user) do
+    create(:user, name: 'foobar', user_login_id: 'foobar', email: 'foobar@foobar.com', admin: false)
+  end
 
   describe 'GET #index' do
     context 'unauthenticated' do
@@ -37,6 +39,21 @@ RSpec.describe GroupsController, type: :controller do
 
           expect(assigns(:groups)).to contain_exactly(group_foo, group_foobar)
         end
+      end
+    end
+
+    context 'authenticated as group admin' do
+      it 'should return its groups only' do
+        sign_in user
+        group_foo = create(:group, name: 'GroupFoo')
+        group_foobar = create(:group, name: 'GroupFoobar')
+        group_foo.add_admin user
+        group_foobar.add_admin user
+        create(:group, name: 'GroupBar')
+
+        get :index
+
+        expect(assigns(:groups)).to contain_exactly(group_foo, group_foobar)
       end
     end
   end
