@@ -178,6 +178,7 @@ class Group < ApplicationRecord
   def add_user(user_id)
     unless group_associations.map(&:user_id).include?(user_id)
       group_associations.create(user_id: user_id)
+      burst_host_cache
     end
   end
 

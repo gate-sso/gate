@@ -60,6 +60,12 @@ RSpec.describe Group, type: :model do
       group.add_user(user.id)
       expect(group.users.where(id: user.id).size).to eq(1)
     end
+
+    it 'should burst host cache' do
+      expect(group).to receive(:burst_host_cache)
+
+      group.add_user(user.id)
+    end
   end
 
   describe 'remove_user' do
