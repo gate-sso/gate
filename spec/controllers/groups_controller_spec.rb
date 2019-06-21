@@ -97,6 +97,15 @@ RSpec.describe GroupsController, type: :controller do
 
         expect(group.users).to include(user)
       end
+
+      it 'should redirect to user path once user added to group' do
+        sign_in admin
+        group = create(:group)
+
+        post :add_group, params: { id: user.id, group_id: group.id }
+
+        expect(response).to redirect_to(user_path)
+      end
     end
   end
 
