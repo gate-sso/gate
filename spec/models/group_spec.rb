@@ -6,12 +6,12 @@ RSpec.describe Group, type: :model do
     it { should validate_uniqueness_of(:name).ignoring_case_sensitivity }
   end
 
-  it "should save gid after create" do
+  it 'should save gid after create' do
     group = create(:group)
-    expect(group.gid.to_i).to eq(group.id + GID_CONSTANT);
+    expect(group.gid.to_i).to eq(group.id + GID_CONSTANT)
   end
 
-  it "should provide name response" do
+  it 'should provide name response' do
     user = create(:user)
     group_response = Group.get_name_response user.groups.first.name
     expect(group_response.count).to eq(4)
@@ -19,15 +19,14 @@ RSpec.describe Group, type: :model do
     expect(group_response[:gr_mem][0]).to eq(user.user_login_id)
   end
 
-  it "should provide gid response" do
+  it 'should provide gid response' do
     group = create(:group)
-    user = create(:user)
     group_response = Group.get_gid_response group.gid
     expect(group_response.count).to eq(4)
     expect(group_response[:gr_name]).to eq(group.name)
   end
 
-  it "should provide correct gid response even if we add a machine to grouo" do
+  it 'should provide correct gid response even if we add a machine to group' do
     group = create(:group)
     user = create(:user)
     user.groups << group
