@@ -62,6 +62,19 @@ RSpec.describe GroupsController, type: :controller do
         expect(group.users).to include(user)
       end
     end
+
+    context 'authenticated as group admin' do
+      it 'should add new user to group' do
+        sign_in user
+        group = create(:group)
+        group.add_admin(user)
+        new_user = create(:user)
+
+        post :add_user, params: { id: group.id, user_id: new_user.id }
+
+        expect(group.users).to include(new_user)
+      end
+    end
   end
 
   describe 'Search for Groups' do
