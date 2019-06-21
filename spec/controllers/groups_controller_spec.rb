@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
   let(:product_name) { 'product-name'  }
+  let(:admin) { create(:admin_user) }
   let(:user) { create(:user, name: 'foobar', user_login_id: 'foobar', email: 'foobar@foobar.com') }
 
   describe 'GET #index' do
@@ -10,6 +11,19 @@ RSpec.describe GroupsController, type: :controller do
         get :index
 
         expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated as admin' do
+      context 'without search param' do
+        it 'should not return any group' do
+          sign_in admin
+          create_list(:group, 3)
+
+          get :index
+
+          expect(assigns(:groups).size).to eq(0)
+        end
       end
     end
   end
