@@ -25,6 +25,19 @@ RSpec.describe GroupsController, type: :controller do
           expect(assigns(:groups).size).to eq(0)
         end
       end
+
+      context 'with search param' do
+        it 'should return correct groups' do
+          sign_in admin
+          group_foo = create(:group, name: 'GroupFoo')
+          group_foobar = create(:group, name: 'GroupFoobar')
+          create(:group, name: 'GroupBar')
+
+          get :index, params: { group_search: 'Foo' }
+
+          expect(assigns(:groups)).to contain_exactly(group_foo, group_foobar)
+        end
+      end
     end
   end
 
