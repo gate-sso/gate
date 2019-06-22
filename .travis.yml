@@ -42,6 +42,10 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - DOCKER_COMPOSE_VERSION=1.11.2
 
+before_install:
+  - gem update --system
+  - gem install bundler
+
 stages:
   - build, test and releases
   - name: build and publish docker
