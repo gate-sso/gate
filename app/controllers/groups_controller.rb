@@ -152,8 +152,9 @@ class GroupsController < ApplicationController
   def add_group
     @user = User.find(params[:id])
     if current_user.admin?
+      expiration_date = expiration_date_from_param
       @group = Group.find(params[:group_id])
-      @group.add_user(@user.id)
+      @group.add_user_with_expiration(@user.id, expiration_date)
     end
     redirect_to user_path
   end

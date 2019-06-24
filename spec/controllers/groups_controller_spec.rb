@@ -146,6 +146,17 @@ RSpec.describe GroupsController, type: :controller do
 
         expect(response).to redirect_to(user_path)
       end
+
+      it 'should add user with expiration date' do
+        sign_in admin
+        group = create(:group)
+        date = '2019-06-24'
+
+        post :add_group, params: { id: user.id, group_id: group.id, expiration_date: date }
+
+        group_association = group.group_associations.where(user_id: user.id).take
+        expect(group_association.expiration_date).to eq(Date.parse(date))
+      end
     end
   end
 
