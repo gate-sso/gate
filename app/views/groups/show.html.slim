@@ -8,7 +8,7 @@
       = "Group ID: #{@group.gid}"
   br
   - if current_user.admin? or @group.admin?(current_user)
-    = form_tag add_admin_to_group_path, method: :post do
+    = form_tag add_admin_to_group_path(@group.id), method: :post do
       .row
         .col
           | Group Administrator
@@ -61,7 +61,7 @@
       = "*This group does not have any group members" if @group.users.count == 0
       br
       - if current_user.admin or @group.admin?(current_user)
-        = form_tag  add_user_to_group_path, method: :post do
+        = form_tag  add_user_to_group_path(@group.id), method: :post do
           .row
             .col
               | Assign members
@@ -105,7 +105,7 @@
       = "*This group does not have any VPNs associated with it" if @group.vpns.count == 0
       br
       - if current_user.admin? 
-        = form_tag  add_vpn_to_group_path, method: :post do
+        = form_tag  add_vpn_to_group_path(@group.id), method: :post do
           .row
             .col 
               | Assign VPNs
@@ -136,7 +136,7 @@
       br
       hr
       - if current_user.admin?
-        = form_tag  add_machine_to_group_path, method: :post do
+        = form_tag  add_machine_to_group_path(@group.id), method: :post do
           .row
             .col 
               | Assign Hosts
