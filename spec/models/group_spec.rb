@@ -80,6 +80,17 @@ RSpec.describe Group, type: :model do
       group_association = group.group_associations.where(user_id: user.id).take
       expect(group_association.expiration_date).to eq(expiration_date)
     end
+
+    it 'replace old expiration date if user already added to the group' do
+      old_expiration_date = Date.parse('2019-06-20')
+      new_expiration_date = Date.parse('2019-10-20')
+
+      group.add_user_with_expiration(user.id, old_expiration_date)
+      group.add_user_with_expiration(user.id, new_expiration_date)
+
+      group_association = group.group_associations.where(user_id: user.id).take
+      expect(group_association.expiration_date).to eq(new_expiration_date)
+    end
   end
 
   describe 'remove_user' do
