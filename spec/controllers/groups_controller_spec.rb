@@ -101,6 +101,19 @@ RSpec.describe GroupsController, type: :controller do
           expect(flash[:notice]).to eq('Expiration date is wrong')
         end
       end
+
+      context 'empty expiration date' do
+        it 'should add user to group without expiration' do
+          sign_in admin
+          group = create(:group)
+          date = ''
+
+          post :add_user, params: { id: group.id, user_id: user.id, expiration_date: date }
+
+          group_association = group.group_associations.where(user_id: user.id).take
+          expect(group_association.expiration_date).to eq(nil)
+        end
+      end
     end
 
     context 'authenticated as group admin' do

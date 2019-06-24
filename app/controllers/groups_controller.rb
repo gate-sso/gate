@@ -212,7 +212,7 @@ class GroupsController < ApplicationController
 
   def expiration_date_from_param
     expiration_date = params[:expiration_date]
-    return nil if expiration_date.nil?
+    return nil if expiration_date.nil? || expiration_date.empty?
 
     Date.parse(expiration_date, '%Y-%m-%d')
   end
