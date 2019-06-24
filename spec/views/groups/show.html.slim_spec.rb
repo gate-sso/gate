@@ -11,6 +11,7 @@ RSpec.describe 'groups/show', type: :view do
   
       assert_select 'form[action=?][method=?]', add_user_to_group_path(group.id), 'post' do
         assert_select 'input#add_user_user_id[name=user_id]'
+        assert_select 'input#expiration_date[name=expiration_date][type=date]'
       end
     end
   end
