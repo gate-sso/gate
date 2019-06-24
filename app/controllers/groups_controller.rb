@@ -71,7 +71,8 @@ class GroupsController < ApplicationController
   def add_user
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
-      @group.add_user(user.id) if user.present?
+      expiration_date = params[:expiration_date]
+      @group.add_user_with_expiration(user.id, expiration_date) if user.present?
     end
 
     respond_to do |format|
