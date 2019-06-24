@@ -183,6 +183,7 @@ class Group < ApplicationRecord
   end
 
   def add_user_with_expiration(user_id, expiration_date)
+    remove_user user_id
     group_associations.create(user_id: user_id, expiration_date: expiration_date)
   end
 
