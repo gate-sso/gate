@@ -69,6 +69,8 @@
             .col
               = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
             .col
+              = date_field_tag "expiration_date", "", id: "expiration_date", class: "form-control"
+            .col
               = submit_tag "Add User", class: "form-control btn-md btn-primary", disabled: true
           .row
             .col
