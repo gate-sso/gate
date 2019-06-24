@@ -71,7 +71,11 @@ class GroupsController < ApplicationController
   def add_user
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
-      expiration_date = params[:expiration_date]
+      begin
+        expiration_date = expiration_date_from_param
+      rescue ArgumentError
+        return form_response 'Expiration date is wrong'
+      end
       @group.add_user_with_expiration(user.id, expiration_date) if user.present?
     end
 
@@ -199,5 +203,18 @@ class GroupsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def group_params
     params.require(:group).permit(:name)
+  end
+
+  def expiration_date_from_param
+    expiration_date = params[:expiration_date]
+    return nil if expiration_date.nil?
+
+    Date.parse(expiration_date, '%Y-%m-%d')
+  end
+
+  def form_response(message)
+    respond_to do |format|
+      format.html { redirect_to group_path(@group), notice: message }
+    end
   end
 end
