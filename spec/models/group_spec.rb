@@ -68,6 +68,20 @@ RSpec.describe Group, type: :model do
     end
   end
 
+  describe 'add_user_with_expiration' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    it 'add user to the group with expiration date' do
+      expiration_date = Date.parse('2019-06-20')
+
+      group.add_user_with_expiration(user.id, expiration_date)
+
+      group_association = group.group_associations.where(user_id: user.id).take
+      expect(group_association.expiration_date).to eq(expiration_date)
+    end
+  end
+
   describe 'remove_user' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }

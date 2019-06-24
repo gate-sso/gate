@@ -182,6 +182,10 @@ class Group < ApplicationRecord
     end
   end
 
+  def add_user_with_expiration(user_id, expiration_date)
+    group_associations.create(user_id: user_id, expiration_date: expiration_date)
+  end
+
   def remove_user(user_id)
     group_associations.where(user_id: user_id).delete_all
     burst_host_cache
