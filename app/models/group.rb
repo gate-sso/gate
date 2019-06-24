@@ -176,10 +176,7 @@ class Group < ApplicationRecord
   end
 
   def add_user(user_id)
-    unless group_associations.map(&:user_id).include?(user_id)
-      group_associations.create(user_id: user_id)
-      burst_host_cache
-    end
+    add_user_with_expiration(user_id, nil)
   end
 
   def add_user_with_expiration(user_id, expiration_date)
