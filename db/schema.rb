@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181208184236) do
+ActiveRecord::Schema.define(version: 20190624024930) do
 
   create_table "access_tokens", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "hashed_token"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20181208184236) do
     t.integer "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "expiration_date"
     t.index ["group_id", "user_id"], name: "index_group_associations_on_group_id_and_user_id"
     t.index ["group_id"], name: "index_group_associations_on_group_id"
     t.index ["user_id"], name: "index_group_associations_on_user_id"
