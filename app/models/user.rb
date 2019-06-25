@@ -6,7 +6,10 @@ class User < ApplicationRecord
   has_many :hosts
   has_many :group_associations
   has_many :groups, -> do
-    where('group_associations.expiration_date IS NULL')
+    where(
+      'group_associations.expiration_date IS NULL OR group_associations.expiration_date > ?',
+      Date.today
+    )
   end, through: :group_associations
   has_many :group_admin, dependent: :destroy
   has_one :access_token
