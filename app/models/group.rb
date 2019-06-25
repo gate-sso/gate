@@ -4,7 +4,10 @@ class Group < ApplicationRecord
   has_many :group_admins, dependent: :destroy
   has_many :group_associations
   has_many :users, -> do
-    where('group_associations.expiration_date IS NULL')
+    where(
+      'group_associations.expiration_date IS NULL OR group_associations.expiration_date > ?',
+      Date.today
+    )
   end, through: :group_associations
 
   has_many :vpn_group_associations
