@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :group_associations
   has_many :groups, -> do
     where(
-      'group_associations.expiration_date IS NULL OR group_associations.expiration_date > ?',
+      'group_associations.expiration_date IS NULL OR group_associations.expiration_date >= ?',
       Date.today
     )
   end, through: :group_associations
