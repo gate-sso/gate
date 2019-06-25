@@ -568,6 +568,14 @@ RSpec.describe User, type: :model do
 
       expect(user.groups).to include(group_tomorrow)
     end
+
+    it 'should include group which membership expired today' do
+      today = Date.today
+      group_today = create(:group)
+      group_today.add_user_with_expiration(user.id, today)
+
+      expect(user.groups).to include(group_today)
+    end
   end
 
   describe '.add_user' do
