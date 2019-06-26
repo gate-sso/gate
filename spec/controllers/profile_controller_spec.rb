@@ -12,6 +12,15 @@ describe ProfileController, type: :controller do
     end
 
     context 'authenticated as admin' do
+      it 'should update user' do
+        new_user = create(:user, active: true, admin: true)
+        sign_in admin
+
+        post :update, params: { id: new_user.id, user: { admin: false, active: false } }
+
+        expect(User.find(new_user.id)).to have_attributes(active: false, admin: false)
+      end
+
       it 'should redirect to user_path after update' do
         sign_in admin
 
