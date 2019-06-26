@@ -18,6 +18,8 @@ class User < ApplicationRecord
 
   validate :remove_default_admin, on: :update
 
+  before_save :revoke_admin_when_inactive, on: :update
+
   HOME_DIR = '/home'.freeze
   USER_SHELL = '/bin/bash'.freeze
 
@@ -407,5 +409,9 @@ class User < ApplicationRecord
     domain_list = ENV['GATE_HOSTED_DOMAINS'].split(',')
     domain = email.split('@').last
     errors.add(:email, "Invalid Domain for Email Address") unless domain_list.include?(domain)
+  end
+
+  def revoke_admin_when_inactive
+    self.admin = false unless active
   end
 end
