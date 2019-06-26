@@ -1,6 +1,6 @@
 describe ProfileController, type: :controller do
   let!(:admin) { create(:admin_user) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, admin: false) }
 
   describe '#update' do
     context 'unauthenticated' do
@@ -27,6 +27,17 @@ describe ProfileController, type: :controller do
         post :update, params: { id: user.id, user: { admin: false, active: false } }
 
         expect(response).to redirect_to(user_path)
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should not update user' do
+        new_user = create(:user, active: true, admin: true)
+        sign_in user
+
+        post :update, params: { id: new_user.id, user: { admin: false, active: false } }
+
+        expect(User.find(new_user.id)).to have_attributes(active: true, admin: true)
       end
     end
   end
