@@ -17,8 +17,9 @@ describe ProfileController, type: :controller do
         sign_in admin
 
         post :update, params: { id: new_user.id, user: { admin: false, active: false } }
+        new_user.reload
 
-        expect(User.find(new_user.id)).to have_attributes(active: false, admin: false)
+        expect(new_user).to have_attributes(active: false, admin: false)
       end
 
       it 'should revoke admin when deactivate user' do
@@ -26,8 +27,9 @@ describe ProfileController, type: :controller do
         sign_in admin
 
         post :update, params: { id: new_user.id, user: { active: false } }
+        new_user.reload
 
-        expect(User.find(new_user.id)).to have_attributes(active: false, admin: false)
+        expect(new_user).to have_attributes(active: false, admin: false)
       end
 
       it 'should redirect to user_path after update' do
@@ -45,8 +47,9 @@ describe ProfileController, type: :controller do
         sign_in user
 
         post :update, params: { id: new_user.id, user: { admin: false, active: false } }
+        new_user.reload
 
-        expect(User.find(new_user.id)).to have_attributes(active: true, admin: true)
+        expect(new_user).to have_attributes(active: true, admin: true)
       end
     end
   end
