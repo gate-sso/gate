@@ -61,8 +61,7 @@ class GroupsController < ApplicationController
       @user = User.find(params[:user_id])
 
       if @user.email.split('@').first != @group.name
-        @user.groups.delete(@group)
-        @group.burst_host_cache
+        @group.remove_user @user
       end
 
     end
@@ -72,9 +71,7 @@ class GroupsController < ApplicationController
   def add_user
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
-      user.groups << @group if user.present? && user.groups.find_by_id(@group.id).blank?
-      user.save!
-      @group.burst_host_cache
+      @group.add_user(user.id) if user.present?
     end
 
     respond_to do |format|
@@ -150,11 +147,8 @@ class GroupsController < ApplicationController
   def add_group
     @user = User.find(params[:id])
     if current_user.admin?
-
       @group = Group.find(params[:group_id])
-      @user.groups << @group if @user.groups.find_by_id(params[:group_id]).blank?
-      @user.save!
-
+      @group.add_user(@user.id)
     end
     redirect_to user_path
   end
