@@ -243,6 +243,20 @@ RSpec.describe User, type: :model do
       expect(user.valid?).to eq(false)
     end
   end
+
+  describe '#update' do
+    context 'deactivate admin user' do
+      it 'should revoke admin status' do
+        create(:admin_user)
+        admin = create(:admin_user)
+
+        admin.update(active: false)
+        admin.reload
+
+        expect(admin.admin?).to be false
+      end
+    end
+  end
 end
 
 UID_CONSTANT = 5000
