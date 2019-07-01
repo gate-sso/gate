@@ -5,12 +5,7 @@ class User < ApplicationRecord
   devise :timeoutable, :omniauthable, omniauth_providers: [:google_oauth2]
   has_many :hosts
   has_many :group_associations
-  has_many :groups, -> do
-    where(
-      'group_associations.expiration_date IS NULL OR group_associations.expiration_date >= ?',
-      Date.today
-    )
-  end, through: :group_associations
+  has_many :groups, through: :group_associations
   has_many :group_admin, dependent: :destroy
   has_one :access_token
 
