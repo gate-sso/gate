@@ -551,33 +551,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#groups' do
-    let(:user) { create(:user) }
-    it 'should not include group which membership expired yesterday' do
-      yesterday = Date.today - 1
-      group_yesterday = create(:group)
-      group_yesterday.add_user_with_expiration(user.id, yesterday)
-
-      expect(user.groups).not_to include(group_yesterday)
-    end
-
-    it 'should include group which membership expired tomorrow' do
-      tomorrow = Date.today + 1
-      group_tomorrow = create(:group)
-      group_tomorrow.add_user_with_expiration(user.id, tomorrow)
-
-      expect(user.groups).to include(group_tomorrow)
-    end
-
-    it 'should include group which membership expired today' do
-      today = Date.today
-      group_today = create(:group)
-      group_today.add_user_with_expiration(user.id, today)
-
-      expect(user.groups).to include(group_today)
-    end
-  end
-
   describe '.add_user' do
 
     it 'creates a new user' do
