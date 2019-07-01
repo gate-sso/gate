@@ -72,7 +72,7 @@ class GroupsController < ApplicationController
     if current_user.admin? || @group.admin?(current_user)
       user = User.find(params[:user_id])
       begin
-        expiration_date = expiration_date_from_param
+        expiration_date = expiration_date_param
       rescue ArgumentError
         return form_response 'Expiration date is wrong'
       end
@@ -153,7 +153,7 @@ class GroupsController < ApplicationController
     user_id = params[:id]
     if current_user.admin?
       begin
-        expiration_date = expiration_date_from_param
+        expiration_date = expiration_date_param
       rescue ArgumentError
         response_message = 'Expiration date is wrong'
       end
@@ -210,7 +210,7 @@ class GroupsController < ApplicationController
     params.require(:group).permit(:name)
   end
 
-  def expiration_date_from_param
+  def expiration_date_param
     expiration_date = params[:expiration_date]
     return nil if expiration_date.nil? || expiration_date.empty?
 
