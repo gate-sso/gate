@@ -156,11 +156,12 @@ class GroupsController < ApplicationController
         expiration_date = expiration_date_param
       rescue ArgumentError
         response_message = 'Expiration date is wrong'
+        return redirect_to user_path, notice: response_message
       end
       group = Group.find(params[:group_id])
       group.add_user_with_expiration(user_id, expiration_date)
     end
-    redirect_to user_path, notice: response_message
+    redirect_to user_path
   end
 
   def delete_group

@@ -181,6 +181,16 @@ RSpec.describe GroupsController, type: :controller do
 
           expect(flash[:notice]).to eq('Expiration date is wrong')
         end
+
+        it 'should not add user to group' do
+          sign_in admin
+          group = create(:group)
+          date = 'this is not a date'
+
+          post :add_group, params: { id: user.id, group_id: group.id, expiration_date: date }
+
+          expect(group.users).not_to include(user)
+        end
       end
     end
   end
