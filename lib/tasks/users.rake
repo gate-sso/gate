@@ -37,7 +37,7 @@ namespace :users do
 
   desc 'revoke expired group membership'
   task revoke_expired_membership: :environment do
-    GroupAssociation.where('group_associations.expiration_date < ?', Date.today).delete_all
+    GroupAssociation.revoke_expired
   end
 
   task add_level1: :environment do
