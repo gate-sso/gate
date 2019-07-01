@@ -3,7 +3,7 @@ class GroupAssociation < ApplicationRecord
   belongs_to :user
   belongs_to :group
 
-  def self.revoke_expired
-    delete_all
+  def self.revoke_expired(date = Date.today)
+    where('expiration_date < ?', date).delete_all
   end
 end
