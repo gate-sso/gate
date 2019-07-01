@@ -35,6 +35,11 @@ namespace :users do
     end
   end
 
+  desc 'revoke expired group membership'
+  task revoke_expired_membership: :environment do
+    GroupAssociation.where('group_associations.expiration_date < ?', Date.today).delete_all
+  end
+
   task add_level1: :environment do
     require 'csv'
     group = Group.where(name: 'gopay_kyc_lvl_1').first
