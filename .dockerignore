@@ -5,7 +5,6 @@
 .env
 *.swp
 config/application.yml
-public/assets/*
 dump.rdb
 coverage
 .git
