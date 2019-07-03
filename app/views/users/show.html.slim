@@ -52,13 +52,23 @@
     .card-body
       h6.card-title Groups
       hr
-      - @user.groups.each do |group|
-        - unless group.deleted?
-        .row
-          .col
-            = "#{group.name} (#{group.gid})"
-          .col.append
-            = link_to "Remove group", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
+      .table-responsive
+        table.table.table-striped
+          thead
+            tr
+              th Group Name
+              th Expiration Date
+              th Action
+          tbody
+            - @user.groups.each do |group|
+              - unless group.deleted?
+              tr
+                td
+                  = "#{group.name} (#{group.gid})"
+                td
+                  = "#{@user.expiration_date_from group.id}"
+                td
+                  = link_to "Remove group", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
       br
       - if current_user.admin?
           = form_tag  add_group_path, method: :post do
