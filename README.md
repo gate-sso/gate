@@ -68,6 +68,7 @@ If you want Gate to setup VPN for you then just install OpenVPN with easy rsa. G
 * Build docker image using `docker build -t gate .`
 * Create and update `.env` file according to `.env.example` with appropriate values
 * Run the image using `docker run -p 3000:3000 --env-file=.env -it gate`
+* If you want use docker-compose run using `docker-compose up`
 
 ## Additional Topics
 

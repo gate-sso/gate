@@ -1,0 +1,18 @@
+version: "2"
+services:
+  gate-sql:
+    image: mysql:5.7
+    volumes:
+      - ${PWD}/data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+  
+  gate:
+    image: gate
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - gate-sql
+    env_file:
+      - .env
+    command: sh ./setup.sh
