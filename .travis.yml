@@ -81,6 +81,9 @@ jobs:
     - stage: build and publish docker
       install: skip
       script:
+        - gem install bundler
+        - bundle install
+        - bundle exec rake assets:precompile RAILS_ENV=production
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t gatesso/gate:$TRAVIS_TAG -t gatesso/gate:latest .
         - docker images
