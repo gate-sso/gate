@@ -42,7 +42,8 @@
           thead
             tr
               th User Details
-              th Email address
+              th Email Address
+              th Expiration Date
               th
           tbody
             - @group.users.sort_by{ |user| user.email}.each do |user|
@@ -54,6 +55,8 @@
                     = link_to "#{user.name} (inactive)", user_path(user)
                 td
                   = "#{user.email}"
+                td
+                  = "#{user.group_associations.find{ |assoc| assoc.group_id == @group.id}.expiration_date}"
                 td
                   = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin or @group.admin?(current_user)
 
