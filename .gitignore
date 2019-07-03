@@ -25,3 +25,4 @@ config/application.yml
 public/assets/*
 dump.rdb
 coverage
+data/
