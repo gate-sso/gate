@@ -1,0 +1,54 @@
+FORMAT: 1A
+
+# API VPNS
+
+# VPNS [/api/v1/vpns]
+
+## Create VPNS [POST]
+create new vpns
+
++ Request(application/json)
+
+    + Headers
+    
+            Authorization: token
+
+    + Body
+    
+            {
+                "id": 1,
+                "name": "test-vpn",
+                "host_name": "test-vpn.example.com",
+                "ip_address" : "10.10.10.10"
+            }
+
+    + Schema
+
+            {
+                "type": "object",
+                "properties" : {
+                    "id" : {
+                        "type" : int
+                    },
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "host_name" : {
+                        "type" : "string"
+                    },
+                    "ip_address" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Body
+
+            {
+                "id": 1,
+                "name": "test-vpn",
+                "host_name": "test-vpn.example.com",
+                "ip_address": "10.10.10.10"
+            }
