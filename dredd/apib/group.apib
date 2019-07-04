@@ -24,8 +24,8 @@ create new group
                     "name" : {
                         "type" : "string"
                     },
-                    "id" : {
-                        "type" : "int"
+                    "access_token" : {
+                        "type" : "string"
                     }
                 }
             }
@@ -51,6 +51,19 @@ create new group
                 "id": 1,
                 "name": "foo"
             }
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "id" : {
+                        "type" : "int"
+                    },
+                    "name" : {
+                        "type" : "string"
+                    }
+                }
+            }
 
 + Request(application/json)
 
@@ -69,8 +82,8 @@ create new group
                     "name" : {
                         "type" : "string"
                     },
-                    "id" : {
-                        "type" : "int"
+                    "access_token" : {
+                        "type" : "string"
                     }
                 }
             }
@@ -95,6 +108,22 @@ create new group
                 "status": "group already exist",
                 "id": 1,
                 "name": "foo"
+            }
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "status" : {
+                        "type" : "string"
+                    },
+                    "id" : {
+                        "type" : "int"
+                    },
+                    "name" : {
+                        "type" : "string"
+                    }
+                }
             }
 
 + Request(application/json)
