@@ -162,3 +162,56 @@ get user data with email, uid or username
 + Response 404
 
     + Body
+
+# User [/api/v1/users/profile]
+
+## Update Users [POST]
+Update users data with email as key 
+
++ Request(application/json)
+
+    + Headers
+
+            Authorization: token
+
+    + Body
+    
+            {
+                "name" : "foo bar",
+                "email" : "bar@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"c955e57777ec0d73639dca6748560d00"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 136874b1-39fb-4704-b548-d7670773a4bf
+            x-runtime: 0.014707
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+
+            {
+                "success": true
+            }    
