@@ -215,3 +215,45 @@ Update users data with email as key
             {
                 "success": true
             }    
+
+
++ Request(application/json)
+
+    + Headers
+
+            Authorization: wrong-token
+
+    + Body
+    
+            {
+                "name" : "foo bar",
+                "email" : "bar@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 85cb1679-58d4-41c4-9479-ce5f9c75ca7a
+            x-runtime: 0.002542
+            connection: close
+            transfer-encoding: chunked
