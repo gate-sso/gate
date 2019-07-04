@@ -1,0 +1,105 @@
+FORMAT: 1A
+
+# API User
+
+# User [/api/v1/users]
+
+## Create Users [POST]
+create new users gate
+
++ Request(application/json)
+
+    + Body
+    
+            {
+                "access_token": "token",
+                "name" : "foo",
+                "email" : "foo@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"5c15461069e69109955c72671ffc465d"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 0613ec11-afd7-4dc0-9096-fee607d71c12
+            x-runtime: 0.073641
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+    
+            {
+                "status" : "created"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "status" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
+
++ Request(application/json)
+
+    + Body
+    
+            {
+                "access_token": "wrong token",
+                "name" : "foo",
+                "email" : "foo@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 30276bf6-0ce6-4ba6-b87d-7528b4f2c85d
+            x-runtime: 0.002650
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
