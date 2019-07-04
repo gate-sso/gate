@@ -51,3 +51,48 @@ create new group
                 "id": 1,
                 "name": "foo"
             }
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "id" : {
+                        "type" : "int"
+                    }
+                }
+            }
+
++ Response 422
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            cache-control: no-cache
+            x-request-id: 30ec7a3a-4794-435b-a5b9-8ff480cd648c
+            x-runtime: 0.007976
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+
+            {
+                "status": "group already exist",
+                "id": 1,
+                "name": "foo"
+            }
