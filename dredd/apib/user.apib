@@ -109,3 +109,39 @@ create new users gate
             transfer-encoding: chunked
 
     + Body
+
+# User [/api/v1/users/profile/{?email,uid,username}]
+
+## Get Users [GET]
+get user data with email, uid or username
+
++ Request
+
+    + Headers
+
+            Authorization: token
+
+    + Parameters
+
+        + email (string, optional)
+            + Default: bar@test.com
+        + uid (string, optional)
+        + username (string, optional)
+
++ Response 200
+
+    + Body
+
+            {
+                "email": "bar@test.com",
+                "uid": null,
+                "name": "foo",
+                "active": true,
+                "admin": true,
+                "home_dir": null,
+                "shell": null,
+                "public_key": null,
+                "user_login_id": null,
+                "product_name": null,
+                "groups": []
+            }
