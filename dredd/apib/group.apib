@@ -1,0 +1,53 @@
+FORMAT: 1A
+
+# API Group
+
+# Group [/api/v1/groups]
+
+## Create Groups [POST]
+create new group
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "id" : {
+                        "type" : "int"
+                    }
+                }
+            }
+    
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"5c15461069e69109955c72671ffc465d"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 0613ec11-afd7-4dc0-9096-fee607d71c12
+            x-runtime: 0.073641
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+    
+            {
+                "id": 1,
+                "name": "foo"
+            }
