@@ -96,3 +96,42 @@ create new group
                 "id": 1,
                 "name": "foo"
             }
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "wrong token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 30276bf6-0ce6-4ba6-b87d-7528b4f2c85d
+            x-runtime: 0.002650
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
