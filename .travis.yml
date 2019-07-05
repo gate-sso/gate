@@ -49,7 +49,7 @@ before_install:
 stages:
   - build, test and releases
   - name: build and publish docker
-    if: branch = master
+    if: branch = master and type != pull_request
 
 jobs:
   include:
