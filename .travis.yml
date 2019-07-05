@@ -45,6 +45,8 @@ env:
 before_install:
   - gem update --system
   - gem install bundler
+  - gem install dredd_hooks
+  - npm install dredd@11.2.9 --global
 
 stages:
   - build, test and releases
@@ -61,8 +63,10 @@ jobs:
         - gem install bundler
         - bundle package --all
         - bundle install --binstubs --local
+        - gem install json -v 2.1.0
         - bundle exec rake db:migrate
         - bundle exec rake spec
+        - dredd
         - bundle exec rake assets:precompile RAILS_ENV=production
       before_deploy:
         - "rm -rf $TRAVIS_BUILD_DIR/*.tar.gz"
