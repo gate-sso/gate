@@ -49,7 +49,7 @@ before_install:
 stages:
   - build, test and releases
   - name: build and publish docker
-    if: branch = master AND tag IS present
+    if: branch = master and type != pull_request
 
 jobs:
   include:
@@ -85,6 +85,9 @@ jobs:
         - bundle install
         - bundle exec rake assets:precompile RAILS_ENV=production
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker build -t gatesso/gate:$TRAVIS_TAG -t gatesso/gate:latest .
+        - docker build -t gatesso/gate:latest .
+        - if [ -n "$TRAVIS_TAG" ]; then
+            docker tag gatesso/gate:latest gatesso/gate:$TRAVIS_TAG;
+          fi
         - docker images
         - docker push gatesso/gate
