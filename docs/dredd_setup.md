@@ -1,6 +1,6 @@
 # Dredd Setup
 
-Dredd is used to run test, to validate the API Blueprint againts Backend Implementation.
+Dredd is used to run test, to validate the API Blueprint against Backend Implementation.
 
 ### Install npm 
 
