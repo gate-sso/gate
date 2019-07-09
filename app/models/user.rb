@@ -396,7 +396,7 @@ class User < ApplicationRecord
     GroupAdmin.find_by_user_id(self.id).present?
   end
 
-  def expiration_date_from(group_id)
+  def group_expiration_date(group_id)
     group_associations.detect { |assoc| assoc.group_id == group_id }.expiration_date
   end
 
