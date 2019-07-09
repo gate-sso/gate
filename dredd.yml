@@ -1,9 +1,9 @@
 color: true
 dry-run: null
-hookfiles: 'dredd/hooks/dredd_hooks.rb'
+hookfiles: 'api_blueprint/hooks/dredd_hooks.rb'
 language: ruby
 require: null
-server: './dredd/bin/dredd_server.sh'
+server: './api_blueprint/bin/dredd_server.sh'
 server-wait: 20
 init: false
 custom: {}
@@ -28,5 +28,5 @@ hooks-worker-term-retry: 500
 hooks-worker-handler-host: 127.0.0.1
 hooks-worker-handler-port: 61321
 config: ./dredd.yml
-blueprint: 'dredd/apib/*.apib'
+blueprint: 'api_blueprint/*.apib'
 endpoint: 'http://localhost:9865'
