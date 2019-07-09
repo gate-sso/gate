@@ -74,7 +74,9 @@ class GroupsController < ApplicationController
       begin
         expiration_date = expiration_date_param
       rescue ArgumentError
-        return form_response 'Expiration date is wrong'
+        return respond_to do |format|
+          format.html { redirect_to group_path(@group), notice: 'Expiration date is wrong' }
+        end
       end
       @group.add_user_with_expiration(user.id, expiration_date) if user.present?
     end
@@ -216,11 +218,5 @@ class GroupsController < ApplicationController
     return nil if expiration_date.nil? || expiration_date.empty?
 
     Date.parse(expiration_date, '%Y-%m-%d')
-  end
-
-  def form_response(message)
-    respond_to do |format|
-      format.html { redirect_to group_path(@group), notice: message }
-    end
   end
 end
