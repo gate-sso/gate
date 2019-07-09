@@ -78,6 +78,42 @@ RSpec.describe GroupsController, type: :controller do
 
         expect(group.users).to include(user)
       end
+
+      it 'should add user to group with expiration date' do
+        sign_in admin
+        group = create(:group)
+        date = '2019-07-10'
+
+        post :add_user, params: { id: group.id, user_id: user.id, expiration_date: date }
+
+        group_association = group.group_associations.where(user_id: user.id).take
+        expect(group_association.expiration_date).to eq(Date.parse(date))
+      end
+
+      context 'wrong expiration date param' do
+        it 'should flash error message' do
+          sign_in admin
+          group = create(:group)
+          date = 'this is not a date'
+
+          post :add_user, params: { id: group.id, user_id: user.id, expiration_date: date }
+
+          expect(flash[:notice]).to eq('Expiration date is wrong')
+        end
+      end
+
+      context 'empty expiration date' do
+        it 'should add user to group without expiration' do
+          sign_in admin
+          group = create(:group)
+          date = ''
+
+          post :add_user, params: { id: group.id, user_id: user.id, expiration_date: date }
+
+          group_association = group.group_associations.where(user_id: user.id).take
+          expect(group_association.expiration_date).to eq(nil)
+        end
+      end
     end
 
     context 'authenticated as group admin' do
@@ -122,6 +158,39 @@ RSpec.describe GroupsController, type: :controller do
         post :add_group, params: { id: user.id, group_id: group.id }
 
         expect(response).to redirect_to(user_path)
+      end
+
+      it 'should add user with expiration date' do
+        sign_in admin
+        group = create(:group)
+        date = '2019-06-24'
+
+        post :add_group, params: { id: user.id, group_id: group.id, expiration_date: date }
+
+        group_association = group.group_associations.where(user_id: user.id).take
+        expect(group_association.expiration_date).to eq(Date.parse(date))
+      end
+
+      context 'wrong expiration date param' do
+        it 'should flash error message' do
+          sign_in admin
+          group = create(:group)
+          date = 'this is not a date'
+
+          post :add_group, params: { id: user.id, group_id: group.id, expiration_date: date }
+
+          expect(flash[:notice]).to eq('Expiration date is wrong')
+        end
+
+        it 'should not add user to group' do
+          sign_in admin
+          group = create(:group)
+          date = 'this is not a date'
+
+          post :add_group, params: { id: user.id, group_id: group.id, expiration_date: date }
+
+          expect(group.users).not_to include(user)
+        end
       end
     end
   end

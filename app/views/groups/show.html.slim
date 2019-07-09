@@ -8,7 +8,7 @@
       = "Group ID: #{@group.gid}"
   br
   - if current_user.admin? or @group.admin?(current_user)
-    = form_tag add_admin_to_group_path, method: :post do
+    = form_tag add_admin_to_group_path(@group.id), method: :post do
       .row
         .col
           | Group Administrator
@@ -42,7 +42,8 @@
           thead
             tr
               th User Details
-              th Email address
+              th Email Address
+              th Expiration Date
               th
           tbody
             - @group.users.sort_by{ |user| user.email}.each do |user|
@@ -55,28 +56,33 @@
                 td
                   = "#{user.email}"
                 td
+                  = "#{user.group_expiration_date @group.id}"
+                td
                   = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin or @group.admin?(current_user)
 
       br
       = "*This group does not have any group members" if @group.users.count == 0
       br
       - if current_user.admin or @group.admin?(current_user)
-        = form_tag  add_user_to_group_path, method: :post do
+        .h7 Assign members
+        = form_tag  add_user_to_group_path(@group.id), method: :post do
           .row
             .col
-              | Assign members
+              .form_group
+                label
+                  | User
+                = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
+                = check_box_tag "add_user_include_inactive_user", "true", false
+                = " Include Inactive User"
             .col
+              .form_group
+                label
+                  | Assignment Expiration date
+                = date_field_tag "expiration_date", "", id: "expiration_date", class: "form-control"
+                | * expiration date is optional (unspecified means permanent)
             .col
-              = text_field_tag "user_id", "", id: "add_user_user_id", class: "form-control"
-            .col
-              = submit_tag "Add User", class: "form-control btn-md btn-primary", disabled: true
-          .row
-            .col
-            .col
-            .col
-              = check_box_tag "add_user_include_inactive_user", "true", false
-              = " Include Inactive User"
-            .col
+              br
+              = submit_tag "Add User", class: "form-control btn-md btn-primary", disabled: true            
   br
   .card
     .card-body
@@ -105,7 +111,7 @@
       = "*This group does not have any VPNs associated with it" if @group.vpns.count == 0
       br
       - if current_user.admin? 
-        = form_tag  add_vpn_to_group_path, method: :post do
+        = form_tag  add_vpn_to_group_path(@group.id), method: :post do
           .row
             .col 
               | Assign VPNs
@@ -136,7 +142,7 @@
       br
       hr
       - if current_user.admin?
-        = form_tag  add_machine_to_group_path, method: :post do
+        = form_tag  add_machine_to_group_path(@group.id), method: :post do
           .row
             .col 
               | Assign Hosts
