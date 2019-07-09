@@ -108,6 +108,7 @@ GEM
     dotenv-rails (2.7.2)
       dotenv (= 2.7.2)
       railties (>= 3.2, < 6.1)
+    dredd_hooks (0.1.2)
     erubi (1.8.0)
     execjs (2.7.0)
     factory_bot (4.11.1)
@@ -378,6 +379,7 @@ DEPENDENCIES
   database_cleaner
   devise (~> 4.6.0)
   dotenv-rails
+  dredd_hooks
   factory_bot_rails
   faker
   font-awesome-rails
@@ -417,4 +419,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
