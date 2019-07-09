@@ -72,6 +72,7 @@ If you want Gate to setup VPN for you then just install OpenVPN with easy rsa. G
 
 ## Additional Topics
 
+* [API Blueprint Test](docs/dredd_setup.md)
 * [Additional Setup](docs/additional_setup.md)
 * [Administration](docs/administration.md)
 * [Newrelic Integration](docs/newrelic.md)
