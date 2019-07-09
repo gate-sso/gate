@@ -1,0 +1,76 @@
+FORMAT: 1A
+
+# API VPNS
+
+# VPNS [/api/v1/vpns]
+
+## Create VPNS [POST]
+Create new vpns
+
++ Request(application/json)
+
+    + Headers
+    
+            Authorization: token
+
+    + Body
+    
+            {
+                "id": 1,
+                "name": "test-vpn",
+                "host_name": "test-vpn.example.com",
+                "ip_address" : "10.10.10.10"
+            }
+
+    + Schema
+
+            {
+                "type": "object",
+                "properties" : {
+                    "id" : {
+                        "type" : int
+                    },
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "host_name" : {
+                        "type" : "string"
+                    },
+                    "ip_address" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Body
+
+            {
+                "id": 1,
+                "name": "test-vpn",
+                "host_name": "test-vpn.example.com",
+                "ip_address": "10.10.10.10"
+            }
+
++ Request(application/json)
+
+    + Headers
+    
+            Authorization: wrong-token
+    
+    + Body
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 73b10aa8-6f68-400b-b723-2e992ac4d000
+            x-runtime: 0.002242
+            connection: close
+            transfer-encoding: chunked

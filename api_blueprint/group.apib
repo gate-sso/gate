@@ -1,0 +1,166 @@
+FORMAT: 1A
+
+# API Group
+
+# Group [/api/v1/groups]
+
+## Create Groups [POST]
+Create new group
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+    
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"5c15461069e69109955c72671ffc465d"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 0613ec11-afd7-4dc0-9096-fee607d71c12
+            x-runtime: 0.073641
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+    
+            {
+                "id": 1,
+                "name": "foo"
+            }
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "id" : {
+                        "type" : "int"
+                    },
+                    "name" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 422
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            cache-control: no-cache
+            x-request-id: 30ec7a3a-4794-435b-a5b9-8ff480cd648c
+            x-runtime: 0.007976
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+
+            {
+                "status": "group already exist",
+                "id": 1,
+                "name": "foo"
+            }
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "status" : {
+                        "type" : "string"
+                    },
+                    "id" : {
+                        "type" : "int"
+                    },
+                    "name" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Request(application/json)
+
+    + Body
+
+            {
+                "access_token": "wrong token",
+                "name" : "foo"
+            }
+    
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 30276bf6-0ce6-4ba6-b87d-7528b4f2c85d
+            x-runtime: 0.002650
+            connection: close
+            transfer-encoding: chunked
+
+    + Body

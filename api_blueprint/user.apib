@@ -1,0 +1,259 @@
+FORMAT: 1A
+
+# API User
+
+# User [/api/v1/users]
+
+## Create Users [POST]
+Create new users gate
+
++ Request(application/json)
+
+    + Body
+    
+            {
+                "access_token": "token",
+                "name" : "foo",
+                "email" : "foo@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"5c15461069e69109955c72671ffc465d"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 0613ec11-afd7-4dc0-9096-fee607d71c12
+            x-runtime: 0.073641
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+    
+            {
+                "status" : "created"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "status" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
+
++ Request(application/json)
+
+    + Body
+    
+            {
+                "access_token": "wrong token",
+                "name" : "foo",
+                "email" : "foo@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    },
+                    "access_token" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 30276bf6-0ce6-4ba6-b87d-7528b4f2c85d
+            x-runtime: 0.002650
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+
+# User [/api/v1/users/profile/{?email,uid,username}]
+
+## Get Users [GET]
+Get user data with email, uid or username
+
++ Request
+
+    + Headers
+
+            Authorization: token
+
+    + Parameters
+
+        + email (string, optional)
+            + Default: bar@test.com
+        + uid (string, optional)
+        + username (string, optional)
+
++ Response 200
+
+    + Body
+
+            {
+                "email": "bar@test.com",
+                "uid": null,
+                "name": "foo",
+                "active": true,
+                "admin": true,
+                "home_dir": null,
+                "shell": null,
+                "public_key": null,
+                "user_login_id": null,
+                "product_name": null,
+                "groups": []
+            }
+
++ Request
+
+    + Headers
+
+            Authorization: token
+
+    + Parameters
+
+        + email (string, optional)
+            + Default: notfound@test.com
+        + uid (string, optional)
+        + username (string, optional)
+
++ Response 404
+
+    + Body
+
+# User [/api/v1/users/profile]
+
+## Update Users [POST]
+Update users data with email as key 
+
++ Request(application/json)
+
+    + Headers
+
+            Authorization: token
+
+    + Body
+    
+            {
+                "name" : "foo bar",
+                "email" : "bar@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 200
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: application/json; charset=utf-8
+            etag: W/"c955e57777ec0d73639dca6748560d00"
+            cache-control: max-age=0, private, must-revalidate
+            x-request-id: 136874b1-39fb-4704-b548-d7670773a4bf
+            x-runtime: 0.014707
+            connection: close
+            transfer-encoding: chunked
+
+    + Body
+
+            {
+                "success": true
+            }    
+
+
++ Request(application/json)
+
+    + Headers
+
+            Authorization: wrong-token
+
+    + Body
+    
+            {
+                "name" : "foo bar",
+                "email" : "bar@test.com"
+            }
+
+    + Schema
+    
+            {
+                "type": "object",
+                "properties" : {
+                    "name" : {
+                        "type" : "string"
+                    },
+                    "email" : {
+                        "type" : "string"
+                    }
+                }
+            }
+
++ Response 401
+
+    + Headers
+
+            x-frame-options: SAMEORIGIN
+            x-xss-protection: 1; mode=block
+            x-content-type-options: nosniff
+            content-type: text/html
+            cache-control: no-cache
+            x-request-id: 85cb1679-58d4-41c4-9479-ce5f9c75ca7a
+            x-runtime: 0.002542
+            connection: close
+            transfer-encoding: chunked

@@ -34,6 +34,7 @@ group :development, :test do
   gem 'capybara'
   gem 'coveralls'
   gem 'database_cleaner'
+  gem 'dredd_hooks'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'mock_redis'
