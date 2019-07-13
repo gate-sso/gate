@@ -110,7 +110,7 @@ Create new users gate
 
     + Body
 
-# User [/api/v1/users/profile/{?email,uid,username}]
+# User [/api/v1/users/profile/{?email,uid,username,active}]
 
 ## Get Users [GET]
 Get user data with email, uid or username
@@ -127,6 +127,7 @@ Get user data with email, uid or username
             + Default: bar@test.com
         + uid (string, optional)
         + username (string, optional)
+        + active (int, optional)
 
 + Response 200
 
@@ -146,6 +147,39 @@ Get user data with email, uid or username
                 "groups": []
             }
 
++ Request
+
+    + Headers
+
+            Authorization: token
+
+    + Parameters
+
+        + email (string, optional)
+        + uid (string, optional)
+        + username (string, optional)
+            + Default: foo
+        + active (int, optional)
+            + Default: 1
+
++ Response 200
+
+    + Body
+
+            {
+                "email": "foo@test.com",
+                "uid": null,
+                "name": "foo",
+                "active": true,
+                "admin": true,
+                "home_dir": null,
+                "shell": null,
+                "public_key": null,
+                "user_login_id": "foo",
+                "product_name": null,
+                "groups": []
+            }
+            
 + Request
 
     + Headers
