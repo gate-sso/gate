@@ -73,6 +73,16 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
           expect(response_json.keys.include?(col)).to eq(true)
         end
       end
+
+      it 'should display active user' do 
+        group = FactoryBot.create(:group)
+        inactive_user = FactoryBot.create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com', reset_password_token: 'test1', product_name: 'fooproduct')
+        get :show, params: { username: 'foo', active: 1, 'access_token': @token, :format => :json }
+        active_user = FactoryBot.create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com', reset_password_token: 'test2', product_name: 'fooproduct')
+        get :show, params: { username: 'foo', active: 1, 'access_token': @token, :format => :json }
+        response_json = JSON(response.body)
+        expect(response_json['email']).to eq(active_user.email)
+      end
     end
 
     context 'failure' do

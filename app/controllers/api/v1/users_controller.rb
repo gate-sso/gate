@@ -36,7 +36,11 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
             elsif params.key?('uid')
               User.find_by_uid(params['uid'])
             elsif params.key?('username')
-              User.find_by_user_login_id(params['username'])
+              if params.key?('active')
+                User.where(user_login_id: params['username'], active: params['active']).take
+              else
+                User.find_by_user_login_id(params['username'])
+              end
             end
   end
 
