@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+
+## [1.0.0] - 2019-07-15
+### Changed
 - Use dotenv instead of figaro. This is a breaking change and warrant a major version release.
 - All spiders are banned by default now in `robots.txt`
 - When admin account become inactive, the admin status will automatically revoked.
