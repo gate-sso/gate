@@ -37,7 +37,7 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
               User.find_by_uid(params['uid'])
             elsif params.key?('username')
               if params.key?('active')
-                is_active = true?(params['active'])
+                is_active = [1, true, '1', 'true'].include?(params['active'])
                 User.where(user_login_id: params['username'], active: is_active).take
               else
                 User.find_by_user_login_id(params['username'])
@@ -52,8 +52,4 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
       params.permit(:name, :email, :public_key, :product_name)
     end
   end
-end
-
-def true?(obj)
-  [1, true, '1', 'true'].include?(obj)
 end
