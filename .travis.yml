@@ -77,7 +77,6 @@ jobs:
         on:
           tags: true
           repo: gate-sso/gate
-          branch: master
     - stage: build and publish docker
       install: skip
       script:
