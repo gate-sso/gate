@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [1.0.2] - 2019-07-15
+### Fixed
+- Optimize slow queries on vpn model
+
 ## [1.0.1] - 2019-07-15
 ### Added
 - Add the ability to only fetch active user for `/api/v1/users/profile` API
