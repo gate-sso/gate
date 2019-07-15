@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [1.0.1] - 2019-07-15
+### Added
+- Add the ability to only fetch active user for `/api/v1/users/profile` API
+
 ## [1.0.0] - 2019-07-15
 ### Changed
 - Use dotenv instead of figaro. This is a breaking change and warrant a major version release.
