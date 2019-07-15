@@ -14,46 +14,31 @@ class Vpn < ApplicationRecord
   has_many :vpn_supplemental_match_domains
 
   def self.administrator? user
-    administrator = false
-    Vpn.all.each do |vpn|
-      group = vpn.groups.first
-      if group.present? && group.group_admins.present?
-        group.group_admins.each do |member|
-          administrator = true if user == member
-        end
-      end
-    end
-    return administrator
+    vpn_group_ids = VpnGroupAssociation.select(:group_id).collect(&:group_id)
+    managed_group_vpns = user.group_admin.where(group_id: vpn_group_ids)
+    return !managed_group_vpns.empty?
   end
 
   def self.managed_vpns user
     vpns = []
-    Vpn.all.each do |vpn|
-      groups = vpn.groups
-      if groups.present?
-        group_admins = groups.first.group_admins
-        if group_admins.present?
-          group_admins.each do |group_admin|
-            vpns << vpn if group_admin.user == user
-          end
-        end
-      end
-    end
-    return vpns
+    vpn_group_ids = VpnGroupAssociation.select(:group_id).collect(&:group_id)
+    managed_group_vpn_ids = user.
+      group_admin.
+      select(:group_id).
+      where(group_id: vpn_group_ids).
+      collect(&:group_id)
+    return VpnGroupAssociation.where(group_id: managed_group_vpn_ids).collect(&:vpn).uniq
   end
 
   def self.user_vpns user
     vpns = []
-    Vpn.all.each do |vpn|
-      if vpn.groups.present?
-        vpn.groups.each do |group|
-          if group.users.present?
-            vpns << vpn if group.member? user
-          end
-        end
-      end
-    end
-    return vpns.uniq {|vpn| vpn.id}
+    vpn_group_ids = VpnGroupAssociation.select(:group_id).collect(&:group_id)
+    user_group_vpn_ids = user.
+      group_associations.
+      select(:group_id).
+      where(group_id: vpn_group_ids).
+      collect(&:group_id)
+    return VpnGroupAssociation.where(group_id: user_group_vpn_ids).collect(&:vpn).uniq
   end
 
   def migrate_to_new_group

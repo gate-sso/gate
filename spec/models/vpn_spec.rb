@@ -19,7 +19,7 @@ RSpec.describe Vpn, type: :model do
 
       group.add_admin user
 
-      expect(Vpn.administrator? user).to eq false
+      expect(Vpn.administrator? user).to eq true
       expect(Vpn.managed_vpns(user).count).to eq 1
       vpn = Vpn.create(name: :"Y")
       vpn.groups << group
