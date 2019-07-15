@@ -73,6 +73,36 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
           expect(response_json.keys.include?(col)).to eq(true)
         end
       end
+
+      it 'should display active user' do
+        FactoryBot.create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com')
+        active_user = FactoryBot.create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
+
+        get :show, params: { username: 'foo', active: 1, 'access_token': @token, :format => :json }
+
+        response_json = JSON(response.body)
+        expect(response_json['email']).to eq(active_user.email)
+      end
+
+      it 'should display active user when query parameter active is true' do
+        FactoryBot.create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com')
+        active_user = FactoryBot.create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
+
+        get :show, params: { username: 'foo', active: true, 'access_token': @token, :format => :json }
+
+        response_json = JSON(response.body)
+        expect(response_json['email']).to eq(active_user.email)
+      end
+
+      it 'should display inactive user when query parameter active is false' do
+        inactive_user = FactoryBot.create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com')
+        FactoryBot.create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
+
+        get :show, params: { username: 'foo', active: false, 'access_token': @token, :format => :json }
+
+        response_json = JSON(response.body)
+        expect(response_json['email']).to eq(inactive_user.email)
+      end
     end
 
     context 'failure' do

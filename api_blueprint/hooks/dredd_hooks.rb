@@ -13,4 +13,8 @@ before_all do |_|
   user.access_token = access_token
   access_token.save!
   user.save!
+  inactive_user = User.create(name: 'foo', email: 'foo@test2.com', active: 0, user_login_id: 'foo')
+  inactive_user.save!
+  active_user = User.create(name: 'foo', email: 'foo@test.com', active: 1, user_login_id: 'foo')
+  active_user.save!
 end
