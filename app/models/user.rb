@@ -113,11 +113,19 @@ class User < ApplicationRecord
           WHERE group_associations.user_id = users.id
           AND groups.name = users.user_login_id
           LIMIT 1
-        ) AS gid
+        ) AS gid,
+        (
+          SELECT COUNT(gid)
+          FROM groups
+          INNER JOIN group_associations
+            ON groups.id = group_associations.group_id
+          WHERE group_associations.user_id = users.id
+          AND groups.name = users.user_login_id
+          LIMIT 1
+        ) AS gid_count
       )).
       where(id: user_ids)
-    user_list = users.map{ |user| get_passwd_uid_response(user) }
-    user_list
+    users.map(&:user_passwd_response)
   end
 
   def purge!
@@ -313,11 +321,6 @@ class User < ApplicationRecord
     user_response
   end
 
-  def self.get_passwd_uid_response user
-    return [] if user.blank?
-    user.user_passwd_response
-  end
-
   def self.find_active_user_by_email(email)
     User.where(email: email, active: true).first
   end
@@ -376,19 +379,23 @@ class User < ApplicationRecord
   def user_passwd_response
     user_hash = {}
     user_hash[:pw_name] = user_login_id
-    user_hash[:pw_passwd]  = "x"
+    user_hash[:pw_passwd] = 'x'
     user_hash[:pw_uid] = uid.to_i
 
     # If gid is supplied (avoid N+1)
-    if self.respond_to?(:gid) && gid
+    if respond_to?(:gid) && gid
       user_hash[:pw_gid] = gid.to_i
-    else
-      user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid if groups.where(name: user_login_id).count > 0
+    elsif respond_to?(:gid_count)
+      if gid_count.positive?
+        user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid
+      end
+    elsif groups.where(name: user_login_id).count.positive?
+      user_hash[:pw_gid] = groups.where(name: user_login_id).first.gid
     end
 
-    user_hash[:pw_gecos]  = "#{name}"
+    user_hash[:pw_gecos] = name.to_s
     user_hash[:pw_dir] = "#{HOME_DIR}/#{user_login_id}"
-    user_hash[:pw_shell] = "/bin/bash"
+    user_hash[:pw_shell] = '/bin/bash'
     user_hash
   end
 
