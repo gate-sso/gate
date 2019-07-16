@@ -342,6 +342,16 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.get_passwd_uid_response' do
+    it 'should return response with pw_name equal user_login_id' do
+      user = create(:user)
+
+      response = User.get_passwd_uid_response user
+
+      expect(response[:pw_name]).to eq(user.user_login_id)
+    end
+  end
+
   describe '.check_email_address' do
     it 'should check valid email address' do
       email_address = 'satrya@gmail.com'
@@ -364,12 +374,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  it "should return false if user is not active" do
-    user = create(:user)
-    response = User.get_passwd_uid_response user
-    expect(response[:pw_name]).to eq(user.user_login_id)
   end
 
   it "should get all users for passwd" do
