@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [1.0.3] - 2019-07-16
+### Fixed
+- Fix nil pointer exception when group members response is nil
+
 ## [1.0.2] - 2019-07-15
 ### Fixed
 - Optimize slow queries on vpn model
