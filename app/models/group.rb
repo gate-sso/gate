@@ -140,7 +140,7 @@ class Group < ApplicationRecord
       )).
       where('name IN (?)', sysadmins_login_ids).
       map do |group|
-        members = group.members.split(',')
+        members = (group.members || '').split(',')
         Group.generate_group_response(group.name, group.gid, members)
       end
     groups << Group.get_default_sysadmin_group_for_host(sysadmins_login_ids, default_admins)

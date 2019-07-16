@@ -46,6 +46,17 @@ RSpec.describe Group, type: :model do
     expect(host_response[:groups][0]).to eq(group.name)
   end
 
+  describe 'get_sysadmins_and_groups' do
+    it 'If the group is empty, response should still be generated / not raising any exception' do
+      groups = []
+      user = create(:user)
+      groups << Group.generate_group_response(user.user_login_id, GroupAssociation.where(user_id: user.id).first.id, '')
+      GroupAssociation.where(user_id: user.id).each{ |x| x.destroy }
+      groups << Group.get_default_sysadmin_group_for_host([user.id])
+      expect{Group.get_sysadmins_and_groups([user.id])}.not_to raise_error
+    end
+  end
+
   describe 'add_user' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
