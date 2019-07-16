@@ -53,4 +53,16 @@ describe ProfileController, type: :controller do
       end
     end
   end
+
+  describe '#download_vpn_for_ios_and_mac' do
+    context "user doesn't have vpn" do
+      it 'should return status 200' do
+        sign_in user
+
+        get :download_vpn_for_ios_and_mac
+
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
 end
