@@ -87,7 +87,7 @@ class ProfileController < ApplicationController
     mobileconfig = Mobileconfig.new
     vpns = Vpn.user_vpns current_user
 
-    render plain: "you don't have access to any vpns" && return unless vpns.present?
+    return render plain: "you don't have access to any vpns" unless vpns.present?
 
     mobileconfig_data = mobileconfig.generate(vpns, current_user)
 
