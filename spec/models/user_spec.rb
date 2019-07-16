@@ -703,6 +703,25 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    context 'given user which does not belongs to group name equal to user_login_id' do
+      before(:each) do
+        GroupAssociation.where(user_id: user.id).delete_all
+      end
+
+      it 'should return correct response with nil pw_gid' do
+        sysadmins = User.get_sysadmins [user.id]
+        expect(sysadmins.first).to satisfy do |sysadmin|
+          !sysadmin[:pw_name].nil? &&
+            !sysadmin[:pw_passwd].nil? &&
+            !sysadmin[:pw_uid].nil? &&
+            sysadmin[:pw_gid].nil? &&
+            !sysadmin[:pw_gecos].nil? &&
+            !sysadmin[:pw_dir].nil? &&
+            !sysadmin[:pw_shell].nil?
+        end
+      end
+    end
   end
 
   describe '.check_email_address' do
