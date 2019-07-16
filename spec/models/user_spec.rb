@@ -682,6 +682,12 @@ RSpec.describe User, type: :model do
       sysadmins = User.get_sysadmins [user.id]
       expect(sysadmins.size).to eq 1
     end
+
+    it 'should include intended sysadmin' do
+      sysadmins = User.get_sysadmins [user.id]
+      pw_name_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_name] }
+      expect(pw_name_sysadmins).to include user.user_login_id
+    end
   end
 
   describe '.check_email_address' do
