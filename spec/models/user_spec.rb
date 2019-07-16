@@ -462,7 +462,7 @@ RSpec.describe User, type: :model do
     it 'should return response with pw_name equal user_login_id' do
       user = create(:user)
 
-      response = User.get_passwd_uid_response user
+      response = user.get_passwd_uid_response user
 
       expect(response[:pw_name]).to eq(user.user_login_id)
     end

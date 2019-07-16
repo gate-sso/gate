@@ -116,7 +116,7 @@ class User < ApplicationRecord
         ) AS gid
       )).
       where(id: user_ids)
-    user_list = users.map{ |user| get_passwd_uid_response(user) }
+    user_list = users.map{ |user| user.get_passwd_uid_response(user) }
     user_list
   end
 
@@ -313,7 +313,7 @@ class User < ApplicationRecord
     user_response
   end
 
-  def self.get_passwd_uid_response user
+  def get_passwd_uid_response user
     return [] if user.blank?
     user.user_passwd_response
   end
