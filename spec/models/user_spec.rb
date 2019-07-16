@@ -324,6 +324,14 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#uid' do
+    it 'should check uid creation with offset' do
+      user = create(:user)
+
+      expect(user.uid.to_i).to eq(user.id + uid_constant)
+    end
+  end
+
   describe '.check_email_address' do
     it 'should check valid email address' do
       email_address = 'satrya@gmail.com'
@@ -346,11 +354,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  it "should check uid creation with offset" do
-    user = create(:user)
-    expect(user.uid.to_i).to eq(user.id + UID_CONSTANT)
   end
 
   it "should return false if user is not active" do
