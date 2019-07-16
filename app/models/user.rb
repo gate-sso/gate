@@ -116,7 +116,7 @@ class User < ApplicationRecord
         ) AS gid
       )).
       where(id: user_ids)
-    users.map(&:get_passwd_uid_response)
+    users.map(&:user_passwd_response)
   end
 
   def purge!
@@ -310,10 +310,6 @@ class User < ApplicationRecord
     user_response = []
     user_response << response
     user_response
-  end
-
-  def get_passwd_uid_response
-    user_passwd_response
   end
 
   def self.find_active_user_by_email(email)
