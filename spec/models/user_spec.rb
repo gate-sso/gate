@@ -323,6 +323,22 @@ RSpec.describe User, type: :model do
       expect(user_expiration_date).to eq(expiration_date)
     end
   end
+
+  describe '.check_email_address' do
+    it 'should check valid email address' do
+      email_address = 'satrya@gmail.com'
+      expect(User.check_email_address(email_address)).to eq(true)
+
+      email_address = 'satraya @gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
+
+      email_address = 'satraya@-gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
+
+      email_address = 'sat*raya@gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
+    end
+  end
 end
 
 UID_CONSTANT = 5000
@@ -330,21 +346,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  it "should check valid email address" do
-    #email address always has 2 parts
-    email_address = "satrya@gmail.com"
-    expect(User.check_email_address(email_address)).to eq(true)
-
-    email_address = "satraya @gmail.com"
-    expect(User.check_email_address(email_address)).to eq(false)
-
-    email_address = "satraya@-gmail.com"
-    expect(User.check_email_address(email_address)).to eq(false)
-
-    email_address = "sat*raya@gmail.com"
-    expect(User.check_email_address(email_address)).to eq(false)
   end
 
   it "should check uid creation with offset" do
