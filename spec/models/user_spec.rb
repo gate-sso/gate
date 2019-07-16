@@ -332,6 +332,122 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#user_login_id' do
+    it 'should return _ for . in name' do
+      user = create(:user)
+      expect(user.user_login_id).to eq(user.email.split('@').first)
+      user = User.get_user(user.user_login_id)
+      expect(user).not_to be nil
+    end
+  end
+
+  describe '#permitted_hosts?' do
+    it 'should return false if user is not permitted' do
+      user = create(:user)
+
+      response = user.permitted_hosts? ['10.1.1.1.']
+
+      expect(response).to be false
+    end
+
+    it "should fails host address if it's not permitted" do
+      user = create(:user)
+      host = Host.new
+      host.user = user
+      host.host_pattern = 's*' # by default give host access to all staging instances
+      host.save!
+
+      expect(user.permitted_hosts?(['10.0.0.0'])).to be false
+    end
+
+    it "should pass host address if it's permitted" do
+      user = create(:user)
+      host = Host.new
+      host.user = user
+      host.host_pattern = '.*' # by default give host access to all staging instances
+      host.save!
+
+      expect(user.permitted_hosts?(['10.0.0.0'])).to be true
+    end
+  end
+
+  describe '#within_limits?' do
+    it 'login limits should pass' do
+      user = create(:user)
+      user.reset_login_limit
+      (RATE_LIMIT - 2).times do
+        user.within_limits?
+      end
+
+      expect(user.within_limits?).to be true
+    end
+
+    it 'login limits should fail' do
+      user = create(:user)
+      (RATE_LIMIT + 2).times do
+        user.within_limits?
+      end
+
+      expect(user.within_limits?).to be false
+    end
+  end
+
+  describe '#authenticate_ms_chap' do
+    it 'should authenticate ms chap' do
+      user = create(:user)
+      totp = '757364'
+      challenge_string = 'ee85e142eadfec52'
+      response_string = '0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440'
+
+      success_response = user.authenticate_ms_chap(totp, challenge_string, response_string)
+      unsuccessful_response = user.authenticate_ms_chap('78787', challenge_string, response_string)
+
+      expect(success_response).to eq('NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8')
+      expect(unsuccessful_response).to eq('NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)')
+    end
+  end
+
+  describe '#authenticate_ms_chap_with_drift' do
+    it 'should authenticate ms chap with drift' do
+      user = create(:user)
+      challenge_string = 'ee85e142eadfec52'
+      response_string = '0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440'
+
+      totp = ['757364', '123456', '876543']
+      response = user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)
+      expect(response).to eq('NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8')
+
+      totp = ['123456', '757364', '876543']
+      response = user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)
+      expect(response).to eq('NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8')
+
+      totp = ['123456', '876543', '757364']
+      response = user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)
+      expect(response).to eq('NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8')
+
+      totp = ['78787', '121212', '545454']
+      response = user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)
+      expect(response).to eq('NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)')
+    end
+  end
+
+  describe '#get_user_otp_at' do
+    it 'should return different otps for different times' do
+      user = create(:user)
+      user.auth_key = ROTP::Base32.random_base32
+      drift_interval = 30
+      t = Time.now
+
+      otp1 = user.get_user_otp_at(t)
+      otp2 = user.get_user_otp_at(t - drift_interval)
+      otp3 = user.get_user_otp_at(t + drift_interval)
+
+      expect(otp1).not_to equal(otp2)
+      expect(otp2).not_to equal(otp3)
+      expect(otp3).not_to equal(otp1)
+    end
+  end
+
   describe '.get_shadow_name_response' do
     it 'should return response with sp_namp equal user_login_id' do
       user = create(:user)
@@ -352,198 +468,106 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.check_email_address' do
-    it 'should check valid email address' do
-      email_address = 'satrya@gmail.com'
-      expect(User.check_email_address(email_address)).to eq(true)
+  describe '.get_all_passwd_response' do
+    it 'should get all users for passwd' do
+      create_list(:user, 2)
 
-      email_address = 'satraya @gmail.com'
-      expect(User.check_email_address(email_address)).to eq(false)
+      response = User.get_all_passwd_response
 
-      email_address = 'satraya@-gmail.com'
-      expect(User.check_email_address(email_address)).to eq(false)
-
-      email_address = 'sat*raya@gmail.com'
-      expect(User.check_email_address(email_address)).to eq(false)
+      expect(response.count).to eq(2)
     end
   end
-end
 
-UID_CONSTANT = 5000
-RSpec.describe User, type: :model do
+  describe '.find_active_user_by_email' do
+    it 'should return user if email registered' do
+      email = Faker::Internet.email
+      create(:user, email: email)
 
-  before(:each) do
-    create(:group)
-  end
+      user = User.find_active_user_by_email(email)
 
-  it "should get all users for passwd" do
-    user = create(:user)
-    user = create(:user)
-
-    response = User.get_all_passwd_response
-    expect(response.count).to eq(2)
-  end
-
-  it "should return _ for . in name" do
-    user = create(:user)
-    expect(user.user_login_id).to eq(user.email.split("@").first)
-    user = User.get_user(user.user_login_id)
-    expect(user).not_to be nil
-  end
-
-  it "should return false if user is not permitted" do
-    user = create(:user)
-    response = user.permitted_hosts? ["10.1.1.1."]
-
-    expect(response).to eq (false)
-  end
-
-  it 'should return user if email registered' do
-    email = Faker::Internet.email
-    create(:user, email: email)
-    user = User.find_active_user_by_email(email)
-    expect(user.email).to eq(email)
-  end
-
-  it 'should return nil if email not registered' do
-    email = Faker::Internet.email
-    user = User.find_active_user_by_email(email)
-    expect(user.blank?).to eq(true)
-  end
-
-  it 'should return registered groups list' do
-    email = Faker::Internet.email
-    create(:user, email: email)
-    user = User.find_active_user_by_email(email)
-    expect(user.group_names_list.include?(user.user_login_id)).to eq(true)
-  end
-
-  it 'should check valid hosted domain' do
-    allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('alfa.com,beta.com')
-    expect(User.valid_domain?('alfa.com')).to be true
-    expect(User.valid_domain?('beta.com')).to be true
-    expect(User.valid_domain?('gama.com')).to be false
-
-    allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('')
-    expect(User.valid_domain?('alfa.com')).to be false
-  end
-
-  it "should fails host address if it's not permitted" do
-    user = create(:user)
-    host = Host.new
-    host.user = user
-    host.host_pattern = "s*" #by default give host access to all staging instances
-    host.save!
-    expect(user.permitted_hosts?(["10.0.0.0"])).to be false
-  end
-
-  it "should pass host address if it's permitted" do
-    user = create(:user)
-    host = Host.new
-    host.user = user
-    host.host_pattern = ".*" #by default give host access to all staging instances
-    host.save!
-    expect(user.permitted_hosts?(["10.0.0.0"])).to be true
-  end
-
-  it "login limits should pass" do
-    user = create(:user)
-    user.reset_login_limit
-    (RATE_LIMIT - 2).times do
-      user.within_limits?
+      expect(user.email).to eq(email)
     end
-    expect(user.within_limits?).to be true
-  end
 
-  it "login limits should fail" do
-    user = create(:user)
-    (RATE_LIMIT + 2).times do
-      user.within_limits?
+    it 'should return nil if email not registered' do
+      email = Faker::Internet.email
+
+      user = User.find_active_user_by_email(email)
+
+      expect(user).to be nil
     end
-    expect(user.within_limits?).to be false
+
+    it 'should return registered groups list' do
+      email = Faker::Internet.email
+      create(:user, email: email)
+
+      user = User.find_active_user_by_email(email)
+
+      expect(user.group_names_list).to include user.user_login_id
+    end
   end
 
-  it "should authenticate ms chap" do
-    user = create(:user)
-    totp = "757364"
-    challenge_string = "ee85e142eadfec52"
-    response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
+  describe '.valid_domain?' do
+    it 'should check valid hosted domain' do
+      allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('alfa.com,beta.com')
+      expect(User.valid_domain?('alfa.com')).to be true
+      expect(User.valid_domain?('beta.com')).to be true
+      expect(User.valid_domain?('gama.com')).to be false
 
-    expect(user.authenticate_ms_chap(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-    expect(user.authenticate_ms_chap("78787", challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
+      allow(ENV).to receive(:[]).with('GATE_HOSTED_DOMAINS').and_return('')
+      expect(User.valid_domain?('alfa.com')).to be false
+    end
   end
 
-  it "should authenticate ms chap with drift" do
-    user = create(:user)
-    challenge_string = "ee85e142eadfec52"
-    response_string = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
+  describe '.ms_chap_auth' do
+    it 'should authenticate ms chap' do
+      user = create(:user)
+      vpn = Vpn.create(name: :X, ip_address: '10.240.0.1' )
+      user.groups.first.vpns << vpn
+      params = {}
+      params[:addresses] = '10.240.0.1'
+      params[:user] = user.user_login_id
+      params[:challenge] = 'ee85e142eadfec52'
+      params[:response] = '0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440'
+      allow_any_instance_of(User).to receive(:get_user_otp_at).and_return('757364')
 
-    totp = ["757364", "123456", "876543"]
-    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-
-    totp = ["123456", "757364", "876543"]
-    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-
-    totp = ["123456", "876543", "757364"]
-    expect(user.authenticate_ms_chap_with_drift(totp, challenge_string, response_string)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-
-    expect(user.authenticate_ms_chap_with_drift(["78787", "121212", "545454"], challenge_string, response_string)).to eq("NT_STATUS_UNSUCCESSFUL: Failure (0xC0000001)")
-  end
-
-  it "should authenticate ms chap" do
-    user = create(:user)
-    vpn = Vpn.create(name: :"X", ip_address: "10.240.0.1" )
-    user.groups.first.vpns << vpn
-    params = {}
-    params[:addresses] = "10.240.0.1"
-    params[:user] = user.user_login_id
-    params[:challenge] = "ee85e142eadfec52"
-    params[:response] = "0392a9e43edee3129f735b37fd9d0b0d3f66aa7a00f35440"
-
-    allow_any_instance_of(User).to receive(:get_user_otp_at).and_return("757364")
-
-    expect(User.ms_chap_auth(params)).to eq("NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8")
-  end
-
-  it "should return different otps for different times" do
-    user = create(:user)
-    user.auth_key = ROTP::Base32.random_base32
-
-    drift_interval = 30
-    t = Time.now
-    otp1 = user.get_user_otp_at(t)
-    otp2 = user.get_user_otp_at(t - drift_interval)
-    otp3 = user.get_user_otp_at(t + drift_interval)
-
-    expect(otp1).to_not equal(otp2)
-    expect(otp2).to_not equal(otp3)
-    expect(otp3).to_not equal(otp1)
+      expect(User.ms_chap_auth(params)).to eq('NT_KEY: 57247E8BAD1959F9544B2C5057F77AD8')
+    end
   end
 
   describe '.get_user_pass_attributes' do
-    it 'should return token and email if token and email is passed' do
-      params = { email: Faker::Internet.email, token: SecureRandom.uuid, user: '', password: '' }
-      expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:token]])
+    context 'token and email is passed' do
+      it 'should return token and email' do
+        params = { email: Faker::Internet.email, token: SecureRandom.uuid, user: '', password: '' }
+        expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:token]])
+      end
     end
 
-    it 'should return password and email if email and password is present, and token is not present' do
-      params = { email: Faker::Internet.email, token: '', user: '', password: SecureRandom.uuid }
-      expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:password]])
+    context 'email and password is present, and token is not present' do
+      it 'should return password and email' do
+        params = { email: Faker::Internet.email, token: '', user: '', password: SecureRandom.uuid }
+        expect(User.get_user_pass_attributes(params)).to eq([params[:email], params[:password]])
+      end
     end
 
-    it 'should return user and token if user and token is present, and email is not present' do
-      params = { email: '', token: SecureRandom.uuid, user: Faker::Internet.email, password: '' }
-      expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:token]])
+    context 'user and token is present, and email is not present' do
+      it 'should return user and token' do
+        params = { email: '', token: SecureRandom.uuid, user: Faker::Internet.email, password: '' }
+        expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:token]])
+      end
     end
 
-    it 'should return user and password if user and password is present and email and token is not present' do
-      params = { email: '', token: '', user: Faker::Internet.email, password: SecureRandom.uuid }
-      expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:password]])
+    context 'user and password is present and email and token is not present' do
+      it 'should return user and password' do
+        params = { email: '', token: '', user: Faker::Internet.email, password: SecureRandom.uuid }
+        expect(User.get_user_pass_attributes(params)).to eq([params[:user], params[:password]])
+      end
     end
 
-    it 'should return nil and nil if email and user is blank or password and token is blank' do
-      params = { email: '', token: '', user: '', password: '' }
-      expect(User.get_user_pass_attributes(params)).to eq([nil, nil])
+    context 'email and user is blank or password and token is blank' do
+      it 'should return nil and nil' do
+        params = { email: '', token: '', user: '', password: '' }
+        expect(User.get_user_pass_attributes(params)).to eq([nil, nil])
+      end
     end
   end
 
@@ -553,11 +577,11 @@ RSpec.describe User, type: :model do
     end
 
     context 'when two users exist with same login_id' do
-      let(:user_login_id) {'same-id'}
-      subject(:user) {User.get_user(user_login_id)}
+      let(:user_login_id) { 'same-id' }
+      subject(:user) { User.get_user(user_login_id) }
 
-      let(:first_user) {build(:user, user_login_id: user_login_id, name: 'Test1', email: "#{user_login_id}@test.com")}
-      let(:second_user) {build(:user, user_login_id: user_login_id, name: 'Test2', email: "#{user_login_id}@aux.test.com")}
+      let(:first_user) { build(:user, user_login_id: user_login_id, name: 'Test1', email: "#{user_login_id}@test.com") }
+      let(:second_user) { build(:user, user_login_id: user_login_id, name: 'Test2', email: "#{user_login_id}@aux.test.com") }
 
       it 'returns first found active user' do
         first_user.save
@@ -578,18 +602,21 @@ RSpec.describe User, type: :model do
   end
 
   describe '.add_user' do
-
     it 'creates a new user' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+
       expect(user.persisted?).to eq(true)
     end
 
     it 'creates a user with email in format first_name.last_name' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+
       expect(user.persisted?).to eq(true)
       expect(user.email).to eq("#{user.first_name.downcase}.#{user.last_name.downcase}@#{domain}")
     end
@@ -597,34 +624,44 @@ RSpec.describe User, type: :model do
     it 'generate uid' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       expect_any_instance_of(User).to receive(:generate_uid)
+
       User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
     end
 
     it 'generates login id' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+
       expect(user.user_login_id).to eq("#{user_data.first_name.downcase}.#{user_data.last_name.downcase}")
     end
 
     it 'initializes host groups' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       expect_any_instance_of(User).to receive(:initialise_host_and_group)
+
       User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
     end
 
     xit 'fails if required fields are not present' do
       user_data = build(:user)
       domain = user_data.email.split('@').last
+
       user = User.add_user('', user_data.last_name, user_data.user_role, domain)
+
       expect(user.persisted?).to eq(false)
     end
 
     xit 'fails if domain doesn\'t exist in list of domains' do
       user_data = build(:user)
+
       user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, Faker::Internet.domain_name)
+
       expect(user.persisted?).to eq(false)
     end
 
@@ -632,8 +669,26 @@ RSpec.describe User, type: :model do
       user_data = build(:user)
       domain = user_data.email.split('@').last
       user_data.save
+
       user = User.add_user(user_data.first_name, user_data.last_name, user_data.user_role, domain)
+
       expect(user.persisted?).to eq(false)
+    end
+  end
+
+  describe '.check_email_address' do
+    it 'should check valid email address' do
+      email_address = 'satrya@gmail.com'
+      expect(User.check_email_address(email_address)).to eq(true)
+
+      email_address = 'satraya @gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
+
+      email_address = 'satraya@-gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
+
+      email_address = 'sat*raya@gmail.com'
+      expect(User.check_email_address(email_address)).to eq(false)
     end
   end
 end
