@@ -332,6 +332,16 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.get_shadow_name_response' do
+    it 'should return response with sp_namp equal user_login_id' do
+      user = create(:user)
+
+      response = User.get_shadow_name_response user.name
+
+      expect(response[:sp_namp]).to eq(user.user_login_id)
+    end
+  end
+
   describe '.check_email_address' do
     it 'should check valid email address' do
       email_address = 'satrya@gmail.com'
@@ -354,12 +364,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  it "should return false if user is not active" do
-    user = create(:user)
-    response = User.get_shadow_name_response user.name
-    expect(response[:sp_namp]).to eq(user.user_login_id)
   end
 
   it "should return false if user is not active" do
