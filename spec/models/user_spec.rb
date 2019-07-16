@@ -224,6 +224,15 @@ RSpec.describe User, type: :model do
       expect(user.public_key).to eq(attrs[:public_key])
     end
 
+    it 'should update the public_key' do
+      rsa_key = OpenSSL::PKey::RSA.new(2048)
+      public_key = rsa_key.public_key.to_pem
+
+      user.update_profile(public_key: public_key)
+
+      expect(user.public_key).to eq(public_key)
+    end
+
     it 'should update user profile only for public_key, name, product_name, admin and active' do
       auth_key = ROTP::Base32.random_base32
       user.update_profile(auth_key: auth_key)
@@ -282,14 +291,6 @@ RSpec.describe User, type: :model do
   context ".update_profile" do
     before(:each) do
       @user = create(:user)
-    end
-    it "should update the public_key" do
-      require 'openssl'
-      rsa_key = OpenSSL::PKey::RSA.new(2048)
-      public_key = rsa_key.public_key.to_pem
-      @user.update_profile({ 'public_key' => public_key })
-      @user = User.find(@user.id)
-      expect(@user.public_key).to eq(public_key)
     end
 
     it "should update the name" do
