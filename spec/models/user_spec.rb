@@ -249,6 +249,12 @@ RSpec.describe User, type: :model do
       expect(user.public_key).to eq(public_key)
     end
 
+    it 'should set deactivation time when user is deactivated' do
+      user.update_profile(active: false)
+
+      expect(user.deactivated_at).not_to be nil
+    end
+
     it 'should update user profile only for public_key, name, product_name, admin and active' do
       auth_key = ROTP::Base32.random_base32
       user.update_profile(auth_key: auth_key)
@@ -302,12 +308,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  it "should set deactivation time when user is deactivated" do
-    user = create(:user)
-    user.update_profile(active: false)
-    expect(user.deactivated_at).not_to be nil
   end
 
   describe ".purge!" do
