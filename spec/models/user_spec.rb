@@ -690,10 +690,17 @@ RSpec.describe User, type: :model do
         expect(pw_name_sysadmins).to include user.user_login_id
       end
 
-      it 'should not included nil on pw_gid' do
+      it 'should return correct response without nil' do
         sysadmins = User.get_sysadmins [user.id]
-        pw_gid_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_gid] }
-        expect(pw_gid_sysadmins).not_to include nil
+        expect(sysadmins.first).to satisfy do |sysadmin|
+          !sysadmin[:pw_name].nil? &&
+            !sysadmin[:pw_passwd].nil? &&
+            !sysadmin[:pw_uid].nil? &&
+            !sysadmin[:pw_gid].nil? &&
+            !sysadmin[:pw_gecos].nil? &&
+            !sysadmin[:pw_dir].nil? &&
+            !sysadmin[:pw_shell].nil?
+        end
       end
     end
   end
