@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [1.0.4] - 2019-07-17
+### Fixed
+- If a user don't have any VPNs, they should still be able to click download VPN without incurring exception
+- Create missing tests for user model
+- Optimize queries when fetching sysadmins
+
 ## [1.0.3] - 2019-07-16
 ### Fixed
 - Fix nil pointer exception when group members response is nil
