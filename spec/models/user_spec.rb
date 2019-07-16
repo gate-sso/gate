@@ -275,6 +275,19 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#purge!' do
+    let(:user) { create(:user) }
+    it 'should remove group associations for inactive user' do
+      create(:user)
+      user.update!(active: false)
+
+      user.purge!
+
+      user.reload
+      expect(user.group_associations.length).to eq 0
+    end
+  end
+
   describe '#update' do
     context 'deactivate admin user' do
       it 'should revoke admin status' do
@@ -311,15 +324,6 @@ RSpec.describe User, type: :model do
   end
 
   describe ".purge!" do
-    it "should remove group associations for inactive user" do
-      create(:user)
-      user = create(:user)
-      user.update!(active: false)
-      user.purge!
-      user.reload
-      expect(user.group_associations.length).to eq 0
-    end
-
     it "should NOT remove group associations for active user" do
       user = create(:user)
       user.purge!
