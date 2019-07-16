@@ -678,21 +678,23 @@ RSpec.describe User, type: :model do
 
   describe '.get_sysadmins' do
     let(:user) { create(:user) }
-    it 'should return correct amount of sysadmins' do
-      sysadmins = User.get_sysadmins [user.id]
-      expect(sysadmins.size).to eq 1
-    end
+    context 'given user belongs to group name equal to user_login_id' do
+      it 'should return correct amount of sysadmins' do
+        sysadmins = User.get_sysadmins [user.id]
+        expect(sysadmins.size).to eq 1
+      end
 
-    it 'should include intended sysadmin' do
-      sysadmins = User.get_sysadmins [user.id]
-      pw_name_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_name] }
-      expect(pw_name_sysadmins).to include user.user_login_id
-    end
+      it 'should include intended sysadmin' do
+        sysadmins = User.get_sysadmins [user.id]
+        pw_name_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_name] }
+        expect(pw_name_sysadmins).to include user.user_login_id
+      end
 
-    it 'should not included nil on pw_gid' do
-      sysadmins = User.get_sysadmins [user.id]
-      pw_gid_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_gid] }
-      expect(pw_gid_sysadmins).not_to include nil
+      it 'should not included nil on pw_gid' do
+        sysadmins = User.get_sysadmins [user.id]
+        pw_gid_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_gid] }
+        expect(pw_gid_sysadmins).not_to include nil
+      end
     end
   end
 
