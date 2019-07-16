@@ -722,6 +722,13 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    context 'given nonexistant user' do
+      it 'should return zero amount of sysadmins' do
+        sysadmins = User.get_sysadmins [0]
+        expect(sysadmins.size).to eq 0
+      end
+    end
   end
 
   describe '.check_email_address' do
