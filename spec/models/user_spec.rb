@@ -688,6 +688,12 @@ RSpec.describe User, type: :model do
       pw_name_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_name] }
       expect(pw_name_sysadmins).to include user.user_login_id
     end
+
+    it 'should not included nil on pw_gid' do
+      sysadmins = User.get_sysadmins [user.id]
+      pw_gid_sysadmins = sysadmins.map { |sysadmin| sysadmin[:pw_gid] }
+      expect(pw_gid_sysadmins).not_to include nil
+    end
   end
 
   describe '.check_email_address' do
