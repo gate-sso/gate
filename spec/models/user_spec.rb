@@ -676,6 +676,14 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '.get_sysadmins' do
+    let(:user) { create(:user) }
+    it 'should return correct amount of sysadmins' do
+      sysadmins = User.get_sysadmins [user.id]
+      expect(sysadmins.size).to eq 1
+    end
+  end
+
   describe '.check_email_address' do
     it 'should check valid email address' do
       email_address = 'satrya@gmail.com'
