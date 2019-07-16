@@ -224,6 +224,14 @@ RSpec.describe User, type: :model do
       expect(user.public_key).to eq(attrs[:public_key])
     end
 
+    it 'should update the name' do
+      name = 'test_name'
+
+      user.update_profile(name: name)
+
+      expect(user.name).to eq(name)
+    end
+
     it 'should update the public_key' do
       rsa_key = OpenSSL::PKey::RSA.new(2048)
       public_key = rsa_key.public_key.to_pem
@@ -291,13 +299,6 @@ RSpec.describe User, type: :model do
   context ".update_profile" do
     before(:each) do
       @user = create(:user)
-    end
-
-    it "should update the name" do
-      name = "test_name"
-      @user.update_profile({ 'name' => name })
-      @user = User.find(@user.id)
-      expect(@user.name).to eq(name)
     end
 
     it "should update the product name" do
