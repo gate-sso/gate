@@ -448,6 +448,16 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#get_passwd_uid_response' do
+    it 'should return response with pw_name equal user_login_id' do
+      user = create(:user)
+
+      response = user.get_passwd_uid_response
+
+      expect(response[:pw_name]).to eq(user.user_login_id)
+    end
+  end
+
   describe '.get_shadow_name_response' do
     it 'should return response with sp_namp equal user_login_id' do
       user = create(:user)
@@ -455,16 +465,6 @@ RSpec.describe User, type: :model do
       response = User.get_shadow_name_response user.name
 
       expect(response[:sp_namp]).to eq(user.user_login_id)
-    end
-  end
-
-  describe '.get_passwd_uid_response' do
-    it 'should return response with pw_name equal user_login_id' do
-      user = create(:user)
-
-      response = user.get_passwd_uid_response user
-
-      expect(response[:pw_name]).to eq(user.user_login_id)
     end
   end
 
