@@ -224,6 +224,14 @@ RSpec.describe User, type: :model do
       expect(user.public_key).to eq(attrs[:public_key])
     end
 
+    it 'should update the product name' do
+      name = 'test_product'
+
+      user.update_profile(product_name: name)
+
+      expect(user.product_name).to eq(name)
+    end
+
     it 'should update the name' do
       name = 'test_name'
 
@@ -294,19 +302,6 @@ RSpec.describe User, type: :model do
 
   before(:each) do
     create(:group)
-  end
-
-  context ".update_profile" do
-    before(:each) do
-      @user = create(:user)
-    end
-
-    it "should update the product name" do
-      name = "test_product"
-      @user.update_profile({ 'product_name' => name })
-      @user = User.find(@user.id)
-      expect(@user.product_name).to eq(name)
-    end
   end
 
   it "should set deactivation time when user is deactivated" do
