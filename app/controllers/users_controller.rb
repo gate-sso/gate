@@ -11,6 +11,16 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
+    @user_groups = Group.
+      select(%{
+        groups.id AS id,
+        gid,
+        name,
+        deleted_at,
+        group_associations.expiration_date AS group_expiration_date
+      }).
+      joins('INNER JOIN group_associations ON groups.id = group_associations.group_id').
+      where('group_associations.user_id = ?', @user.id)
 
     if @user.access_token.blank?
       access_token = AccessToken.new
@@ -23,7 +33,6 @@ class UsersController < ApplicationController
 
     return unless current_user.admin? || current_user == @user
 
-    @groups = Group.all
     render_404 if @user.blank?
 
     return unless @user.present? && (current_user.admin? || current_user.id == @user.id)
