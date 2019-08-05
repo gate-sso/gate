@@ -36,7 +36,7 @@
   br
   .card
     .card-body
-      h6.card-title Groups Members (#{@group.users.count})
+      h6.card-title Groups Members (#{@group_users.length})
       .table-responsive
         table.table.table-striped
           thead
@@ -46,7 +46,7 @@
               th Expiration Date
               th
           tbody
-            - @group.users.sort_by{ |user| user.email}.each do |user|
+            - @group_users.sort_by{ |user| user.email}.each do |user|
               tr
                 td
                   - if user.active?
@@ -56,12 +56,12 @@
                 td
                   = "#{user.email}"
                 td
-                  = "#{user.group_expiration_date @group.id}"
+                  = "#{user.group_expiration_date}"
                 td
                   = link_to "Delete", [@group, user], method: :delete, data: {confirm: 'Are you sure to remove this user from the group?'} if current_user.admin or @group.admin?(current_user)
 
       br
-      = "*This group does not have any group members" if @group.users.count == 0
+      = "*This group does not have any group members" if @group_users.length == 0
       br
       - if current_user.admin or @group.admin?(current_user)
         .h7 Assign members

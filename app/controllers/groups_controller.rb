@@ -40,11 +40,16 @@ class GroupsController < ApplicationController
   end
 
   def show
-    # This is set in before_action filter
-    # @group = Group.find(params[:id])
-    @vpns = Vpn.all.select { |vpn| vpn.groups.count.zero? }
-    @users = User.where(active: true)
-    @host_machines = HostMachine.all
+    @group_users = User.
+      select(%Q{
+        users.id AS id,
+        name,
+        email,
+        active,
+        group_associations.expiration_date AS group_expiration_date
+      }).
+      joins('LEFT OUTER JOIN group_associations ON users.id = group_associations.user_id').
+      where('group_associations.group_id = ?', @group.id)
   end
 
   def delete_machine

@@ -58,6 +58,44 @@ RSpec.describe GroupsController, type: :controller do
     end
   end
 
+  describe 'GET #show' do
+    context 'unauthenticated' do
+      it 'should return 302' do
+        get :index
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated as admin' do
+      context '' do
+        it 'should return specified group' do
+          sign_in admin
+          group = create(:group)
+          get :show, params: { id: group.id }
+          expect(response).to have_http_status(200)
+        end
+
+        it 'should populate group_users instance variable' do
+          sign_in admin
+          user = create(:user)
+          group = create(:group)
+          create(:group_association, group_id: group.id, user_id: user.id, expiration_date: '2020-01-01')
+          get :show, params: { id: group.id }
+          expect(assigns(:group_users).first.to_json).to eq(
+            {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              active: user.active,
+              group_expiration_date: '2020-01-01'
+            }.to_json
+          )
+        end
+      end
+    end
+  end
+
   describe 'POST #add_user' do
     context 'unauthenticated' do
       it 'should return 302' do
