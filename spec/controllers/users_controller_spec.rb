@@ -25,7 +25,8 @@ RSpec.describe UsersController, type: :controller do
         sign_in user
         create(:group_association, group_id: group.id, user_id: user.id, expiration_date: '2020-01-01')
         get :show, params: { id: user.id }
-        expect(assigns(:user_groups).first.to_json).to eq(
+        expected_group = assigns(:user_groups).select { |user_group| user_group.id == group.id }
+        expect(expected_group.first.to_json).to eq(
           {
             id: group.id,
             name: group.name,
