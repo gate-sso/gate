@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 
+## [1.0.5] - 2019-08-06
+### Fixed
+- Improve loading time when opening group and user show page
+
 ## [1.0.4] - 2019-07-17
 ### Fixed
 - If a user don't have any VPNs, they should still be able to click download VPN without incurring exception
