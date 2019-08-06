@@ -5,6 +5,40 @@ RSpec.describe UsersController, type: :controller do
   let!(:group) { FactoryBot.create(:group)  }
   let(:user) { FactoryBot.create(:user, name: "foobar", user_login_id: "foobar", email: "foobar@foobar.com")  }
 
+  describe 'GET #show' do
+    context 'unauthenticated' do
+      it 'should return 302' do
+        get :index
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated' do
+      it 'should return specified user' do
+        sign_in user
+        get :show, params: { id: user.id }
+        expect(response).to have_http_status(200)
+      end
+
+      it 'should populate user_groups instance variable' do
+        sign_in user
+        create(:group_association, group_id: group.id, user_id: user.id, expiration_date: '2020-01-01')
+        get :show, params: { id: user.id }
+        expected_group = assigns(:user_groups).select { |user_group| user_group.id == group.id }
+        expect(expected_group.first.to_json).to eq(
+          {
+            id: group.id,
+            name: group.name,
+            gid: group.gid,
+            deleted_at: group.deleted_at,
+            group_expiration_date: '2020-01-01',
+          }.to_json
+        )
+      end
+    end
+  end
+
   context "update user profile" do
     it "should update profile with product name" do
       sign_in user

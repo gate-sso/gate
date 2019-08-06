@@ -1,3 +1,4 @@
+dist: xenial
 sudo: required
 language: ruby
 rvm:
@@ -5,13 +6,6 @@ rvm:
 services:
   - redis-server
   - mysql
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-      - mysql-client
 
 env:
   global:

@@ -6,6 +6,7 @@ RSpec.describe 'groups/show', type: :view do
     it 'should renders form to add user to group' do
       sign_in admin
       assign(:group, group)
+      assign(:group_users, [])
   
       render
   

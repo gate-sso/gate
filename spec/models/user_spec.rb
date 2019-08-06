@@ -311,19 +311,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#group_expiration_date' do
-    it 'should return expiration date from group' do
-      user = create(:user)
-      group = create(:group)
-      expiration_date = Date.parse('2019-10-20')
-      group.add_user_with_expiration(user.id, expiration_date)
-
-      user_expiration_date = user.group_expiration_date group.id
-
-      expect(user_expiration_date).to eq(expiration_date)
-    end
-  end
-
   describe '#uid' do
     it 'should check uid creation with offset' do
       user = create(:user)

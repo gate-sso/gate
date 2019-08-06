@@ -60,13 +60,13 @@
               th Expiration Date
               th Action
           tbody
-            - @user.groups.each do |group|
+            - @user_groups.each do |group|
               - unless group.deleted?
               tr
                 td
                   = "#{group.name} (#{group.gid})"
                 td
-                  = "#{@user.group_expiration_date group.id}"
+                  = "#{group.group_expiration_date}"
                 td
                   = link_to "Remove group", [@user, group], method: :delete, data: {confirm: 'Are you sure to delete this group?'} if current_user.admin?
       br
