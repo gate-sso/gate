@@ -157,7 +157,25 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  context "update user profile" do
+  context 'update user profile' do
+    context 'unauthenticated' do
+      it 'should return 302 http status' do
+        patch :update, params: { id: user.id, product_name: product_name }
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should redirect to profile path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        patch :update, params: { id: user.id, product_name: product_name }
+        expect(response).to redirect_to(profile_path)
+      end
+    end
+
     it "should update profile with product name" do
       sign_in user
 

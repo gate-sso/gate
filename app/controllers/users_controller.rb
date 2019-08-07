@@ -73,6 +73,8 @@ class UsersController < ApplicationController
   end
 
   def update
+    return redirect_to(profile_path) unless current_user.admin?
+
     @user = User.find(params[:id])
     begin
       @user.update(product_name: product_name)
