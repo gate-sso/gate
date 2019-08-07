@@ -43,14 +43,12 @@ class UsersController < ApplicationController
   end
 
   def new
-    if current_user.admin
-      render :new, locals: {
-        roles: ENV['USER_ROLES'].split(','),
-        domains: ENV['GATE_HOSTED_DOMAINS'].split(','),
-      }
-    else
-      redirect_to profile_path
-    end
+    return redirect_to profile_path unless current_user.admin?
+
+    render :new, locals: {
+      roles: ENV['USER_ROLES'].split(','),
+      domains: ENV['GATE_HOSTED_DOMAINS'].split(','),
+    }
   end
 
   def create
