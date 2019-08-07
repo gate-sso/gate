@@ -99,6 +99,23 @@ RSpec.describe UsersController, type: :controller do
         end
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should redirect to users path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        expect(response).to redirect_to(users_path)
+      end
+    end
   end
 
   context "update user profile" do

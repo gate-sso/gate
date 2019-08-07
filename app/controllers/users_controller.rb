@@ -54,6 +54,8 @@ class UsersController < ApplicationController
   end
 
   def create
+    return redirect_to(users_path) unless current_user.admin?
+
     user = User.add_user(
       user_params[:first_name],
         user_params[:last_name],
