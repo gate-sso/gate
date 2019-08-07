@@ -85,31 +85,31 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        {name: "new_name", access_key: "xyz"}
-      }
+  describe 'PUT #update' do
+    context 'authenticated as admin' do
+      context 'with valid params' do
+        let(:new_attributes) { { name: 'new_name', access_key: 'xyz' } }
 
-      it "updates the requested api_resource" do
-        api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => new_attributes}, session: valid_session
-        api_resource.reload
-        expect(api_resource.name).to eq("new_name")
+        it 'updates the requested api_resource' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+          api_resource.reload
+          expect(api_resource.name).to eq('new_name')
+        end
+
+        it 'redirects to the api_resource' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: valid_attributes }
+          expect(response).to redirect_to(api_resources_url)
+        end
       end
 
-      it "redirects to the api_resource" do
-        api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => valid_attributes}, session: valid_session
-        expect(response).to redirect_to(api_resources_url)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
-        api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => invalid_attributes}, session: valid_session
-        expect(response).to be_success
+      context 'with invalid params' do
+        it 'returns a success response (i.e. to display the "edit" template)' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: invalid_attributes }
+          expect(response).to be_success
+        end
       end
     end
   end
