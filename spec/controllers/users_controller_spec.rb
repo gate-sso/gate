@@ -39,6 +39,16 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
+  describe 'POST #create' do
+    context 'unauthenticated' do
+      it 'should return 302 http status' do
+        post :create
+
+        expect(response).to have_http_status(302)
+      end
+    end
+  end
+
   context "update user profile" do
     it "should update profile with product name" do
       sign_in user
