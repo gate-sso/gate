@@ -36,6 +36,14 @@ RSpec.describe UsersController, type: :controller do
           }.to_json
         )
       end
+
+      context 'user not found' do
+        it 'should return 404 page' do
+          sign_in user
+          get :show, params: { id: 999 }
+          expect(response).to have_http_status(404)
+        end
+      end
     end
   end
 

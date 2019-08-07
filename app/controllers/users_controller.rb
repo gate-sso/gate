@@ -11,6 +11,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
+    return render_404 if @user.blank?
+
     @user_groups = Group.
       select(%{
         groups.id AS id,
@@ -32,8 +34,6 @@ class UsersController < ApplicationController
     @vpns = Vpn.user_vpns @user
 
     return unless current_user.admin? || current_user == @user
-
-    render_404 if @user.blank?
 
     return unless @user.present? && (current_user.admin? || current_user.id == @user.id)
 
