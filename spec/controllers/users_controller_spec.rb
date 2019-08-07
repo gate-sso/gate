@@ -64,6 +64,21 @@ RSpec.describe UsersController, type: :controller do
         expect(created_user.email).to eq 'firstname.lastname@test.com'
       end
 
+      it 'should redirect to user path' do
+        admin = create(:user)
+        sign_in admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(response).to redirect_to(user_path(created_user.id))
+      end
+
       context 'fail to create new user' do
         it 'should redirect to new user path' do
           admin = create(:user)
