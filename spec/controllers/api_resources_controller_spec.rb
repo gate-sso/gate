@@ -86,10 +86,9 @@ RSpec.describe ApiResourcesController, type: :controller do
   end
 
   describe 'PUT #update' do
+    let(:new_attributes) { { name: 'new_name', access_key: 'xyz' } }
     context 'authenticated as admin' do
       context 'with valid params' do
-        let(:new_attributes) { { name: 'new_name', access_key: 'xyz' } }
-
         it 'updates the requested api_resource' do
           api_resource = ApiResource.create! valid_attributes
           put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
@@ -110,6 +109,17 @@ RSpec.describe ApiResourcesController, type: :controller do
           put :update, params: { id: api_resource.to_param, api_resource: invalid_attributes }
           expect(response).to be_success
         end
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should not update api resource' do
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        api_resource = ApiResource.create! valid_attributes
+        put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+        updated_api_resource = ApiResource.find(api_resource.to_param)
+        expect(updated_api_resource.to_json).to eq(api_resource.to_json)
       end
     end
   end

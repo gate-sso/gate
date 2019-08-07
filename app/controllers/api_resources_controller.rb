@@ -54,6 +54,11 @@ class ApiResourcesController < ApplicationController
   # PATCH/PUT /api_resources/1
   # PATCH/PUT /api_resources/1.json
   def update
+    unless current_user.admin?
+      return respond_to do |format|
+        format.html { redirect_to api_resources_path }
+      end
+    end
     respond_to do |format|
       if @api_resource.update(api_resource_params)
         format.html { redirect_to api_resources_path, notice: 'Api resource was successfully updated.' }
