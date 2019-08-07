@@ -115,6 +115,22 @@ RSpec.describe UsersController, type: :controller do
         }
         expect(response).to redirect_to(users_path)
       end
+
+      it 'should not create new user' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(created_user).to be nil
+      end
     end
   end
 
