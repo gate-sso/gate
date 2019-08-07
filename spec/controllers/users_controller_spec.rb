@@ -174,6 +174,14 @@ RSpec.describe UsersController, type: :controller do
         patch :update, params: { id: user.id, product_name: product_name }
         expect(response).to redirect_to(profile_path)
       end
+
+      it 'should give flash message' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        patch :update, params: { id: user.id, product_name: product_name }
+        expect(flash[:errors]).to eq('unauthorized access')
+      end
     end
 
     it "should update profile with product name" do

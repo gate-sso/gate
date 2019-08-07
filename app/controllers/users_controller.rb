@@ -73,7 +73,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    return redirect_to(profile_path) unless current_user.admin?
+    unless current_user.admin?
+      flash[:errors] = 'unauthorized access'
+      return redirect_to profile_path
+    end
 
     @user = User.find(params[:id])
     begin
