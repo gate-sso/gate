@@ -72,6 +72,27 @@ RSpec.describe ::Api::V1::UsersController, type: :controller do
         expect(response.status).to eq(401)
       end
     end
+
+    context 'authenticated as itself' do
+      it 'should return 200 http status code' do
+        user = create(:user, admin: false)
+        access_token = create(:access_token, token: SecureRandom.uuid)
+        user.access_token = access_token
+        require 'openssl'
+        rsa_key = OpenSSL::PKey::RSA.new(2048)
+        public_key = rsa_key.public_key.to_pem
+        name = 'test_name'
+        product_name = 'test_product'
+        post :update, params: {
+          access_token: access_token.token,
+          public_key: public_key,
+          product_name: product_name,
+          name: name,
+          email: user.email,
+        }
+        expect(response.status).to eq(200)
+      end
+    end
   end
 
   describe 'User Details' do

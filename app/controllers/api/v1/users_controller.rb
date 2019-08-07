@@ -25,7 +25,7 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   end
 
   def update
-    return raise_unauthorized unless current_user.admin?
+    return raise_unauthorized unless current_user.admin? || current_user == @user
 
     render json: { success: @user.update_profile(user_params) }
   end
