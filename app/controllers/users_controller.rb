@@ -54,7 +54,7 @@ class UsersController < ApplicationController
   def create
     unless current_user.admin?
       flash[:errors] = 'unauthorized access'
-      return redirect_to(users_path)
+      return redirect_to profile_path
     end
 
     user = User.add_user(

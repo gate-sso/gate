@@ -101,7 +101,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     context 'authenticated as non admin' do
-      it 'should redirect to users path' do
+      it 'should redirect to profile path' do
         create(:user)
         non_admin = create(:user, admin: false)
         sign_in non_admin
@@ -113,7 +113,7 @@ RSpec.describe UsersController, type: :controller do
           },
           user_domain: 'test.com',
         }
-        expect(response).to redirect_to(users_path)
+        expect(response).to redirect_to(profile_path)
       end
 
       it 'should not create new user' do
