@@ -47,6 +47,23 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to have_http_status(302)
       end
     end
+
+    context 'authenticated as admin' do
+      it 'should successfully create a new user' do
+        admin = create(:user)
+        sign_in admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(created_user.email).to eq 'firstname.lastname@test.com'
+      end
+    end
   end
 
   context "update user profile" do
