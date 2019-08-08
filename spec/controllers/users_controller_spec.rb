@@ -240,26 +240,28 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe "GET #regenerate_token" do
-    before(:each) do
-      access_token = AccessToken.new
-      access_token.token = ROTP::Base32.random_base32
-      access_token.user = user
-      access_token.save!
+  describe 'GET #regenerate_token' do
+    context 'authenticated as owner' do
+      before(:each) do
+        access_token = AccessToken.new
+        access_token.token = ROTP::Base32.random_base32
+        access_token.user = user
+        access_token.save!
 
-      sign_in user
-    end
+        sign_in user
+      end
 
-    it "regenerates access token of the requested user" do
-      old_hashed_token = user.access_token.hashed_token
-      get :regenerate_token, params: {:id => user.to_param}
-      user.reload
-      expect(user.access_token.hashed_token).to_not eq old_hashed_token
-    end
+      it 'regenerates access token of the requested user' do
+        old_hashed_token = user.access_token.hashed_token
+        get :regenerate_token, params: { id: user.to_param }
+        user.reload
+        expect(user.access_token.hashed_token).to_not eq old_hashed_token
+      end
 
-    it "redirects to the user" do
-      get :regenerate_token, params: {:id => user.to_param}
-      expect(response).to redirect_to(user_path(user.id))
+      it 'redirects to the user' do
+        get :regenerate_token, params: { id: user.to_param }
+        expect(response).to redirect_to(user_path(user.id))
+      end
     end
   end
 end
