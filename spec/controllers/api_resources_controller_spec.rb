@@ -173,6 +173,12 @@ RSpec.describe ApiResourcesController, type: :controller do
         delete :destroy, params: { id: api_resource.to_param }
         expect(response).to redirect_to(api_resources_url)
       end
+
+      it 'should flash notice success' do
+        api_resource = ApiResource.create! valid_attributes
+        delete :destroy, params: { id: api_resource.to_param }
+        expect(flash[:notice]).to eq('Api resource was successfully destroyed.')
+      end
     end
 
     context 'authenticated as non admin' do
