@@ -238,6 +238,18 @@ RSpec.describe ApiResourcesController, type: :controller do
       end
     end
 
+    context 'authenticated as owner' do
+      it 'should regenerates access_key of the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        api_resource.update(user: create(:user, admin: false))
+        sign_in api_resource.user
+        old_hashed_access_key = api_resource.hashed_access_key
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        api_resource.reload
+        expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+      end
+    end
+
     context 'authenticated as non admin' do
       it 'should flash notice unauthorized access' do
         non_admin = create(:user, admin: false)

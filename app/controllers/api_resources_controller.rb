@@ -102,7 +102,7 @@ class ApiResourcesController < ApplicationController
 
   # GET /api_resources/:id/regenerate_access_key
   def regenerate_access_key
-    unless current_user.admin?
+    unless current_user.admin? || current_user == @api_resource.user
       return respond_to do |format|
         format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
         format.json { render json: {}, status: :unauthorized }
