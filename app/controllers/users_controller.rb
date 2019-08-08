@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_paper_trail_whodunnit
-
   before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key]
+  before_action :authorize_user, only: %i[create update]
 
   def index
     @user_search = params[:user_search]
@@ -52,11 +52,6 @@ class UsersController < ApplicationController
   end
 
   def create
-    unless current_user.admin?
-      flash[:errors] = 'unauthorized access'
-      return redirect_to profile_path
-    end
-
     user = User.add_user(
       user_params[:first_name],
         user_params[:last_name],
@@ -73,11 +68,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    unless current_user.admin?
-      flash[:errors] = 'unauthorized access'
-      return redirect_to profile_path
-    end
-
     @user = User.find(params[:id])
     begin
       @user.update(product_name: product_name)
@@ -147,5 +137,12 @@ class UsersController < ApplicationController
 
   def product_name
     params.require(:product_name)
+  end
+
+  def authorize_user
+    unless current_user.admin?
+      flash[:errors] = 'unauthorized access'
+      redirect_to profile_path
+    end
   end
 end
