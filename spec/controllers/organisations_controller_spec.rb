@@ -69,6 +69,15 @@ describe OrganisationsController, type: :controller do
         }
         expect(updated_organisation_data.to_json).to eq(valid_attributes.to_json)
       end
+
+      it 'should redirect to organisations path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        organisation = create(:organisation, valid_attributes)
+        patch :update, params: { id: organisation.id, organisation: new_attributes }
+        expect(response).to redirect_to(organisations_path)
+      end
     end
   end
 end
