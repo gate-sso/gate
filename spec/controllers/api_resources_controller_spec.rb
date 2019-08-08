@@ -246,6 +246,16 @@ RSpec.describe ApiResourcesController, type: :controller do
         get :regenerate_access_key, params: { id: api_resource.to_param }
         expect(flash[:notice]).to eq('Unauthorized access')
       end
+
+      context 'json response' do
+        it 'should return 401 http status' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          get :regenerate_access_key, params: { format: :json, id: api_resource.to_param }
+          expect(response).to have_http_status(401)
+        end
+      end
     end
   end
 

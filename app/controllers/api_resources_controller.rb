@@ -105,6 +105,7 @@ class ApiResourcesController < ApplicationController
     unless current_user.admin?
       return respond_to do |format|
         format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
+        format.json { render json: {}, status: :unauthorized }
       end
     end
     @api_resource.access_key = ROTP::Base32.random_base32
