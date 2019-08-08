@@ -13,6 +13,18 @@ RSpec.describe HostMachinesController, type: :controller do
     end
   end
 
+  describe 'PATCH #update' do
+    context 'authenticated as admin' do
+      it 'should update requested host machine' do
+        host_machine = create(:host_machine, default_admins: true)
+        sign_in user
+        patch :update, params: { id: host_machine.id, host_machine: { default_admins: false } }
+        host_machine.reload
+        expect(host_machine.default_admins). to be false
+      end
+    end
+  end
+
   describe 'DELETE #delete_group' do
     context 'authenticated as admin' do
       it 'should delete group from host machine' do
