@@ -243,24 +243,25 @@ RSpec.describe UsersController, type: :controller do
   describe 'GET #regenerate_token' do
     context 'authenticated as owner' do
       before(:each) do
+        owner = create(:user, admin: false)
         access_token = AccessToken.new
         access_token.token = ROTP::Base32.random_base32
-        access_token.user = user
+        access_token.user = owner
         access_token.save!
 
-        sign_in user
+        sign_in owner
       end
 
       it 'regenerates access token of the requested user' do
-        old_hashed_token = user.access_token.hashed_token
-        get :regenerate_token, params: { id: user.to_param }
-        user.reload
-        expect(user.access_token.hashed_token).to_not eq old_hashed_token
+        old_hashed_token = owner.access_token.hashed_token
+        get :regenerate_token, params: { id: owner.to_param }
+        owner.reload
+        expect(owner.access_token.hashed_token).to_not eq old_hashed_token
       end
 
       it 'redirects to the user' do
-        get :regenerate_token, params: { id: user.to_param }
-        expect(response).to redirect_to(user_path(user.id))
+        get :regenerate_token, params: { id: owner.to_param }
+        expect(response).to redirect_to(user_path(owner.id))
       end
     end
   end
