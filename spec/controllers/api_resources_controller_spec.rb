@@ -234,5 +234,4 @@ RSpec.describe ApiResourcesController, type: :controller do
 
     end
   end
-
 end
