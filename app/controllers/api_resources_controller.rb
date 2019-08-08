@@ -1,7 +1,7 @@
 class ApiResourcesController < ApplicationController
   before_action :set_api_resource, only: %i[show edit update destroy regenerate_access_key]
   before_action :authenticate_user!, except: [:authenticate]
-  before_action :authorize_user, only: %i[regenerate_access_key destroy]
+  before_action :authorize_user, only: %i[regenerate_access_key destroy update]
 
   # GET /api_resources
   # GET /api_resources.json
@@ -55,12 +55,6 @@ class ApiResourcesController < ApplicationController
   # PATCH/PUT /api_resources/1
   # PATCH/PUT /api_resources/1.json
   def update
-    unless current_user.admin? || current_user == @api_resource.user
-      return respond_to do |format|
-        format.html { redirect_to api_resources_path, notice: 'Unauthorized access' }
-        format.json { render json: {}, status: :unauthorized }
-      end
-    end
     respond_to do |format|
       if @api_resource.update(api_resource_params)
         format.html { redirect_to api_resources_path, notice: 'Api resource was successfully updated.' }
