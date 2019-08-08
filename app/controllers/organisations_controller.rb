@@ -75,6 +75,8 @@ class OrganisationsController < ApplicationController
   end
 
   def update
+    return unless current_user.admin?
+
     @org.update_profile(organisation_params.to_h || {})
     if @org.errors.blank?
       flash[:success] = 'Successfully updated organisation'
