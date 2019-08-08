@@ -237,6 +237,16 @@ RSpec.describe ApiResourcesController, type: :controller do
         expect(response).to redirect_to(api_resource_path(api_resource.id))
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should flash notice unauthorized access' do
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        api_resource = ApiResource.create! valid_attributes
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
+    end
   end
 
   describe "Authenticate" do

@@ -102,6 +102,11 @@ class ApiResourcesController < ApplicationController
 
   # GET /api_resources/:id/regenerate_access_key
   def regenerate_access_key
+    unless current_user.admin?
+      return respond_to do |format|
+        format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
+      end
+    end
     @api_resource.access_key = ROTP::Base32.random_base32
     respond_to do |format|
       if @api_resource.save
