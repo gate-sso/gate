@@ -34,6 +34,15 @@ RSpec.describe HostMachinesController, type: :controller do
         host_machine.reload
         expect(host_machine.default_admins). to be true
       end
+
+      it 'redirect to host machines path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine, default_admins: true)
+        sign_in non_admin
+        patch :update, params: { id: host_machine.id, host_machine: { default_admins: false } }
+        expect(response).to redirect_to(host_machines_path)
+      end
     end
   end
 

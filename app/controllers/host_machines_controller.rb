@@ -34,7 +34,7 @@ class HostMachinesController < ApplicationController
   end
 
   def update
-    return unless current_user.admin?
+    return redirect_to host_machines_path unless current_user.admin?
 
     @host_machine.update(default_admins: params[:host_machine][:default_admins])
     redirect_to host_machine_path @host_machine
