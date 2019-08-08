@@ -26,5 +26,19 @@ RSpec.describe HostMachinesController, type: :controller do
         expect(host_machine.groups.count).to eq(0)
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should not delete group from host machine' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine)
+        group = create(:group)
+        host_machine.groups << group
+        sign_in non_admin
+        delete :delete_group, params: { id: host_machine.id, group_id: group.id }
+        host_machine.reload
+        expect(host_machine.groups.count).to eq(1)
+      end
+    end
   end
 end

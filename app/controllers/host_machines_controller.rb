@@ -54,6 +54,8 @@ class HostMachinesController < ApplicationController
   end
 
   def delete_group
+    return unless current_user.admin?
+
     group = Group.find(params[:group_id])
     @host_machine.groups.delete(group)
     @host_machine.save!
