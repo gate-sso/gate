@@ -160,18 +160,19 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      expect {
-        delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
-      }.to change(ApiResource, :count).by(-1)
-    end
+  describe 'DELETE #destroy' do
+    context 'authenticated as admin' do
+      it 'destroys the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        expect { delete :destroy, params: { id: api_resource.to_param } }.
+          to change(ApiResource, :count).by(-1)
+      end
 
-    it "redirects to the api_resources list" do
-      api_resource = ApiResource.create! valid_attributes
-      delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
-      expect(response).to redirect_to(api_resources_url)
+      it 'redirects to the api_resources list' do
+        api_resource = ApiResource.create! valid_attributes
+        delete :destroy, params: { id: api_resource.to_param }
+        expect(response).to redirect_to(api_resources_url)
+      end
     end
   end
 
