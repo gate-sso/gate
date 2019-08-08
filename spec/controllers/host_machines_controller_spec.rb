@@ -39,6 +39,17 @@ RSpec.describe HostMachinesController, type: :controller do
         host_machine.reload
         expect(host_machine.groups.count).to eq(1)
       end
+
+      it 'should redirect to host machines path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine)
+        group = create(:group)
+        host_machine.groups << group
+        sign_in non_admin
+        delete :delete_group, params: { id: host_machine.id, group_id: group.id }
+        expect(response).to redirect_to(host_machines_path)
+      end
     end
   end
 end
