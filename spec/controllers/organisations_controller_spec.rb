@@ -78,6 +78,15 @@ describe OrganisationsController, type: :controller do
         patch :update, params: { id: organisation.id, organisation: new_attributes }
         expect(response).to redirect_to(organisations_path)
       end
+
+      it 'should flash unauthorized access' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        organisation = create(:organisation, valid_attributes)
+        patch :update, params: { id: organisation.id, organisation: new_attributes }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
     end
   end
 end

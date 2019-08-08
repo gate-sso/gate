@@ -75,7 +75,9 @@ class OrganisationsController < ApplicationController
   end
 
   def update
-    return redirect_to organisations_path unless current_user.admin?
+    unless current_user.admin?
+      return redirect_to organisations_path, notice: 'Unauthorized access'
+    end
 
     @org.update_profile(organisation_params.to_h || {})
     if @org.errors.blank?
