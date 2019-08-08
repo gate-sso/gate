@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Improve access policy for actions on resources including profile, user, api resource, host machine, organisation
 
 ## [1.0.5] - 2019-08-06
 ### Fixed
