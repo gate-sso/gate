@@ -221,19 +221,21 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "GET #regenerate_access_key" do
-    it "regenerates access_key of the requested api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      old_hashed_access_key = api_resource.hashed_access_key
-      get :regenerate_access_key, params: {:id => api_resource.to_param}, session: valid_session
-      api_resource.reload
-      expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
-    end
+  describe 'GET #regenerate_access_key' do
+    context 'authenticated as admin' do
+      it 'should regenerates access_key of the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        old_hashed_access_key = api_resource.hashed_access_key
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        api_resource.reload
+        expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+      end
 
-    it "redirects to the api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      get :regenerate_access_key, params: {:id => api_resource.to_param}
-      expect(response).to redirect_to(api_resource_path(api_resource.id))
+      it 'should redirects to the api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        expect(response).to redirect_to(api_resource_path(api_resource.id))
+      end
     end
   end
 
