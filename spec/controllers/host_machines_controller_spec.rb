@@ -12,4 +12,19 @@ RSpec.describe HostMachinesController, type: :controller do
       expect(response.body).to eq(host_machines.map { |m| { id: m.id, name: m.name } }.to_json)
     end
   end
+
+  describe 'DELETE #delete_group' do
+    context 'authenticated as admin' do
+      it 'should delete group from host machine' do
+        admin = create(:user)
+        host_machine = create(:host_machine)
+        group = create(:group)
+        host_machine.groups << group
+        sign_in admin
+        delete :delete_group, params: { id: host_machine.id, group_id: group.id }
+        host_machine.reload
+        expect(host_machine.groups.count).to eq(0)
+      end
+    end
+  end
 end
