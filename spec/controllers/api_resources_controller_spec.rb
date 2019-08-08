@@ -121,6 +121,16 @@ RSpec.describe ApiResourcesController, type: :controller do
         updated_api_resource = ApiResource.find(api_resource.to_param)
         expect(updated_api_resource.to_json).to eq(api_resource.to_json)
       end
+
+      context 'html response' do
+        it 'should return notice unauthorized access' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+          expect(flash[:notice]).to eq('Unauthorized access')
+        end
+      end
     end
   end
 
