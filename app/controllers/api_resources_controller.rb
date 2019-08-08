@@ -1,6 +1,7 @@
 class ApiResourcesController < ApplicationController
   before_action :set_api_resource, only: %i[show edit update destroy regenerate_access_key]
   before_action :authenticate_user!, except: [:authenticate]
+  before_action :authorize_user, only: %i[regenerate_access_key destroy]
 
   # GET /api_resources
   # GET /api_resources.json
@@ -74,12 +75,6 @@ class ApiResourcesController < ApplicationController
   # DELETE /api_resources/1
   # DELETE /api_resources/1.json
   def destroy
-    unless current_user == @api_resource.user || current_user.admin
-      return respond_to do |format|
-        format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
-        format.json { render json: {}, status: :unauthorized }
-      end
-    end
     @api_resource.group.destroy if @api_resource.group.present?
     @api_resource.destroy
     respond_to do |format|
@@ -102,12 +97,6 @@ class ApiResourcesController < ApplicationController
 
   # GET /api_resources/:id/regenerate_access_key
   def regenerate_access_key
-    unless current_user.admin? || current_user == @api_resource.user
-      return respond_to do |format|
-        format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
-        format.json { render json: {}, status: :unauthorized }
-      end
-    end
     @api_resource.access_key = ROTP::Base32.random_base32
     respond_to do |format|
       if @api_resource.save
@@ -130,5 +119,14 @@ class ApiResourcesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def api_resource_params
     params.require(:api_resource).permit(:name, :access_key, :description, :user_id, :group_id)
+  end
+
+  def authorize_user
+    unless current_user.admin? || current_user == @api_resource.user
+      respond_to do |format|
+        format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
+        format.json { render json: {}, status: :unauthorized }
+      end
+    end
   end
 end
