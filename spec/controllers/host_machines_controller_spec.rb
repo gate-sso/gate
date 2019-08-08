@@ -23,6 +23,18 @@ RSpec.describe HostMachinesController, type: :controller do
         expect(host_machine.default_admins). to be false
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should not update requested host machine' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine, default_admins: true)
+        sign_in non_admin
+        patch :update, params: { id: host_machine.id, host_machine: { default_admins: false } }
+        host_machine.reload
+        expect(host_machine.default_admins). to be true
+      end
+    end
   end
 
   describe 'DELETE #delete_group' do
