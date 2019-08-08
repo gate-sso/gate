@@ -34,7 +34,9 @@ class HostMachinesController < ApplicationController
   end
 
   def update
-    return redirect_to host_machines_path unless current_user.admin?
+    unless current_user.admin?
+      return redirect_to host_machines_path, notice: 'Unauthorized access'
+    end
 
     @host_machine.update(default_admins: params[:host_machine][:default_admins])
     redirect_to host_machine_path @host_machine

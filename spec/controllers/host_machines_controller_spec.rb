@@ -35,13 +35,22 @@ RSpec.describe HostMachinesController, type: :controller do
         expect(host_machine.default_admins). to be true
       end
 
-      it 'redirect to host machines path' do
+      it 'should redirect to host machines path' do
         create(:user)
         non_admin = create(:user, admin: false)
         host_machine = create(:host_machine, default_admins: true)
         sign_in non_admin
         patch :update, params: { id: host_machine.id, host_machine: { default_admins: false } }
         expect(response).to redirect_to(host_machines_path)
+      end
+
+      it 'should flash message unathorized access' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine, default_admins: true)
+        sign_in non_admin
+        patch :update, params: { id: host_machine.id, host_machine: { default_admins: false } }
+        expect(flash[:notice]).to eq('Unauthorized access')
       end
     end
   end
