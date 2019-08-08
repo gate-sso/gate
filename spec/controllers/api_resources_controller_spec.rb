@@ -144,6 +144,18 @@ RSpec.describe ApiResourcesController, type: :controller do
           }
           expect(response).to have_http_status(401)
         end
+
+        it 'should return status error' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: {
+            format: 'json',
+            id: api_resource.to_param,
+            api_resource: new_attributes,
+          }
+          expect(response.body).to eq({ status: 'error' }.to_json)
+        end
       end
     end
   end

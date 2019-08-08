@@ -57,7 +57,7 @@ class ApiResourcesController < ApplicationController
     unless current_user.admin?
       return respond_to do |format|
         format.html { redirect_to api_resources_path, notice: 'Unauthorized access' }
-        format.json { render json: '', status: :unauthorized }
+        format.json { render json: { status: 'error' }, status: :unauthorized }
       end
     end
     respond_to do |format|
