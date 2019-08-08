@@ -54,7 +54,7 @@ class ApiResourcesController < ApplicationController
   # PATCH/PUT /api_resources/1
   # PATCH/PUT /api_resources/1.json
   def update
-    unless current_user.admin?
+    unless current_user.admin? || current_user == @api_resource.user
       return respond_to do |format|
         format.html { redirect_to api_resources_path, notice: 'Unauthorized access' }
         format.json { render json: { status: 'error' }, status: :unauthorized }

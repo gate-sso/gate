@@ -87,6 +87,17 @@ RSpec.describe ApiResourcesController, type: :controller do
 
   describe 'PUT #update' do
     let(:new_attributes) { { name: 'new_name', access_key: 'xyz' } }
+    context 'authenticated as owner' do
+      it 'should updates the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        api_resource.update(user: create(:user, admin: false))
+        sign_in api_resource.user
+        put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+        api_resource.reload
+        expect(api_resource.name).to eq('new_name')
+      end
+    end
+
     context 'authenticated as admin' do
       context 'with valid params' do
         it 'updates the requested api_resource' do
