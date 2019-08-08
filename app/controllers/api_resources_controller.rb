@@ -74,10 +74,13 @@ class ApiResourcesController < ApplicationController
   # DELETE /api_resources/1
   # DELETE /api_resources/1.json
   def destroy
-    if current_user == @api_resource.user || current_user.admin
-      @api_resource.group.destroy if @api_resource.group.present?
-      @api_resource.destroy
+    unless current_user == @api_resource.user || current_user.admin
+      return respond_to do |format|
+        format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
+      end
     end
+    @api_resource.group.destroy if @api_resource.group.present?
+    @api_resource.destroy
     respond_to do |format|
       format.html { redirect_to api_resources_url, notice: 'Api resource was successfully destroyed.' }
       format.json { head :no_content }
