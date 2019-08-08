@@ -77,6 +77,7 @@ class ApiResourcesController < ApplicationController
     unless current_user == @api_resource.user || current_user.admin
       return respond_to do |format|
         format.html { redirect_to api_resources_url, notice: 'Unauthorized access' }
+        format.json { render json: {}, status: :unauthorized }
       end
     end
     @api_resource.group.destroy if @api_resource.group.present?
