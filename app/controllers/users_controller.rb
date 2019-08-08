@@ -111,23 +111,22 @@ class UsersController < ApplicationController
   # GET /users/:id/regenerate_token
   def regenerate_token
     @user = User.find(params[:id])
-
-    if current_user.admin? || (current_user.id == @user.id)
-      @access_token = @user.access_token
-      @access_token.token = ROTP::Base32.random_base32
-      respond_to do |format|
-        if @access_token.save
-          format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: { token: @access_token.token } }
-          format.json { render :show, status: :ok, location: @user }
-        else
-          format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-        end
-      end
-    else
-      respond_to do |format|
+    unless current_user.admin? || (current_user.id == @user.id)
+      return respond_to do |format|
         format.html { redirect_to user_path(@user.id), notice: 'You cannot regenerate this token.' }
         format.json { render json: @user.errors, status: :unauthorized }
+      end
+    end
+
+    @access_token = @user.access_token
+    @access_token.token = ROTP::Base32.random_base32
+    respond_to do |format|
+      if @access_token.save
+        format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: { token: @access_token.token } }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
