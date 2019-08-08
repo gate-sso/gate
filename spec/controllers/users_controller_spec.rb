@@ -242,8 +242,9 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #regenerate_token' do
     context 'authenticated as owner' do
+      let(:owner) { create(:user, admin: false) }
       before(:each) do
-        owner = create(:user, admin: false)
+        create(:user)
         access_token = AccessToken.new
         access_token.token = ROTP::Base32.random_base32
         access_token.user = owner
