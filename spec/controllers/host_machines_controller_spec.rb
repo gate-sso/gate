@@ -50,6 +50,17 @@ RSpec.describe HostMachinesController, type: :controller do
         delete :delete_group, params: { id: host_machine.id, group_id: group.id }
         expect(response).to redirect_to(host_machines_path)
       end
+
+      it 'should flash notice message unauthorized access' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        host_machine = create(:host_machine)
+        group = create(:group)
+        host_machine.groups << group
+        sign_in non_admin
+        delete :delete_group, params: { id: host_machine.id, group_id: group.id }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
     end
   end
 end

@@ -54,7 +54,9 @@ class HostMachinesController < ApplicationController
   end
 
   def delete_group
-    return redirect_to host_machines_path unless current_user.admin?
+    unless current_user.admin?
+      return redirect_to host_machines_path, notice: 'Unauthorized access'
+    end
 
     group = Group.find(params[:group_id])
     @host_machine.groups.delete(group)
