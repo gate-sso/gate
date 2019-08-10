@@ -3,6 +3,8 @@ class HostMachinesController < ApplicationController
   before_action :set_host_machine, only: %i[add_group show edit update destroy delete_group]
   prepend_before_action :setup_user if Rails.env.development?
   before_action :authenticate_user!
+  before_action :authorize_user, only: %i[delete_group update]
+
   def index
     @title = 'Host'
     @host_machines = HostMachine.all
@@ -79,5 +81,11 @@ class HostMachinesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def host_machine_params
     params.require(:host_machine).permit(:name)
+  end
+
+  def authorize_user
+    unless current_user.admin?
+      redirect_to host_machines_path, notice: 'Unauthorized access'
+    end
   end
 end

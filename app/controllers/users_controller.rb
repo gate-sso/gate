@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_paper_trail_whodunnit
-
   before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key]
+  before_action :authorize_user, only: %i[create update]
 
   def index
     @user_search = params[:user_search]
@@ -11,6 +11,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.where(id: params[:id]).first
+    return render_404 if @user.blank?
+
     @user_groups = Group.
       select(%{
         groups.id AS id,
@@ -33,8 +35,6 @@ class UsersController < ApplicationController
 
     return unless current_user.admin? || current_user == @user
 
-    render_404 if @user.blank?
-
     return unless @user.present? && (current_user.admin? || current_user.id == @user.id)
 
     respond_to do |format|
@@ -43,14 +43,12 @@ class UsersController < ApplicationController
   end
 
   def new
-    if current_user.admin
-      render :new, locals: {
-        roles: ENV['USER_ROLES'].split(','),
-        domains: ENV['GATE_HOSTED_DOMAINS'].split(','),
-      }
-    else
-      redirect_to profile_path
-    end
+    return redirect_to profile_path unless current_user.admin?
+
+    render :new, locals: {
+      roles: ENV['USER_ROLES'].split(','),
+      domains: ENV['GATE_HOSTED_DOMAINS'].split(','),
+    }
   end
 
   def create
@@ -103,23 +101,22 @@ class UsersController < ApplicationController
   # GET /users/:id/regenerate_token
   def regenerate_token
     @user = User.find(params[:id])
-
-    if current_user.admin? || (current_user.id == @user.id)
-      @access_token = @user.access_token
-      @access_token.token = ROTP::Base32.random_base32
-      respond_to do |format|
-        if @access_token.save
-          format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: { token: @access_token.token } }
-          format.json { render :show, status: :ok, location: @user }
-        else
-          format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
-        end
-      end
-    else
-      respond_to do |format|
+    unless current_user.admin? || (current_user.id == @user.id)
+      return respond_to do |format|
         format.html { redirect_to user_path(@user.id), notice: 'You cannot regenerate this token.' }
         format.json { render json: @user.errors, status: :unauthorized }
+      end
+    end
+
+    @access_token = @user.access_token
+    @access_token.token = ROTP::Base32.random_base32
+    respond_to do |format|
+      if @access_token.save
+        format.html { redirect_to user_path(@user.id), notice: 'Token regenerated.', flash: { token: @access_token.token } }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { redirect_to user_path(@user.id), notice: 'Token failed to regenerate.' }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -140,5 +137,12 @@ class UsersController < ApplicationController
 
   def product_name
     params.require(:product_name)
+  end
+
+  def authorize_user
+    unless current_user.admin?
+      flash[:errors] = 'unauthorized access'
+      redirect_to profile_path
+    end
   end
 end

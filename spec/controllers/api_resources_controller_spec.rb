@@ -85,47 +85,119 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        {name: "new_name", access_key: "xyz"}
-      }
-
-      it "updates the requested api_resource" do
+  describe 'PUT #update' do
+    let(:new_attributes) { { name: 'new_name', access_key: 'xyz' } }
+    context 'authenticated as owner' do
+      it 'should updates the requested api_resource' do
         api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => new_attributes}, session: valid_session
+        api_resource.update(user: create(:user, admin: false))
+        sign_in api_resource.user
+        put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
         api_resource.reload
-        expect(api_resource.name).to eq("new_name")
-      end
-
-      it "redirects to the api_resource" do
-        api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => valid_attributes}, session: valid_session
-        expect(response).to redirect_to(api_resources_url)
+        expect(api_resource.name).to eq('new_name')
       end
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
+    context 'authenticated as admin' do
+      context 'with valid params' do
+        it 'updates the requested api_resource' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+          api_resource.reload
+          expect(api_resource.name).to eq('new_name')
+        end
+
+        it 'redirects to the api_resource' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: valid_attributes }
+          expect(response).to redirect_to(api_resources_url)
+        end
+      end
+
+      context 'with invalid params' do
+        it 'returns a success response (i.e. to display the "edit" template)' do
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: invalid_attributes }
+          expect(response).to be_success
+        end
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should not update api resource' do
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
         api_resource = ApiResource.create! valid_attributes
-        put :update, params: {:id => api_resource.to_param, :api_resource => invalid_attributes}, session: valid_session
-        expect(response).to be_success
+        put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+        updated_api_resource = ApiResource.find(api_resource.to_param)
+        expect(updated_api_resource.to_json).to eq(api_resource.to_json)
+      end
+
+      context 'html response' do
+        it 'should return notice unauthorized access' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: { id: api_resource.to_param, api_resource: new_attributes }
+          expect(flash[:notice]).to eq('Unauthorized access')
+        end
+      end
+
+      context 'json response' do
+        it 'should return 401 http status' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          put :update, params: {
+            format: 'json',
+            id: api_resource.to_param,
+            api_resource: new_attributes,
+          }
+          expect(response).to have_http_status(401)
+        end
       end
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      expect {
-        delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
-      }.to change(ApiResource, :count).by(-1)
+  describe 'DELETE #destroy' do
+    context 'authenticated as admin' do
+      it 'destroys the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        expect { delete :destroy, params: { id: api_resource.to_param } }.
+          to change(ApiResource, :count).by(-1)
+      end
+
+      it 'redirects to the api_resources list' do
+        api_resource = ApiResource.create! valid_attributes
+        delete :destroy, params: { id: api_resource.to_param }
+        expect(response).to redirect_to(api_resources_url)
+      end
+
+      it 'should flash notice success' do
+        api_resource = ApiResource.create! valid_attributes
+        delete :destroy, params: { id: api_resource.to_param }
+        expect(flash[:notice]).to eq('Api resource was successfully destroyed.')
+      end
     end
 
-    it "redirects to the api_resources list" do
-      api_resource = ApiResource.create! valid_attributes
-      delete :destroy, params: {:id => api_resource.to_param}, session: valid_session
-      expect(response).to redirect_to(api_resources_url)
+    context 'authenticated as non admin' do
+      it 'should flash notice unauthorized access' do
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        api_resource = ApiResource.create! valid_attributes
+        delete :destroy, params: { id: api_resource.to_param }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
+
+      context 'json response' do
+        it 'should return 401 http status' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          delete :destroy, params: { format: 'json', id: api_resource.to_param }
+          expect(response).to have_http_status(401)
+        end
+      end
     end
   end
 
@@ -137,19 +209,53 @@ RSpec.describe ApiResourcesController, type: :controller do
     end
   end
 
-  describe "GET #regenerate_access_key" do
-    it "regenerates access_key of the requested api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      old_hashed_access_key = api_resource.hashed_access_key
-      get :regenerate_access_key, params: {:id => api_resource.to_param}, session: valid_session
-      api_resource.reload
-      expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+  describe 'GET #regenerate_access_key' do
+    context 'authenticated as admin' do
+      it 'should regenerates access_key of the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        old_hashed_access_key = api_resource.hashed_access_key
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        api_resource.reload
+        expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+      end
+
+      it 'should redirects to the api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        expect(response).to redirect_to(api_resource_path(api_resource.id))
+      end
     end
 
-    it "redirects to the api_resource" do
-      api_resource = ApiResource.create! valid_attributes
-      get :regenerate_access_key, params: {:id => api_resource.to_param}
-      expect(response).to redirect_to(api_resource_path(api_resource.id))
+    context 'authenticated as owner' do
+      it 'should regenerates access_key of the requested api_resource' do
+        api_resource = ApiResource.create! valid_attributes
+        api_resource.update(user: create(:user, admin: false))
+        sign_in api_resource.user
+        old_hashed_access_key = api_resource.hashed_access_key
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        api_resource.reload
+        expect(api_resource.hashed_access_key).to_not eq old_hashed_access_key
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should flash notice unauthorized access' do
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        api_resource = ApiResource.create! valid_attributes
+        get :regenerate_access_key, params: { id: api_resource.to_param }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
+
+      context 'json response' do
+        it 'should return 401 http status' do
+          non_admin = create(:user, admin: false)
+          sign_in non_admin
+          api_resource = ApiResource.create! valid_attributes
+          get :regenerate_access_key, params: { format: :json, id: api_resource.to_param }
+          expect(response).to have_http_status(401)
+        end
+      end
     end
   end
 
@@ -188,5 +294,4 @@ RSpec.describe ApiResourcesController, type: :controller do
 
     end
   end
-
 end

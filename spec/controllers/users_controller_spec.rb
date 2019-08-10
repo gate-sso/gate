@@ -36,10 +36,154 @@ RSpec.describe UsersController, type: :controller do
           }.to_json
         )
       end
+
+      context 'user not found' do
+        it 'should return 404 page' do
+          sign_in user
+          get :show, params: { id: 999 }
+          expect(response).to have_http_status(404)
+        end
+      end
     end
   end
 
-  context "update user profile" do
+  describe 'POST #create' do
+    context 'unauthenticated' do
+      it 'should return 302 http status' do
+        post :create
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated as admin' do
+      it 'should successfully create a new user' do
+        admin = create(:user)
+        sign_in admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(created_user.email).to eq 'firstname.lastname@test.com'
+      end
+
+      it 'should redirect to user path' do
+        admin = create(:user)
+        sign_in admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(response).to redirect_to(user_path(created_user.id))
+      end
+
+      context 'fail to create new user' do
+        it 'should redirect to new user path' do
+          admin = create(:user)
+          allow_any_instance_of(User).to receive(:save).and_return(false)
+          allow_any_instance_of(User).
+            to receive_message_chain(:errors, :full_messages).
+            and_return(['error'])
+          sign_in admin
+          post :create, params: {
+            user: {
+              first_name: 'firstname',
+              last_name: 'lastname',
+              user_role: 'employee',
+            },
+            user_domain: 'test.com',
+          }
+          expect(response).to redirect_to(new_user_path)
+        end
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should redirect to profile path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        expect(response).to redirect_to(profile_path)
+      end
+
+      it 'should not create new user' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        created_user = User.find_by_first_name('firstname')
+        expect(created_user).to be nil
+      end
+
+      it 'should give flash message' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        post :create, params: {
+          user: {
+            first_name: 'firstname',
+            last_name: 'lastname',
+            user_role: 'employee',
+          },
+          user_domain: 'test.com',
+        }
+        expect(flash[:errors]).to eq('unauthorized access')
+      end
+    end
+  end
+
+  context 'update user profile' do
+    context 'unauthenticated' do
+      it 'should return 302 http status' do
+        patch :update, params: { id: user.id, product_name: product_name }
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should redirect to profile path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        patch :update, params: { id: user.id, product_name: product_name }
+        expect(response).to redirect_to(profile_path)
+      end
+
+      it 'should give flash message' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        patch :update, params: { id: user.id, product_name: product_name }
+        expect(flash[:errors]).to eq('unauthorized access')
+      end
+    end
+
     it "should update profile with product name" do
       sign_in user
 
@@ -96,26 +240,30 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe "GET #regenerate_token" do
-    before(:each) do
-      access_token = AccessToken.new
-      access_token.token = ROTP::Base32.random_base32
-      access_token.user = user
-      access_token.save!
+  describe 'GET #regenerate_token' do
+    context 'authenticated as owner' do
+      let(:owner) { create(:user, admin: false) }
+      before(:each) do
+        create(:user)
+        access_token = AccessToken.new
+        access_token.token = ROTP::Base32.random_base32
+        access_token.user = owner
+        access_token.save!
 
-      sign_in user
-    end
+        sign_in owner
+      end
 
-    it "regenerates access token of the requested user" do
-      old_hashed_token = user.access_token.hashed_token
-      get :regenerate_token, params: {:id => user.to_param}
-      user.reload
-      expect(user.access_token.hashed_token).to_not eq old_hashed_token
-    end
+      it 'regenerates access token of the requested user' do
+        old_hashed_token = owner.access_token.hashed_token
+        get :regenerate_token, params: { id: owner.to_param }
+        owner.reload
+        expect(owner.access_token.hashed_token).to_not eq old_hashed_token
+      end
 
-    it "redirects to the user" do
-      get :regenerate_token, params: {:id => user.to_param}
-      expect(response).to redirect_to(user_path(user.id))
+      it 'redirects to the user' do
+        get :regenerate_token, params: { id: owner.to_param }
+        expect(response).to redirect_to(user_path(owner.id))
+      end
     end
   end
 end
