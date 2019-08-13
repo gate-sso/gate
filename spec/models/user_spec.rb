@@ -318,6 +318,17 @@ RSpec.describe User, type: :model do
         user.update(active: false)
         expect(user.deactivated_at).to eq(Time.current.to_s)
       end
+
+      it 'should not replace old deactivated_at' do
+        create(:admin_user)
+        user = create(:user, admin: false)
+        user.update(active: false)
+        old_deactivated_date = user.deactivated_at
+        Timecop.scale(3600)
+        sleep(1)
+        user.update(active: false)
+        expect(user.deactivated_at).to eq(old_deactivated_date)
+      end
     end
   end
 

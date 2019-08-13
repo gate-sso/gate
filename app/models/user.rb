@@ -424,7 +424,7 @@ class User < ApplicationRecord
   end
 
   def set_deactivated_at_when_inactive
-    unless active
+    if active.eql?(false) && deactivated_at.blank?
       self.deactivated_at = Time.current
     end
   end
