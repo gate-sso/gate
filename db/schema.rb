@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190820075040) do
+ActiveRecord::Schema.define(version: 20190820080624) do
 
   create_table "access_tokens", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "hashed_token"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 20190820075040) do
     t.bigint "endpoint_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["endpoint_id"], name: "fk_rails_b700efc1d7"
+    t.index ["group_id"], name: "fk_rails_b6c29808cd"
   end
 
   create_table "groups", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -256,6 +258,8 @@ ActiveRecord::Schema.define(version: 20190820075040) do
   add_foreign_key "api_resources", "users"
   add_foreign_key "group_admins", "groups"
   add_foreign_key "group_admins", "users"
+  add_foreign_key "group_endpoints", "endpoints"
+  add_foreign_key "group_endpoints", "groups"
   add_foreign_key "hosts", "users"
   add_foreign_key "ip_addresses", "host_machines"
   add_foreign_key "saml_app_configs", "groups"
