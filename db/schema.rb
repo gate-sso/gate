@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190624024930) do
+ActiveRecord::Schema.define(version: 20190820070910) do
 
   create_table "access_tokens", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "hashed_token"
@@ -31,6 +31,13 @@ ActiveRecord::Schema.define(version: 20190624024930) do
     t.integer "group_id"
     t.index ["group_id"], name: "index_api_resources_on_group_id"
     t.index ["user_id"], name: "index_api_resources_on_user_id"
+  end
+
+  create_table "endpoints", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "path", null: false
+    t.string "method", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "group_admins", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
