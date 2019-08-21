@@ -96,6 +96,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
           group_ids = endpoint.groups.map &:id
           expect(group_ids).to include group.id
         end
+
+        context 'twice with same value' do
+          it 'should return http status 422' do
+            post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+            post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+            expect(response).to have_http_status 422
+          end
+        end
       end
     end
 

@@ -17,8 +17,12 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   def add_group
     endpoint = Endpoint.find(params[:id])
     group = Group.find_by(group_param)
-    endpoint.groups << group
-    render json: {}
+    group_endpoint = GroupEndpoint.new(group: group, endpoint: endpoint)
+    if group_endpoint.save
+      render json: {}
+    else
+      head :unprocessable_entity
+    end
   end
 
   private
