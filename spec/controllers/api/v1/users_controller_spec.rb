@@ -12,22 +12,24 @@ describe ::Api::V1::UsersController, type: :controller do
     @token = @user.access_token.token
   end
 
-  describe 'Authentication' do
-    context 'with valid_attributes' do
-      it 'should create users' do
-        post :create, params: { user: valid_attributes, access_token: @token }
-        expect(response.status).to eq(200)
-        user = User.where(name: valid_attributes[:name]).first
-        expect(user.blank?).to eq(false)
-        expect(user.name).to eq(valid_attributes[:name])
+  describe '#create' do
+    describe 'authenticated as admin' do
+      context 'given valid attributes' do
+        it 'should create user' do
+          post :create, params: { user: valid_attributes, access_token: @token }
+          expect(response.status).to eq(200)
+          user = User.where(name: valid_attributes[:name]).first
+          expect(user.blank?).to eq(false)
+          expect(user.name).to eq(valid_attributes[:name])
+        end
       end
     end
-  end
 
-  describe 'UnAuthentication' do
-    it 'gives 401 when access token is in valid' do
-      post :create, params: { user: valid_attributes, access_token: 'foo' }
-      expect(response.status).to eq(401)
+    describe 'unauthenticated' do
+      it 'should return http status 401' do
+        post :create, params: { user: valid_attributes, access_token: 'foo' }
+        expect(response.status).to eq(401)
+      end
     end
   end
 
