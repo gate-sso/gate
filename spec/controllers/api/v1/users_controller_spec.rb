@@ -67,6 +67,13 @@ describe ::Api::V1::UsersController, type: :controller do
           expect(response).to have_http_status 404
         end
       end
+
+      context 'given last admin id' do
+        it 'should return http status 422' do
+          patch :deactivate, params: { id: @user.id, access_token: @token }
+          expect(response).to have_http_status 422
+        end
+      end
     end
   end
 

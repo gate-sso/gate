@@ -31,8 +31,11 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
     return head :not_found if user.nil?
 
     user.active = false
-    user.save
-    head :no_content
+    if user.save
+      head :no_content
+    else
+      head :unprocessable_entity
+    end
   end
 
   def update
