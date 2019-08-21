@@ -51,9 +51,10 @@ describe ::Api::V1::EndpointsController, type: :controller do
         it 'should return proper response' do
           invalid_attributes = valid_attributes
           invalid_attributes[:method] = 'JUMP'
+          invalid_attributes[:path] = 'not-a-path'
           post :create, params: { endpoint: invalid_attributes, access_token: @admin_token }
           response_body = JSON.parse response.body
-          expect(response_body['status']).to include('method')
+          expect(response_body['status']).to include('method', 'path')
         end
       end
     end
