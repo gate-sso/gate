@@ -27,6 +27,8 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   end
 
   def deactivate
+    return head :forbidden unless current_user.admin?
+
     user = User.find_by(id: params[:id])
     return head :not_found if user.nil?
 

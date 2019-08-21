@@ -75,6 +75,17 @@ describe ::Api::V1::UsersController, type: :controller do
         end
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should return http status 403' do
+        user = build(:user, admin: false)
+        user.access_token = build(:access_token)
+        user.save
+        target_user = create(:user, admin: false)
+        patch :deactivate, params: { id: target_user.id, access_token: user.access_token.token }
+        expect(response).to have_http_status 403
+      end
+    end
   end
 
   describe 'Update Profile' do
