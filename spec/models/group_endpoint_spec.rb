@@ -11,5 +11,13 @@ describe GroupEndpoint, type: :model do
         expect(group_endpoint).not_to be_valid
       end
     end
+
+    context 'given nil group' do
+      it 'should not valid' do
+        endpoint = create(:endpoint)
+        group_endpoint = GroupEndpoint.new(group: nil, endpoint: endpoint)
+        expect(group_endpoint).not_to be_valid
+      end
+    end
   end
 end
