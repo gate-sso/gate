@@ -82,18 +82,16 @@ describe ::Api::V1::EndpointsController, type: :controller do
   end
 
   describe '#add_group' do
+    let(:endpoint) { create(:endpoint) }
+    let(:group) { create(:group) }
     context 'authenticated as admin' do
       context 'given valid group id' do
         it 'should return http status 200' do
-          endpoint = create(:endpoint)
-          group = create(:group)
           post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
           expect(response).to have_http_status 200
         end
 
         it 'should add group to endpoint' do
-          endpoint = create(:endpoint)
-          group = create(:group)
           post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
           group_ids = endpoint.groups.map &:id
           expect(group_ids).to include group.id
@@ -103,8 +101,6 @@ describe ::Api::V1::EndpointsController, type: :controller do
 
     context 'authenticated as non admin' do
       it 'should return http status 403' do
-        endpoint = create(:endpoint)
-        group = create(:group)
         post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: user.access_token.token }
         expect(response).to have_http_status 403
       end
@@ -112,8 +108,6 @@ describe ::Api::V1::EndpointsController, type: :controller do
 
     context 'unauthenticated' do
       it 'should return http status 401' do
-        endpoint = create(:endpoint)
-        group = create(:group)
         post :add_group, params: { id: endpoint.id, group: { id: group.id } }
         expect(response.status).to eq(401)
       end
