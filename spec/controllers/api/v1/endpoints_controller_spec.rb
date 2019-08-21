@@ -109,5 +109,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
         expect(response).to have_http_status 403
       end
     end
+
+    context 'unauthenticated' do
+      it 'should return http status 401' do
+        endpoint = create(:endpoint)
+        group = create(:group)
+        post :add_group, params: { id: endpoint.id, group: { id: group.id } }
+        expect(response.status).to eq(401)
+      end
+    end
   end
 end
