@@ -32,16 +32,19 @@ describe ::Api::V1::UsersController, type: :controller do
   end
 
   describe 'Update Profile' do
+    before(:each) do
+      require 'openssl'
+      rsa_key = OpenSSL::PKey::RSA.new(2048)
+      @public_key = rsa_key.public_key.to_pem
+    end
+
     context 'authenticated as admin' do
       it 'should return 200 http status code' do
-        require 'openssl'
-        rsa_key = OpenSSL::PKey::RSA.new(2048)
-        public_key = rsa_key.public_key.to_pem
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
           access_token: @token,
-          public_key: public_key,
+          public_key: @public_key,
           product_name: product_name,
           name: name,
           email: @user.email,
@@ -55,14 +58,11 @@ describe ::Api::V1::UsersController, type: :controller do
         user = create(:user, admin: false)
         user.access_token = create(:access_token, token: SecureRandom.uuid)
         target_user = create(:user)
-        require 'openssl'
-        rsa_key = OpenSSL::PKey::RSA.new(2048)
-        public_key = rsa_key.public_key.to_pem
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
           access_token: user.access_token.token,
-          public_key: public_key,
+          public_key: @public_key,
           product_name: product_name,
           name: name,
           email: target_user.email,
@@ -76,14 +76,11 @@ describe ::Api::V1::UsersController, type: :controller do
         user = create(:user, admin: false)
         access_token = create(:access_token, token: SecureRandom.uuid)
         user.access_token = access_token
-        require 'openssl'
-        rsa_key = OpenSSL::PKey::RSA.new(2048)
-        public_key = rsa_key.public_key.to_pem
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
           access_token: access_token.token,
-          public_key: public_key,
+          public_key: @public_key,
           product_name: product_name,
           name: name,
           email: user.email,
