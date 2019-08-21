@@ -66,4 +66,17 @@ describe ::Api::V1::EndpointsController, type: :controller do
       end
     end
   end
+
+  describe '#add_group' do
+    context 'authenticated as admin' do
+      context 'given valid group id' do
+        it 'should return http status 200' do
+          endpoint = create(:endpoint)
+          group = create(:group)
+          post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+          expect(response).to have_http_status 200
+        end
+      end
+    end
+  end
 end

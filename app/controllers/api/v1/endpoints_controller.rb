@@ -12,6 +12,10 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
     end
   end
 
+  def add_group
+    render json: {}
+  end
+
   private
 
   def endpoint_param
