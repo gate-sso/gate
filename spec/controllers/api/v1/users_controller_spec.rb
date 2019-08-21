@@ -25,6 +25,17 @@ describe ::Api::V1::UsersController, type: :controller do
       end
     end
 
+    describe 'authenticated as non admin' do
+      it 'should return http status 403' do
+        user = build(:user, admin: false)
+        user.access_token = build(:access_token)
+        user.save
+        token = user.access_token.token
+        post :create, params: { user: valid_attributes, access_token: token }
+        expect(response).to have_http_status 403
+      end
+    end
+
     describe 'unauthenticated' do
       it 'should return http status 401' do
         post :create, params: { user: valid_attributes, access_token: 'foo' }

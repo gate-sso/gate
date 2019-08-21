@@ -2,6 +2,8 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   before_action :set_user, only: %i[show update]
 
   def create
+    return head :forbidden unless current_user.admin?
+
     user = user_params
     if User.add_temp_user user[:name], user[:email]
       render json: { status: 'created' }, status: :ok
