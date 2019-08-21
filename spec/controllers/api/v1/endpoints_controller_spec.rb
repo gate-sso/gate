@@ -26,6 +26,19 @@ describe ::Api::V1::EndpointsController, type: :controller do
         endpoint = Endpoint.find_by(valid_attributes)
         expect(endpoint).not_to be nil
       end
+
+      it 'should return proper response' do
+        admin = build(:admin_user)
+        admin.access_token = build(:access_token)
+        admin.save
+        post :create, params: { endpoint: valid_attributes, access_token: admin.access_token.token }
+        endpoint = Endpoint.find_by(valid_attributes)
+        expect(response.body).to eq({
+          id: endpoint.id,
+          path: endpoint.path,
+          method: endpoint.method,
+        }.to_json)
+      end
     end
   end
 end
