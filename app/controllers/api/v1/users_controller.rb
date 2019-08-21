@@ -26,6 +26,10 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
     end
   end
 
+  def deactivate
+    head :no_content
+  end
+
   def update
     return raise_unauthorized unless current_user.admin? || current_user == @user
 

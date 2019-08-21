@@ -44,6 +44,18 @@ describe ::Api::V1::UsersController, type: :controller do
     end
   end
 
+  describe '#deactivate' do
+    context 'authenticated as admin' do
+      context 'given valid params' do
+        it 'should return http status 204' do
+          target_user = create(:user, admin: false)
+          patch :deactivate, params: { id: target_user.id, access_token: @token }
+          expect(response).to have_http_status 204
+        end
+      end
+    end
+  end
+
   describe 'Update Profile' do
     before(:each) do
       require 'openssl'
