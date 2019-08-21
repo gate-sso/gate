@@ -105,6 +105,13 @@ describe ::Api::V1::EndpointsController, type: :controller do
           end
         end
       end
+
+      context 'given invalid endpoint id' do
+        it 'should return http status 404' do
+          post :add_group, params: { id: 777, group: { id: group.id }, access_token: @admin_token }
+          expect(response).to have_http_status 404
+        end
+      end
     end
 
     context 'authenticated as non admin' do

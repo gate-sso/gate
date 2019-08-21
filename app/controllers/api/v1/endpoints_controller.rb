@@ -15,7 +15,9 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   end
 
   def add_group
-    endpoint = Endpoint.find(params[:id])
+    endpoint = Endpoint.find_by(id: params[:id])
+    return head :not_found if endpoint.nil?
+
     group = Group.find_by(group_param)
     group_endpoint = GroupEndpoint.new(group: group, endpoint: endpoint)
     if group_endpoint.save
