@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure that 'deactivated_at' on user is automatically set when we make user inactive
 ### Changed
 - Improve access policy for actions on resources including profile, user, api resource, host machine, organisation
+### Added
+- Add endpoint entity to represent gate endpoint. Group will own endpoints, this mechanism will be used as an authorization for gate.
 
 ## [1.0.5] - 2019-08-06
 ### Fixed
