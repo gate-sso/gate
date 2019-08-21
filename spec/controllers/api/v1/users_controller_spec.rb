@@ -60,6 +60,13 @@ describe ::Api::V1::UsersController, type: :controller do
           expect(target_user.active).to eq false
         end
       end
+
+      context 'given invalid user id' do
+        it 'should return http status 404' do
+          patch :deactivate, params: { id: 777, access_token: @token }
+          expect(response).to have_http_status 404
+        end
+      end
     end
   end
 

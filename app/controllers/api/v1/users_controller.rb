@@ -28,6 +28,8 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
 
   def deactivate
     user = User.find_by(id: params[:id])
+    return head :not_found if user.nil?
+
     user.active = false
     user.save
     head :no_content
