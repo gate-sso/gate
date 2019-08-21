@@ -1,5 +1,9 @@
 class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   def create
+    unless current_user.admin?
+      return head :forbidden
+    end
+
     endpoint = Endpoint.new(endpoint_param)
     if endpoint.save
       render json: {

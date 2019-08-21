@@ -8,6 +8,13 @@ describe ::Api::V1::EndpointsController, type: :controller do
     @admin_token = @admin.access_token.token
   end
 
+  let(:user) do
+    user = build(:user, admin: false)
+    user.access_token = build(:access_token)
+    user.save!
+    user
+  end
+
   let(:valid_attributes) do
     {
       path: '/',
@@ -56,6 +63,13 @@ describe ::Api::V1::EndpointsController, type: :controller do
           response_body = JSON.parse response.body
           expect(response_body['status']).to include('method', 'path')
         end
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should return http status 403' do
+        post :create, params: { endpoint: valid_attributes, access_token: user.access_token.token }
+        expect(response).to have_http_status(403)
       end
     end
 
