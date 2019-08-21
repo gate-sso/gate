@@ -1,9 +1,7 @@
 class ::Api::V1::EndpointsController < ::Api::V1::BaseController
-  def create
-    unless current_user.admin?
-      return head :forbidden
-    end
+  before_action :authorize_user
 
+  def create
     endpoint = Endpoint.new(endpoint_param)
     if endpoint.save
       render json: {
@@ -24,6 +22,12 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   end
 
   private
+
+  def authorize_user
+    unless current_user.admin?
+      head :forbidden
+    end
+  end
 
   def group_param
     params.require(:group).permit(:id)

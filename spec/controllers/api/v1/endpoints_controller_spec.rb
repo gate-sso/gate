@@ -100,5 +100,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
         end
       end
     end
+
+    context 'authenticated as non admin' do
+      it 'should return http status 403' do
+        endpoint = create(:endpoint)
+        group = create(:group)
+        post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: user.access_token.token }
+        expect(response).to have_http_status 403
+      end
+    end
   end
 end
