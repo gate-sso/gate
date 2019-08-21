@@ -12,6 +12,9 @@ class Group < ApplicationRecord
   has_many :host_machines, through: :host_access_groups
   belongs_to :vpn
 
+  has_many :group_endpoints
+  has_many :endpoints, through: :group_endpoints
+
   validates_uniqueness_of :name, case_sensitive: false
   validates :name, presence: true
 

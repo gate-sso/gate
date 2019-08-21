@@ -1,4 +1,7 @@
 class Endpoint < ApplicationRecord
+  has_many :group_endpoints
+  has_many :groups, through: :group_endpoints
+
   validates_presence_of :path
   validates_presence_of :method
   validates :method, inclusion: { in: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] }
