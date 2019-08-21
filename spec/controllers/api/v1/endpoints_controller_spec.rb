@@ -37,5 +37,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
         }.to_json)
       end
     end
+
+    context 'given invalid param' do
+      it 'should return http status 422' do
+        invalid_attributes = valid_attributes
+        invalid_attributes[:method] = 'JUMP'
+        post :create, params: { endpoint: invalid_attributes, access_token: admin.access_token.token }
+        expect(response).to have_http_status(422)
+      end
+    end
   end
 end
