@@ -4,4 +4,5 @@ class GroupEndpoint < ApplicationRecord
 
   validates :group, uniqueness: { scope: :endpoint }
   validates_presence_of :group
+  validates_presence_of :endpoint
 end
