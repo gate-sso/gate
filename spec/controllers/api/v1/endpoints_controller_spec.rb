@@ -45,6 +45,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
         post :create, params: { endpoint: invalid_attributes, access_token: admin.access_token.token }
         expect(response).to have_http_status(422)
       end
+
+      it 'should return proper response' do
+        invalid_attributes = valid_attributes
+        invalid_attributes[:method] = 'JUMP'
+        post :create, params: { endpoint: invalid_attributes, access_token: admin.access_token.token }
+        response_body = JSON.parse response.body
+        expect(response_body['status']).to include('method')
+      end
     end
   end
 end

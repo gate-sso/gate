@@ -8,7 +8,7 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
         method: endpoint.method,
       }
     else
-      render json: {}, status: :unprocessable_entity
+      render json: { status: endpoint.errors }, status: :unprocessable_entity
     end
   end
 
