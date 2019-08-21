@@ -52,6 +52,13 @@ describe ::Api::V1::UsersController, type: :controller do
           patch :deactivate, params: { id: target_user.id, access_token: @token }
           expect(response).to have_http_status 204
         end
+
+        it 'should deactivate user' do
+          target_user = create(:user, admin: false)
+          patch :deactivate, params: { id: target_user.id, access_token: @token }
+          target_user.reload
+          expect(target_user.active).to eq false
+        end
       end
     end
   end
