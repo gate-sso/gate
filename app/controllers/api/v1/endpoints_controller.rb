@@ -13,10 +13,17 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   end
 
   def add_group
+    endpoint = Endpoint.find(params[:id])
+    group = Group.find_by(group_param)
+    endpoint.groups << group
     render json: {}
   end
 
   private
+
+  def group_param
+    params.require(:group).permit(:id)
+  end
 
   def endpoint_param
     params.require(:endpoint).permit(:path, :method)

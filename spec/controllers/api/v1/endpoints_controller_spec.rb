@@ -76,6 +76,14 @@ describe ::Api::V1::EndpointsController, type: :controller do
           post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
           expect(response).to have_http_status 200
         end
+
+        it 'should add group to endpoint' do
+          endpoint = create(:endpoint)
+          group = create(:group)
+          post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+          group_ids = endpoint.groups.map &:id
+          expect(group_ids).to include group.id
+        end
       end
     end
   end
