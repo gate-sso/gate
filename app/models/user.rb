@@ -405,7 +405,11 @@ class User < ApplicationRecord
   end
 
   def permitted_endpoint?(endpoint)
-    true
+    user_groups_id = group_associations.select(:group_id)
+    endpoint.
+      group_endpoints.
+      where('group_id IN (?)', user_groups_id).
+      select(:endpoint_id).present?
   end
 
   private

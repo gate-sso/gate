@@ -467,6 +467,16 @@ RSpec.describe User, type: :model do
         expect(user.permitted_endpoint?(endpoint)).to be true
       end
     end
+
+    context 'given non permitted endpoint' do
+      it 'should return false' do
+        user = create(:user)
+        group = create(:group)
+        endpoint = create(:endpoint)
+        group.endpoints << endpoint
+        expect(user.permitted_endpoint?(endpoint)).to be false
+      end
+    end
   end
 
   describe '.get_shadow_name_response' do
