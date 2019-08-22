@@ -405,6 +405,8 @@ class User < ApplicationRecord
   end
 
   def permitted_endpoint?(endpoint)
+    return false if endpoint.nil?
+
     user_groups_id = group_associations.select(:group_id)
     endpoint.
       group_endpoints.

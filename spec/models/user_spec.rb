@@ -477,6 +477,13 @@ RSpec.describe User, type: :model do
         expect(user.permitted_endpoint?(endpoint)).to be false
       end
     end
+
+    context 'given nil endpoint' do
+      it 'should return false' do
+        user = create(:user)
+        expect(user.permitted_endpoint?(nil)).to be false
+      end
+    end
   end
 
   describe '.get_shadow_name_response' do
