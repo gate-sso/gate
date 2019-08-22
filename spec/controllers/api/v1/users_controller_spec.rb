@@ -10,6 +10,11 @@ describe ::Api::V1::UsersController, type: :controller do
     @admin.access_token = build(:access_token)
     @admin.save
     @admin_token = @admin.access_token.token
+
+    @user = build(:user, admin: false)
+    @user.access_token = build(:access_token)
+    @user.save
+    @user_token = @user.access_token.token
   end
 
   describe '#create' do
@@ -27,11 +32,7 @@ describe ::Api::V1::UsersController, type: :controller do
 
     describe 'authenticated as non admin' do
       it 'should return http status 403' do
-        user = build(:user, admin: false)
-        user.access_token = build(:access_token)
-        user.save
-        token = user.access_token.token
-        post :create, params: { user: valid_attributes, access_token: token }
+        post :create, params: { user: valid_attributes, access_token: @user_token }
         expect(response).to have_http_status 403
       end
     end
@@ -78,26 +79,20 @@ describe ::Api::V1::UsersController, type: :controller do
 
     context 'authenticated as user that has endpoint access' do
       it 'should return http status 204' do
-        user = build(:user, admin: false)
-        user.access_token = build(:access_token)
-        user.save
         group = create(:group)
         endpoint = create(:endpoint, path: '/api/v1/users/:id/deactivate', method: 'PATCH')
         group.endpoints << endpoint
-        group.users << user
+        group.users << @user
         target_user = create(:user, admin: false)
-        patch :deactivate, params: { id: target_user.id, access_token: user.access_token.token }
+        patch :deactivate, params: { id: target_user.id, access_token: @user_token }
         expect(response).to have_http_status 204
       end
     end
 
     context 'authenticated as non admin' do
       it 'should return http status 403' do
-        user = build(:user, admin: false)
-        user.access_token = build(:access_token)
-        user.save
         target_user = create(:user, admin: false)
-        patch :deactivate, params: { id: target_user.id, access_token: user.access_token.token }
+        patch :deactivate, params: { id: target_user.id, access_token: @user_token }
         expect(response).to have_http_status 403
       end
     end
@@ -127,13 +122,11 @@ describe ::Api::V1::UsersController, type: :controller do
 
     context 'authenticated as non admin' do
       it 'should return 401 http status code' do
-        user = create(:user, admin: false)
-        user.access_token = create(:access_token, token: SecureRandom.uuid)
         target_user = create(:user)
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
-          access_token: user.access_token.token,
+          access_token: @user_token,
           public_key: @public_key,
           product_name: product_name,
           name: name,
@@ -145,17 +138,14 @@ describe ::Api::V1::UsersController, type: :controller do
 
     context 'authenticated as itself' do
       it 'should return 200 http status code' do
-        user = create(:user, admin: false)
-        access_token = create(:access_token, token: SecureRandom.uuid)
-        user.access_token = access_token
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
-          access_token: access_token.token,
+          access_token: @user_token,
           public_key: @public_key,
           product_name: product_name,
           name: name,
-          email: user.email,
+          email: @user.email,
         }
         expect(response.status).to eq(200)
       end
