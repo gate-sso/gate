@@ -404,6 +404,10 @@ class User < ApplicationRecord
     GroupAdmin.find_by_user_id(self.id).present?
   end
 
+  def permitted_endpoint?(endpoint)
+    true
+  end
+
   private
 
   def remove_default_admin
