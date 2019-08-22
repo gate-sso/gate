@@ -27,7 +27,10 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   end
 
   def deactivate
-    return head :forbidden unless current_user.admin?
+    endpoint = Endpoint.find_by(path: api_v1_deactivate_user_path(':id'), method: 'PATCH')
+    if !current_user.admin? && !current_user.permitted_endpoint?(endpoint)
+      return head :forbidden
+    end
 
     user = User.find_by(id: params[:id])
     return head :not_found if user.nil?

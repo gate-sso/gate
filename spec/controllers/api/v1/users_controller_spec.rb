@@ -76,6 +76,21 @@ describe ::Api::V1::UsersController, type: :controller do
       end
     end
 
+    context 'authenticated as user that has endpoint access' do
+      it 'should return http status 204' do
+        user = build(:user, admin: false)
+        user.access_token = build(:access_token)
+        user.save
+        group = create(:group)
+        endpoint = create(:endpoint, path: '/api/v1/users/:id/deactivate', method: 'PATCH')
+        group.endpoints << endpoint
+        group.users << user
+        target_user = create(:user, admin: false)
+        patch :deactivate, params: { id: target_user.id, access_token: user.access_token.token }
+        expect(response).to have_http_status 204
+      end
+    end
+
     context 'authenticated as non admin' do
       it 'should return http status 403' do
         user = build(:user, admin: false)
