@@ -6,17 +6,17 @@ describe ::Api::V1::UsersController, type: :controller do
   end
 
   before(:each) do
-    @user = build(:user)
-    @user.access_token = build(:access_token)
-    @user.save
-    @token = @user.access_token.token
+    @admin = build(:user)
+    @admin.access_token = build(:access_token)
+    @admin.save
+    @admin_token = @admin.access_token.token
   end
 
   describe '#create' do
     describe 'authenticated as admin' do
       context 'given valid attributes' do
         it 'should create user' do
-          post :create, params: { user: valid_attributes, access_token: @token }
+          post :create, params: { user: valid_attributes, access_token: @admin_token }
           expect(response.status).to eq(200)
           user = User.where(name: valid_attributes[:name]).first
           expect(user.blank?).to eq(false)
@@ -49,13 +49,13 @@ describe ::Api::V1::UsersController, type: :controller do
       context 'given valid params' do
         it 'should return http status 204' do
           target_user = create(:user, admin: false)
-          patch :deactivate, params: { id: target_user.id, access_token: @token }
+          patch :deactivate, params: { id: target_user.id, access_token: @admin_token }
           expect(response).to have_http_status 204
         end
 
         it 'should deactivate user' do
           target_user = create(:user, admin: false)
-          patch :deactivate, params: { id: target_user.id, access_token: @token }
+          patch :deactivate, params: { id: target_user.id, access_token: @admin_token }
           target_user.reload
           expect(target_user.active).to eq false
         end
@@ -63,14 +63,14 @@ describe ::Api::V1::UsersController, type: :controller do
 
       context 'given invalid user id' do
         it 'should return http status 404' do
-          patch :deactivate, params: { id: 777, access_token: @token }
+          patch :deactivate, params: { id: 777, access_token: @admin_token }
           expect(response).to have_http_status 404
         end
       end
 
       context 'given last admin id' do
         it 'should return http status 422' do
-          patch :deactivate, params: { id: @user.id, access_token: @token }
+          patch :deactivate, params: { id: @admin.id, access_token: @admin_token }
           expect(response).to have_http_status 422
         end
       end
@@ -115,11 +115,11 @@ describe ::Api::V1::UsersController, type: :controller do
         name = 'test_name'
         product_name = 'test_product'
         post :update, params: {
-          access_token: @token,
+          access_token: @admin_token,
           public_key: @public_key,
           product_name: product_name,
           name: name,
-          email: @user.email,
+          email: @admin.email,
         }
         expect(response.status).to eq(200)
       end
@@ -172,7 +172,7 @@ describe ::Api::V1::UsersController, type: :controller do
           email: 'foo@foobar.com',
           reset_password_token: 'test1'
         )
-        get :show, params: { email: user.email, access_token: @token, format: :json }
+        get :show, params: { email: user.email, access_token: @admin_token, format: :json }
         expect(response.status).to eq(200)
       end
 
@@ -187,7 +187,7 @@ describe ::Api::V1::UsersController, type: :controller do
         )
         get :show, params: {
           email: user.email,
-          access_token: @token,
+          access_token: @admin_token,
           format: :json,
         }
         reponse_json = JSON(response.body)
@@ -205,7 +205,7 @@ describe ::Api::V1::UsersController, type: :controller do
           created_at: '2018-01-11T21:30:41.000Z',
           updated_at: '2018-01-11T21:30:41.000Z'
         )
-        get :show, params: { email: user.email, access_token: @token, format: :json }
+        get :show, params: { email: user.email, access_token: @admin_token, format: :json }
         response_json = JSON(response.body)
         %w(
           email uid name active admin home_dir shell public_key user_login_id
@@ -218,7 +218,7 @@ describe ::Api::V1::UsersController, type: :controller do
       it 'should display active user' do
         create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com')
         active_user = create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
-        get :show, params: { username: 'foo', active: 1, 'access_token': @token, format: :json }
+        get :show, params: { username: 'foo', active: 1, 'access_token': @admin_token, format: :json }
         response_json = JSON(response.body)
         expect(response_json['email']).to eq(active_user.email)
       end
@@ -226,7 +226,7 @@ describe ::Api::V1::UsersController, type: :controller do
       it 'should display active user when query parameter active is true' do
         create(:user, name: 'foo', active: 0, user_login_id: 'foo', email: 'foo@foobar.com')
         active_user = create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
-        get :show, params: { username: 'foo', active: true, 'access_token': @token, format: :json }
+        get :show, params: { username: 'foo', active: true, 'access_token': @admin_token, format: :json }
         response_json = JSON(response.body)
         expect(response_json['email']).to eq(active_user.email)
       end
@@ -240,7 +240,7 @@ describe ::Api::V1::UsersController, type: :controller do
           email: 'foo@foobar.com'
         )
         create(:user, name: 'foo', user_login_id: 'foo', email: 'foo@bar.com')
-        get :show, params: { username: 'foo', active: false, 'access_token': @token, format: :json }
+        get :show, params: { username: 'foo', active: false, 'access_token': @admin_token, format: :json }
         response_json = JSON(response.body)
         expect(response_json['email']).to eq(inactive_user.email)
       end
@@ -248,7 +248,7 @@ describe ::Api::V1::UsersController, type: :controller do
 
     context 'failure' do
       it 'should return http status code 404' do
-        get :show, params: { email: 'test@test.com', access_token: @token, format: :json }
+        get :show, params: { email: 'test@test.com', access_token: @admin_token, format: :json }
         expect(response.status).to eq(404)
       end
 
