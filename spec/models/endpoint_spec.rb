@@ -23,6 +23,13 @@ describe Endpoint, type: :model do
       end
     end
 
+    context 'when given path ended with /' do
+      it 'should not valid' do
+        endpoint = build(:endpoint, path: '/users/')
+        expect(endpoint).not_to be_valid
+      end
+    end
+
     context 'when given nil method' do
       it 'should not valid' do
         endpoint = build(:endpoint, method: nil)
