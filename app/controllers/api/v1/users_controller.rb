@@ -2,6 +2,8 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   before_action :set_user, only: %i[show update]
 
   def create
+    return head :forbidden unless current_user.admin?
+
     user = user_params
     if User.add_temp_user user[:name], user[:email]
       render json: { status: 'created' }, status: :ok
@@ -21,6 +23,23 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
       render json: data
     else
       head :not_found
+    end
+  end
+
+  def deactivate
+    endpoint = Endpoint.find_by(path: api_v1_deactivate_user_path(':id'), method: 'PATCH')
+    if !current_user.admin? && !current_user.permitted_endpoint?(endpoint)
+      return head :forbidden
+    end
+
+    user = User.find_by(id: params[:id])
+    return head :not_found if user.nil?
+
+    user.active = false
+    if user.save
+      head :no_content
+    else
+      head :unprocessable_entity
     end
   end
 

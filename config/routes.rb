@@ -81,8 +81,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post 'users' => 'users#create', as: 'add_users_api', format: :json
+      patch 'users/:id/deactivate' => 'users#deactivate', as: 'deactivate_user', format: :json, :constraints => { format: 'json' }
       get 'users/profile' => 'users#show', format: :json, :constraints => { format: 'json' }
       post 'users/profile' => 'users#update', format: :json, :constraints => { format: 'json' }
+      post 'endpoints' => 'endpoints#create', format: :json, :constraints => { format: 'json' }
+      post 'endpoints/:id/add_group' => 'endpoints#add_group', format: :json, constraints: { format: 'json' }
 
       resources :groups, only: [:create], format: :json
       resources :vpns, only: [:create], format: :json do

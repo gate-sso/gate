@@ -456,6 +456,36 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#permitted_endpoint?' do
+    context 'given permitted endpoint' do
+      it 'should return true' do
+        user = create(:user)
+        group = create(:group)
+        endpoint = create(:endpoint)
+        group.endpoints << endpoint
+        user.groups << group
+        expect(user.permitted_endpoint?(endpoint)).to be true
+      end
+    end
+
+    context 'given non permitted endpoint' do
+      it 'should return false' do
+        user = create(:user)
+        group = create(:group)
+        endpoint = create(:endpoint)
+        group.endpoints << endpoint
+        expect(user.permitted_endpoint?(endpoint)).to be false
+      end
+    end
+
+    context 'given nil endpoint' do
+      it 'should return false' do
+        user = create(:user)
+        expect(user.permitted_endpoint?(nil)).to be false
+      end
+    end
+  end
+
   describe '.get_shadow_name_response' do
     it 'should return response with sp_namp equal user_login_id' do
       user = create(:user)

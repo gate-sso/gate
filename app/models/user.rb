@@ -404,6 +404,16 @@ class User < ApplicationRecord
     GroupAdmin.find_by_user_id(self.id).present?
   end
 
+  def permitted_endpoint?(endpoint)
+    return false if endpoint.nil?
+
+    user_groups_id = group_associations.select(:group_id)
+    endpoint.
+      group_endpoints.
+      where('group_id IN (?)', user_groups_id).
+      select(:endpoint_id).present?
+  end
+
   private
 
   def remove_default_admin

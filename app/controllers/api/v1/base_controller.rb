@@ -3,7 +3,7 @@ class ::Api::V1::BaseController < ActionController::Base
   before_action :authenticate_user_from_token!
 
   def authenticate_user_from_token!
-    unless AccessToken.valid_token(get_token)
+    if get_token.nil? || !AccessToken.valid_token(get_token)
       raise_unauthorized
     end
   end
