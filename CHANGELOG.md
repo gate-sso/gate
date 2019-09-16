@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Show email of group admin on group detail
+- Show users join date to group on group detail
 
 ## [1.1.1] - 2019-09-02
 ### Changed

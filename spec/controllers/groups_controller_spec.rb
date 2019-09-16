@@ -80,7 +80,7 @@ RSpec.describe GroupsController, type: :controller do
           sign_in admin
           user = create(:user)
           group = create(:group)
-          create(:group_association, group_id: group.id, user_id: user.id, expiration_date: '2020-01-01')
+          group_association = create(:group_association, group_id: group.id, user_id: user.id, expiration_date: '2020-01-01')
           get :show, params: { id: group.id }
           expect(assigns(:group_users).first.to_json).to eq(
             {
@@ -88,7 +88,8 @@ RSpec.describe GroupsController, type: :controller do
               email: user.email,
               name: user.name,
               active: user.active,
-              group_expiration_date: '2020-01-01'
+              join_date: group_association.created_at,
+              group_expiration_date: group_association.expiration_date,
             }.to_json
           )
         end

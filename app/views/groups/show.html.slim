@@ -45,6 +45,7 @@
             tr
               th User Details
               th Email Address
+              th Join Date
               th Expiration Date
               th
           tbody
@@ -57,6 +58,8 @@
                     = link_to "#{user.name} (inactive)", user_path(user)
                 td
                   = "#{user.email}"
+                td
+                  = "#{user.join_date.strftime("%v")}"
                 td
                   = "#{user.group_expiration_date}"
                 td
