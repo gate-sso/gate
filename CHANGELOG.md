@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2019-09-17
+### Changed
+- Update devise to version `4.7.1`.
+
 ## [1.1.2] - 2019-09-17
 ### Added
 - Show email of group admin on group detail
