@@ -46,6 +46,7 @@ class GroupsController < ApplicationController
         name,
         email,
         active,
+        group_associations.created_at AS join_date,
         group_associations.expiration_date AS group_expiration_date
       }).
       joins('LEFT OUTER JOIN group_associations ON users.id = group_associations.user_id').

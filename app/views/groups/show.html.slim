@@ -17,18 +17,20 @@
             - @group.group_admins.each do |admin| 
               .row
                 .col
-                  =  "#{admin.user.try(:name)}"
+                  = "#{admin.user.try(:name)}"
+                .col
+                  = "#{admin.user.try(:email)}"
                 .col 
                   - if (current_user.admin?)
                     = link_to "Remove?", [@group, admin], method: :delete, data: {confirm: "Are you sure to remove #{admin.user.try(:name)} ?"}
           - if (current_user.admin?)
             .row
-              .col
+              .col-8
                 = text_field_tag "user_id", "", id: "assign_admin_user_id", class: "form-control"
               .col
                 = submit_tag "Assign admin", class: "form-control btn btn-md btn-primary", disabled: true
             .row
-              .col
+              .col-8
                 = check_box_tag "assign_admin_include_inactive_user", "true", false
                 = " Include Inactive User"
               .col
@@ -43,6 +45,7 @@
             tr
               th User Details
               th Email Address
+              th Join Date
               th Expiration Date
               th
           tbody
@@ -55,6 +58,8 @@
                     = link_to "#{user.name} (inactive)", user_path(user)
                 td
                   = "#{user.email}"
+                td
+                  = "#{user.join_date.strftime("%v")}"
                 td
                   = "#{user.group_expiration_date}"
                 td
