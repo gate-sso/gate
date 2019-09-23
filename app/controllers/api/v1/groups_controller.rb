@@ -28,6 +28,8 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
 
   def add_user
     @group = Group.find_by(id: params[:id])
+    return head :not_found unless @group.present?
+
     return raise_unauthorized unless current_user.admin? || @group.admin?(current_user)
 
     @group.add_user params[:user_id]

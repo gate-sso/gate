@@ -64,6 +64,20 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
       @group = create(:group)
       @new_user = create(:user, admin: false)
     end
+
+    context 'invalid param' do
+      context 'group id not found' do
+        it 'should return 404' do
+          post :add_user, params: {
+            id: 666,
+            user_id: @new_user.id,
+            access_token: @admin_token,
+          }
+          expect(response.status).to eq 404
+        end
+      end
+    end
+
     context 'authenticated as admin' do
       context 'valid user id' do
         it 'should return proper response' do
