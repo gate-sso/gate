@@ -27,9 +27,9 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
   end
 
   def add_user
-    return raise_unauthorized unless current_user.admin?
-
     @group = Group.find_by(id: params[:id])
+    return raise_unauthorized unless current_user.admin? || @group.admin?(current_user)
+
     @group.add_user params[:user_id]
     head :no_content
   end

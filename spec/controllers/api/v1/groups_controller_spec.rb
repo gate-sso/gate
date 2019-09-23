@@ -106,6 +106,20 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
       end
     end
 
+    context 'authenticated as group admin' do
+      before(:each) do
+        @group.add_admin @user
+      end
+      it 'should add user to group' do
+        post :add_user, params: {
+          id: @group.id,
+          user_id: @new_user.id,
+          access_token: @user_token,
+        }
+        expect(@group.users).to contain_exactly @new_user
+      end
+    end
+
     context 'unauthenticated' do
       it 'should return 401 http status' do
         post :add_user, params: {
