@@ -81,5 +81,17 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
         end
       end
     end
+
+    context 'unauthenticated' do
+      it 'should return 401 http status' do
+        new_user = create(:user, admin: false)
+        post :add_user, params: {
+          id: @group.id,
+          user_id: new_user.id,
+          access_token: 'foo',
+        }
+        expect(response.status).to eq 401
+      end
+    end
   end
 end
