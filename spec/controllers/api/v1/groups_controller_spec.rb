@@ -10,6 +10,11 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
     @admin.access_token = build(:access_token)
     @admin.save
     @admin_token = @admin.access_token.token
+
+    @user = build(:user, admin: false)
+    @user.access_token = build(:access_token)
+    @user.save
+    @user_token = @user.access_token.token
   end
 
   describe '#create' do
@@ -78,6 +83,17 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
           }
           expect(@group.users).to contain_exactly @new_user
         end
+      end
+    end
+
+    context 'authenticated as non admin' do
+      it 'should not add user to group' do
+        post :add_user, params: {
+          id: @group.id,
+          user_id: @new_user.id,
+          access_token: @user_token,
+        }
+        expect(@group.users).to be_empty
       end
     end
 
