@@ -26,6 +26,10 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
     end
   end
 
+  def add_user
+    head :no_content
+  end
+
   private
 
   def group_params

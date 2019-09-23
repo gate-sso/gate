@@ -87,7 +87,11 @@ Rails.application.routes.draw do
       post 'endpoints' => 'endpoints#create', format: :json, :constraints => { format: 'json' }
       post 'endpoints/:id/add_group' => 'endpoints#add_group', format: :json, constraints: { format: 'json' }
 
-      resources :groups, only: [:create], format: :json
+      resources :groups, only: [:create], format: :json do
+        member do
+          post 'add_user'
+        end
+      end
       resources :vpns, only: [:create], format: :json do
         member do
           post 'assign_group'
