@@ -57,37 +57,35 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
   describe '#add_user' do
     before(:each) do
       @group = create(:group)
+      @new_user = create(:user, admin: false)
     end
     context 'authenticated as admin' do
       context 'valid user id' do
         it 'should return proper response' do
-          new_user = create(:user, admin: false)
           post :add_user, params: {
             id: @group.id,
-            user_id: new_user.id,
+            user_id: @new_user.id,
             access_token: @token,
           }
           expect(response.status).to eq 204
         end
 
         it 'should add user to group' do
-          new_user = create(:user, admin: false)
           post :add_user, params: {
             id: @group.id,
-            user_id: new_user.id,
+            user_id: @new_user.id,
             access_token: @token,
           }
-          expect(@group.users).to contain_exactly new_user
+          expect(@group.users).to contain_exactly @new_user
         end
       end
     end
 
     context 'unauthenticated' do
       it 'should return 401 http status' do
-        new_user = create(:user, admin: false)
         post :add_user, params: {
           id: @group.id,
-          user_id: new_user.id,
+          user_id: @new_user.id,
           access_token: 'foo',
         }
         expect(response.status).to eq 401
