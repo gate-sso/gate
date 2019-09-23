@@ -164,3 +164,22 @@ Create new group
             transfer-encoding: chunked
 
     + Body
+
+# Group Users [/api/v1/groups/{group_id}/users]
+
++ Parameters
+    + group_id: 1 (required, number) - ID of the Group in form of an integer
+
+## Add user [POST]
+
++ user_id (required, number) - ID of the User in form of an integer
++ access_token (required, string) - Token of acting user (Require user with admin or group admin level)
+
++ Request (application/json)
+
+        {
+            "user_id": 7,
+            "access_token": "user-token"
+        }
+
++ Response 204
