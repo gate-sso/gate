@@ -67,13 +67,24 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
 
     context 'invalid param' do
       context 'group id not found' do
-        it 'should return 404' do
+        it 'should return 404 http status' do
           post :add_user, params: {
             id: 666,
             user_id: @new_user.id,
             access_token: @admin_token,
           }
           expect(response.status).to eq 404
+        end
+      end
+
+      context 'invalid user id' do
+        it 'should return 422 http status' do
+          post :add_user, params: {
+            id: @group.id,
+            user_id: 'rand',
+            access_token: @admin_token,
+          }
+          expect(response.status).to eq 422
         end
       end
     end

@@ -32,6 +32,9 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
 
     return raise_unauthorized unless current_user.admin? || @group.admin?(current_user)
 
+    user = User.find_by(id: params[:user_id])
+    return head :unprocessable_entity unless user.present?
+
     @group.add_user params[:user_id]
     head :no_content
   end
