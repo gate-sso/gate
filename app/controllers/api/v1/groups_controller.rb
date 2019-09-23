@@ -27,6 +27,8 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
   end
 
   def add_user
+    @group = Group.find_by(id: params[:id])
+    @group.add_user params[:user_id]
     head :no_content
   end
 
