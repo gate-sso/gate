@@ -35,7 +35,8 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
     user = User.find_by(id: params[:user_id])
     return head :unprocessable_entity unless user.present?
 
-    @group.add_user params[:user_id]
+    expiration_date = params[:expiration_date]
+    @group.add_user_with_expiration(params[:user_id], expiration_date)
     head :no_content
   end
 

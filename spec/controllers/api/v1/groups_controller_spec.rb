@@ -90,7 +90,7 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
     end
 
     context 'authenticated as admin' do
-      context 'valid user id' do
+      context 'valid param' do
         it 'should return proper response' do
           post :add_user, params: {
             id: @group.id,
@@ -107,6 +107,17 @@ RSpec.describe ::Api::V1::GroupsController, type: :controller do
             access_token: @admin_token,
           }
           expect(@group.users).to contain_exactly @new_user
+        end
+
+        it 'should set membership expiration date' do
+          post :add_user, params: {
+            id: @group.id,
+            user_id: @new_user.id,
+            expiration_date: '2019-10-10',
+            access_token: @admin_token,
+          }
+          membership = @group.group_associations.find_by(user_id: @new_user.id)
+          expect(membership.expiration_date).to eq Date.parse('2019-10-10')
         end
       end
     end
