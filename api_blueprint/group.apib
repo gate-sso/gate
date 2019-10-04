@@ -178,10 +178,15 @@ Create new group
 
 + Request (application/json)
 
-        {
-            "user_id": 7,
-            "access_token": "user-token",
-            "expiration_date": "2019-11-20"
-        }
+    + Header
+
+            Authorization: <user-token>
+
+    + Body
+
+            {
+                "user_id": 7,
+                "expiration_date": "2019-11-20"
+            }
 
 + Response 204
