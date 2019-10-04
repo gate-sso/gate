@@ -26,6 +26,20 @@ class ::Api::V1::GroupsController < ::Api::V1::BaseController
     end
   end
 
+  def add_user
+    @group = Group.find_by(id: params[:id])
+    return head :not_found unless @group.present?
+
+    return raise_unauthorized unless current_user.admin? || @group.admin?(current_user)
+
+    user = User.find_by(id: params[:user_id])
+    return head :unprocessable_entity unless user.present?
+
+    expiration_date = params[:expiration_date]
+    @group.add_user_with_expiration(params[:user_id], expiration_date)
+    head :no_content
+  end
+
   private
 
   def group_params

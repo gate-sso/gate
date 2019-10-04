@@ -13,7 +13,7 @@ FactoryBot.define do
     name { "#{first_name} #{last_name}" }
     active { true }
     admin { true }
-    sequence(:reset_password_token) { |n| "secret#{n}" }
+    sequence(:reset_password_token) { |n| "user_secret#{n}" }
     after(:create) do |user, _evaluator|
       user.assign_attributes(
         user_login_id: user.generate_login_id, uid: user.generate_uid

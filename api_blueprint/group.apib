@@ -164,3 +164,28 @@ Create new group
             transfer-encoding: chunked
 
     + Body
+
+# Group Users [/api/v1/groups/{group_id}/users]
+
++ Parameters
+    + group_id: 1 (required, number) - ID of the Group in form of an integer
+
+## Add user [POST]
+
++ user_id (required, number) - ID of the User in form of an integer
++ expiration_date (optional, date) - Membership expiration date in format (YYYY-MM-DD)
+
++ Request (application/json)
+
+    + Header
+
+            Authorization: <user-token>
+
+    + Body
+
+            {
+                "user_id": 7,
+                "expiration_date": "2019-11-20"
+            }
+
++ Response 204
