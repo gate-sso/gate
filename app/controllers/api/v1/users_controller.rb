@@ -15,7 +15,7 @@ class ::Api::V1::UsersController < ::Api::V1::BaseController
   def show
     if @user.present?
       user_attrs = %w(
-        email uid name active admin home_dir shell public_key user_login_id
+        email id uid name active admin home_dir shell public_key user_login_id
         product_name
       )
       data = @user.attributes.select { |k, _v| user_attrs.include?(k) }
