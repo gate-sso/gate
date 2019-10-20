@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2019-10-20
+### Changed
+- User API now also return `id`
+
 ## [1.1.4] - 2019-10-05
 ### Added
 - API to add user to group (POST /api/v1/groups/:group_id/users)
