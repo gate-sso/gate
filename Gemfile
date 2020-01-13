@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'activerecord-session_store'
 gem 'ansi', '~> 1.5.0'
 gem 'bootstrap', '~> 4.3.1'
 gem 'coffee-rails'
