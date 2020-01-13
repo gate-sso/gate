@@ -3,8 +3,7 @@ class ProfileController < ApplicationController
 
   before_action :set_paper_trail_whodunnit
   skip_before_action :verify_authenticity_token, if: Proc.new { |c| c.request.format == 'application/json' }
-  before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key] unless Rails.env.development?
-  prepend_before_action :setup_user if Rails.env.development?
+  before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key]
 
   def regen_auth
     current_user.generate_two_factor_auth(true)

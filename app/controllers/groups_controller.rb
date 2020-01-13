@@ -5,8 +5,6 @@ class GroupsController < ApplicationController
                                      remove_admin delete_user delete_vpn delete_machine]
   before_action :authenticate_user!
 
-  prepend_before_action :setup_user if Rails.env.development?
-
   def index
     @groups = []
     @group_search = params[:group_search]

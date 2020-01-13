@@ -1,7 +1,6 @@
 class HostMachinesController < ApplicationController
   before_action :set_paper_trail_whodunnit
   before_action :set_host_machine, only: %i[add_group show edit update destroy delete_group]
-  prepend_before_action :setup_user if Rails.env.development?
   before_action :authenticate_user!
   before_action :authorize_user, only: %i[delete_group update]
 
