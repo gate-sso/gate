@@ -114,6 +114,17 @@ RSpec.describe Group, type: :model do
       expect(group.users.map(&:id).include?(user.id)).to eq(false)
     end
 
+    it 'should create paper trail with event destroy' do
+      group.add_user(user.id)
+      group_association_id = group.group_associations.where(user_id: user.id).first.id
+      group.remove_user(user.id)
+
+      versions = PaperTrail::Version.
+        with_item_keys(GroupAssociation.name, group_association_id).
+        where(event: 'destroy')
+      expect(versions.length).to eq(1)
+    end
+
     it 'should burst host cache' do
       group.add_user(user.id)
 
