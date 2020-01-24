@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.7] - 2020-02-24
+### Fixed
+- Fix audit trail when user removed from group
+
 ## [1.1.6] - 2020-01-14
 ### Changed
 - Store session to db using active record instead of using cookies
