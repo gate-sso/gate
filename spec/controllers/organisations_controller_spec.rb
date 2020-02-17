@@ -27,6 +27,19 @@ describe OrganisationsController, type: :controller do
     }
   end
 
+  describe 'GET #index' do
+    context 'authenticated as non admin' do
+      it 'should respond with 200' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        organisation = create(:organisation, valid_attributes)
+        get :index
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
   describe 'PATCH #update' do
     context 'authenticated as admin' do
       it 'should update requested organisations' do
@@ -85,6 +98,28 @@ describe OrganisationsController, type: :controller do
         sign_in non_admin
         organisation = create(:organisation, valid_attributes)
         patch :update, params: { id: organisation.id, organisation: new_attributes }
+        expect(flash[:notice]).to eq('Unauthorized access')
+      end
+    end
+  end
+
+  describe 'GET #config_saml_app' do
+    context 'authenticated as non admin' do
+      it 'should redirect to organisations path' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        organisation = create(:organisation, valid_attributes)
+        get :config_saml_app, params: { organisation_id: organisation.id, app_name: 'datadog' }
+        expect(response).to redirect_to(organisations_path)
+      end
+
+      it 'should flash unauthorized access' do
+        create(:user)
+        non_admin = create(:user, admin: false)
+        sign_in non_admin
+        organisation = create(:organisation, valid_attributes)
+        get :config_saml_app, params: { organisation_id: organisation.id, app_name: 'datadog' }
         expect(flash[:notice]).to eq('Unauthorized access')
       end
     end

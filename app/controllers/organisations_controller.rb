@@ -1,4 +1,5 @@
 class OrganisationsController < ApplicationController
+  before_action :authorize_user, except: [:index]
   before_action :load_org, only: %i(
     config_saml_app update show setup_saml save_config_saml_app
     remove_user_saml_app add_user_saml_app
@@ -75,10 +76,6 @@ class OrganisationsController < ApplicationController
   end
 
   def update
-    unless current_user.admin?
-      return redirect_to organisations_path, notice: 'Unauthorized access'
-    end
-
     @org.update_profile(organisation_params.to_h || {})
     if @org.errors.blank?
       flash[:success] = 'Successfully updated organisation'
@@ -104,6 +101,15 @@ class OrganisationsController < ApplicationController
   end
 
   private
+
+  def authorize_user
+    unless current_user.admin?
+      respond_to do |format|
+        format.html { redirect_to organisations_path, notice: 'Unauthorized access' }
+        format.json { render json: {}, status: :unauthorized }
+      end
+    end
+  end
 
   def load_org
     id = params[:id] || params[:organisation_id]
