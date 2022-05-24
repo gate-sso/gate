@@ -173,7 +173,7 @@ GEM
     mysql2 (0.4.10)
     newrelic_rpm (5.5.0.348)
     nio4r (2.3.1)
-    nokogiri (1.13.5)
+    nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (1.4.1)
@@ -399,7 +399,7 @@ DEPENDENCIES
   mock_redis
   mysql2 (~> 0.4.10)
   newrelic_rpm
-  nokogiri (~> 1.13.5)
+  nokogiri (~> 1.13.6)
   omniauth
   omniauth-google-oauth2 (~> 0.6.0)
   paper_trail
