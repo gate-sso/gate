@@ -3,6 +3,12 @@
 ![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
 [![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
 
+#### Please note that we are upgrading gate RAILS version, and it will have breaking changes
+#### New RAILS 7 version will not be backward compatible and will not have many features
+#### We are removing many features, just to support API TOKENS and VPN functionality
+
+#### Please use [RAILS 5 Branch](https://github.com/gate-sso/gate/tree/RAILS_5_RELEASE) for backward compatibilty
+
 > Gate now uses semantic versioning to add more visibility on breaking changes. For users, you might want to check [CHANGELOG.md](CHANGELOG.md). For contributors, check [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Gate is a single sign-on (SSO) platform for centralised authentication across Linux, OpenVPN and CAS.
