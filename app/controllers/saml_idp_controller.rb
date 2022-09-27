@@ -1,4 +1,7 @@
-class SamlIdpController < SamlIdp::IdpController
+#TODO rename back to SAMLController
+
+#class SamlIdpController < SamlIdp::IdpController
+class SamlIdpController < ApplicationController
   layout false
   before_action :setup_saml_configuration
 

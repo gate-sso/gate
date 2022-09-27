@@ -1,32 +1,33 @@
 source 'https://rubygems.org'
 
+gem 'rails', '7.0.3.1'
+
 gem 'activerecord-session_store'
-gem 'ansi', '~> 1.5.0'
-gem 'bootstrap', '~> 4.3.1'
-gem 'coffee-rails'
+gem 'ansi'
+gem 'bootstrap'
 gem 'countries', require: 'countries/global'
-gem 'devise', '~> 4.7.1'
+gem 'devise'
 gem 'dotenv-rails'
 gem 'font-awesome-rails'
 gem 'httparty'
 gem 'jbuilder'
-gem 'jquery-rails'
-gem 'mysql2', '~> 0.4.10'
-gem 'newrelic_rpm'
-gem 'nokogiri', '~> 1.13.5' 
+gem 'mysql2'
 gem 'omniauth'
-gem 'omniauth-google-oauth2', '~> 0.6.0'
+gem 'omniauth-google-oauth2'
 gem 'paper_trail'
 gem 'paranoia'
 gem 'puma'
-gem 'rails', '7.0.3.1'
 gem 'redis'
 gem 'rotp'
-gem 'rqrcode', '~> 0.10.1'
-gem 'ruby-saml', '1.8.0'
-gem 'saml_idp', git: 'https://github.com/gate-sso/saml_idp'
-gem 'sass-rails'
+gem 'rqrcode'
+
+#Disabling SAML Feature during upgrade
+# #TODO ENable this feature later
+#gem 'ruby-saml', '1.8.0'
+#gem 'saml_idp', git: 'https://github.com/gate-sso/saml_idp'
 gem 'sdoc', group: :doc
+# #TODO ENable this feature later
+
 gem 'slim-rails'
 gem 'turbolinks'
 gem 'uglifier'

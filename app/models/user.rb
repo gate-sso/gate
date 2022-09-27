@@ -14,12 +14,15 @@ class User < ApplicationRecord
   # validates :first_name, :last_name, format: { with: /[a-zA-Z]/}, allow_blank: true
   # validates :user_role, inclusion: { in: ENV['USER_ROLES'].split(',') }
   # validate :validate_email_domain
+  
+  
   validates :email, uniqueness: true
 
-  validate :remove_default_admin, on: :update
+  # TODO: Need to enable these again after rails 7 update
+  # validate :remove_default_admin, on: :update
 
-  before_save :revoke_admin_when_inactive, on: :update
-  before_save :set_deactivated_at_when_inactive, on: :update
+  # before_save :revoke_admin_when_inactive, on: :update
+  # before_save :set_deactivated_at_when_inactive, on: :update
 
   HOME_DIR = '/home'.freeze
   USER_SHELL = '/bin/bash'.freeze

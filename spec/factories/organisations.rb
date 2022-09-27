@@ -1,5 +1,5 @@
 FactoryBot.define do
-  country = Country.find_country_by_name(Country.all.map(&:name).sort.sample)
+  #country = Country.find_country_by_name(Country.all.map(&:name).sort.sample)
   factory :organisation do
     sequence(:slug) { |n| "#{Faker::Lorem.word}_#{n}" }
     name { Faker::Lorem.word }

@@ -11,12 +11,20 @@ default: &default
 development:
   <<: *default
   database: gate_development
+  host: localhost
+  post: 3306
+  username: gate_development
+  password: password
   properties:
     useSSL: false
 
 test:
   <<: *default
   database: gate_test
+  host: localhost
+  post: 3306
+  username: gate_test
+  password: password
   properties:
     useSSL: false
 

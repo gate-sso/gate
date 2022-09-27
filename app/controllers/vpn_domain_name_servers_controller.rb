@@ -4,3 +4,7 @@ class VpnsController < ApplicationController
 
   def destroy; end
 end
+
+#TODO fix this in future. This is something not great.
+class VpnDomainNameServersController < ApplicationController
+end
