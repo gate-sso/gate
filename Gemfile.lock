@@ -317,6 +317,16 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.21.0)
       parser (>= 3.1.1.0)
+    rubocop-faker (1.1.0)
+      faker (>= 2.12.0)
+      rubocop (>= 0.82.0)
+    rubocop-performance (1.15.0)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.16.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
     rubocop-rspec (2.13.2)
       rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
@@ -437,13 +447,15 @@ DEPENDENCIES
   rqrcode
   rspec-rails
   rubocop
+  rubocop-faker
+  rubocop-performance
+  rubocop-rails
   rubocop-rspec
   sdoc
   shoulda-matchers
   simplecov
   simplecov-console
   slim-rails
-  sprockets-rails
   timecop
   turbolinks
   uglifier

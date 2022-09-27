@@ -4,8 +4,8 @@ RSpec.describe DataDogClient do
 
   let(:email) { Faker::Internet.email }
   let(:org) { create(:organisation) }
-  let(:app_key) { Faker::Internet.password(8) }
-  let(:api_key) { Faker::Internet.password(8) }
+  let(:app_key) { Faker::Internet.password(min_length: 8) }
+  let(:api_key) { Faker::Internet.password(min_length: 8) }
   let(:base_url) { 'https://api.datadoghq.com/api/v1' }
   let(:client) { DataDogClient.new(app_key, api_key) }
   let(:auth_str) do

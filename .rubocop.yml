@@ -1,5 +1,11 @@
 ---
+require: 
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-faker
+
 AllCops:
+  NewCops: enable
   Exclude:
   - config/initializers/*.rb
   - config/environments/*.rb
@@ -86,7 +92,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   CountComments: true
   Max: 25
-  ExcludedMethods: []
+  AllowedMethods: []
   Exclude:
   - spec/**/*
   - config/environments/*.rb
@@ -224,7 +230,7 @@ Style/PerlBackrefs:
 Naming/PredicateName:
   Description: Check the names of predicate methods.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark
-  NamePrefixBlacklist:
+  ForbiddenPrefixes:
   - is_
   Exclude:
   - spec/**/*

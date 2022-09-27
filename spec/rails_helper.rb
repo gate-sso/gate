@@ -8,7 +8,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'webmock/rspec'
 require 'database_cleaner'
-require 'coveralls'
+#require 'coveralls'
 require 'simplecov'
 require 'simplecov-console'
 require 'pry'
@@ -91,7 +91,7 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
-  Coveralls.wear!
+  #Coveralls.wear!
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::Console])
   SimpleCov.start
 end

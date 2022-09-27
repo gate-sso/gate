@@ -11,8 +11,8 @@ RSpec.feature 'Save Config Saml App', type: :feature do
   scenario 'Load Present Configuration' do
     url = Faker::Internet.url
     saml_app = Datadog.new(org.id)
-    app_key = Faker::Internet.password(8)
-    api_key = Faker::Internet.password(8)
+    app_key = Faker::Internet.password(min_length: 8)
+    api_key = Faker::Internet.password(min_length: 8)
     saml_app.save_config(url, app_key: app_key, api_key: api_key)
     visit organisation_config_saml_app_path(
       organisation_id: org.id, app_name: app_name
@@ -35,8 +35,8 @@ RSpec.feature 'Save Config Saml App', type: :feature do
 
   scenario 'Save Configuration' do
     url = Faker::Internet.url
-    app_key = Faker::Internet.password(8)
-    api_key = Faker::Internet.password(8)
+    app_key = Faker::Internet.password(min_length: 8)
+    api_key = Faker::Internet.password(min_length: 8)
     path = organisation_config_saml_app_path(
       organisation_id: org.id, app_name: app_name
     )

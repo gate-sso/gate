@@ -7,7 +7,7 @@ FactoryBot.define do
     domain { Faker::Internet.email.split('@').last }
     country { country.gec }
     state { Faker::Address.state }
-    address { Faker::Lorem.words(3).join(' ') }
+    address { Faker::Lorem.words(number: 3).join(' ') }
     unit_name { 'IT' }
     admin_email_address { Faker::Internet.email }
   end

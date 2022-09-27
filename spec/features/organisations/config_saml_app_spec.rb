@@ -17,7 +17,7 @@ RSpec.feature 'Config Saml App', type: :feature do
 
   scenario 'Redirect to list organisations if organisation not found' do
     visit organisation_config_saml_app_path(
-      organisation_id: Faker::Number.number(1),
+      organisation_id: Faker::Number.number(digits: 1),
       app_name: Faker::Lorem.word
     )
     expect(current_path).to eq(organisations_path)
