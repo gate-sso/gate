@@ -443,6 +443,7 @@ DEPENDENCIES
   simplecov
   simplecov-console
   slim-rails
+  sprockets-rails
   timecop
   turbolinks
   uglifier
