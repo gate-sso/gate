@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_paper_trail
+
 
   include MsChapAuth
   devise :timeoutable, :omniauthable, omniauth_providers: [:google_oauth2]

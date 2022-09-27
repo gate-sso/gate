@@ -1,5 +1,4 @@
 class Group < ApplicationRecord
-  has_paper_trail
 
   has_many :group_admins, dependent: :destroy
   has_many :group_associations

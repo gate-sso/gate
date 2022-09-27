@@ -1,5 +1,4 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  before_action :set_paper_trail_whodunnit
   def google_oauth2
     # You need to implement the method below in your model (e.g. app/models/user.rb)
     #

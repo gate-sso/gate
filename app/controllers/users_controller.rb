@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  before_action :set_paper_trail_whodunnit
   before_action :authenticate_user!, except: %i[user_id verify authenticate authenticate_cas authenticate_ms_chap authenticate_pam public_key]
   before_action :authorize_user, only: %i[create update]
 

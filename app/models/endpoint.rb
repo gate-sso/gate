@@ -1,5 +1,5 @@
 class Endpoint < ApplicationRecord
-  has_paper_trail
+
 
   has_many :group_endpoints
   has_many :groups, through: :group_endpoints

@@ -1,5 +1,4 @@
 class VpnsController < ApplicationController
-  before_action :set_paper_trail_whodunnit
   before_action :authorize_user, except: %i[create_group_associated_users show index
                                             user_associated_groups group_associated_users search]
   before_action :set_vpn, only: %i[show edit update destroy

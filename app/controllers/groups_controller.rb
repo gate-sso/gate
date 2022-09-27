@@ -1,5 +1,4 @@
 class GroupsController < ApplicationController
-  before_action :set_paper_trail_whodunnit
   before_action :set_group, only: %i[show edit update destroy
                                      add_user add_machine add_vpn add_admin
                                      remove_admin delete_user delete_vpn delete_machine]

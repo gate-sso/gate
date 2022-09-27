@@ -40,10 +40,10 @@ describe ::Api::V1::EndpointsController, type: :controller do
           post :create, params: { endpoint: valid_attributes, access_token: @admin_token }
           endpoint = Endpoint.find_by(valid_attributes)
           expect(response.body).to eq({
-            id: endpoint.id,
-            path: endpoint.path,
-            method: endpoint.method,
-          }.to_json)
+                                        id: endpoint.id,
+                                        path: endpoint.path,
+                                        method: endpoint.method,
+                                      }.to_json)
         end
       end
 
@@ -87,20 +87,28 @@ describe ::Api::V1::EndpointsController, type: :controller do
     context 'authenticated as admin' do
       context 'given valid group id' do
         it 'should return http status 200' do
-          post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+          post :add_group, params: { id: endpoint.id,
+                                     group: { id: group.id },
+                                     access_token: @admin_token }
           expect(response).to have_http_status 200
         end
 
         it 'should add group to endpoint' do
-          post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+          post :add_group, params: { id: endpoint.id,
+                                     group: { id: group.id },
+                                     access_token: @admin_token }
           group_ids = endpoint.groups.map &:id
           expect(group_ids).to include group.id
         end
 
         context 'twice with same value' do
           it 'should return http status 422' do
-            post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
-            post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: @admin_token }
+            post :add_group, params: { id: endpoint.id,
+                                       group: { id: group.id },
+                                       access_token: @admin_token }
+            post :add_group, params: { id: endpoint.id,
+                                       group: { id: group.id },
+                                       access_token: @admin_token }
             expect(response).to have_http_status 422
           end
         end
@@ -108,7 +116,9 @@ describe ::Api::V1::EndpointsController, type: :controller do
 
       context 'given invalid endpoint id' do
         it 'should return http status 404' do
-          post :add_group, params: { id: 777, group: { id: group.id }, access_token: @admin_token }
+          post :add_group, params: { id: 777,
+                                     group: { id: group.id },
+                                     access_token: @admin_token }
           expect(response).to have_http_status 404
         end
       end
@@ -116,7 +126,9 @@ describe ::Api::V1::EndpointsController, type: :controller do
 
     context 'authenticated as non admin' do
       it 'should return http status 403' do
-        post :add_group, params: { id: endpoint.id, group: { id: group.id }, access_token: user.access_token.token }
+        post :add_group, params: { id: endpoint.id,
+                                   group: { id: group.id },
+                                   access_token: user.access_token.token }
         expect(response).to have_http_status 403
       end
     end

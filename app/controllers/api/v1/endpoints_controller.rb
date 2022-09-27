@@ -1,5 +1,5 @@
 class ::Api::V1::EndpointsController < ::Api::V1::BaseController
-  before_action :authorize_user, :set_paper_trail_whodunnit
+  before_action :authorize_user
 
   def create
     endpoint = Endpoint.new(endpoint_param)

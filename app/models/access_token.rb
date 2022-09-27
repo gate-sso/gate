@@ -1,7 +1,6 @@
 class AccessToken < ApplicationRecord
   attr_accessor :token
 
-  has_paper_trail
 
   belongs_to :user
 

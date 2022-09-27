@@ -1,5 +1,4 @@
 class HostMachine < ApplicationRecord
-  has_paper_trail
 
   has_many :host_access_groups
   has_many :groups, through: :host_access_groups
