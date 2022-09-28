@@ -15,11 +15,16 @@ class ::Api::V1::EndpointsController < ::Api::V1::BaseController
   end
 
   def add_group
+    require 'pry'; binding.pry
     endpoint = Endpoint.find_by(id: params[:id])
-    return head :not_found if endpoint.nil?
+    if endpoint.nil?
+      return head :not_found
+    end
 
     group = Group.find_by(group_param)
     group_endpoint = GroupEndpoint.new(group: group, endpoint: endpoint)
+
+    require 'pry'; binding.pry
     if group_endpoint.save
       render json: {}
     else
