@@ -2,10 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Vpn, type: :model do
   context "vpn administration" do
-
     it "should test user and vpn management" do
-
-      vpn = Vpn.create(name: :"X")
+      vpn = Vpn.create(name: "X")
       group = create(:group)
       vpn.groups << group
       vpn.save!
