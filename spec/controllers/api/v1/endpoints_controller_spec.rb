@@ -83,13 +83,17 @@ describe ::Api::V1::EndpointsController, type: :controller do
 
   describe '#add_group' do
     let(:endpoint) { create(:endpoint) }
+          require 'pry'; binding.pry
     let(:group) { create(:group) }
+          require 'pry'; binding.pry
     context 'authenticated as admin' do
       context 'given valid group id' do
         it 'should return http status 200' do
+          require 'pry'; binding.pry
           post :add_group, params: { id: endpoint.id,
                                      group: { id: group.id },
                                      access_token: @admin_token }
+          require 'pry'; binding.pry
           expect(response).to have_http_status 200
         end
 

@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
-  create_table "access_tokens", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "access_tokens", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "hashed_token"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_id"], name: "fk_rails_96fc070778"
   end
 
-  create_table "api_resources", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "api_resources", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "hashed_access_key"
@@ -32,14 +32,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_id"], name: "index_api_resources_on_user_id"
   end
 
-  create_table "endpoints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "endpoints", charset: "utf8mb4", force: :cascade do |t|
     t.string "path", null: false
     t.string "method", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "group_admins", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "group_admins", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "group_id"
     t.integer "user_id"
     t.datetime "created_at", precision: nil, null: false
@@ -48,7 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_id"], name: "fk_rails_0ac5a6fa32"
   end
 
-  create_table "group_associations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "group_associations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "user_id"
     t.integer "group_id"
     t.datetime "created_at", precision: nil, null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_id"], name: "index_group_associations_on_user_id"
   end
 
-  create_table "group_endpoints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "group_endpoints", charset: "utf8mb4", force: :cascade do |t|
     t.integer "group_id"
     t.bigint "endpoint_id"
     t.datetime "created_at", precision: nil, null: false
@@ -68,7 +68,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["group_id"], name: "fk_rails_b6c29808cd"
   end
 
-  create_table "groups", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "groups", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.integer "gid"
     t.datetime "created_at", precision: nil, null: false
@@ -80,7 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
-  create_table "host_access_groups", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "host_access_groups", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "host_machine_id"
     t.integer "group_id"
     t.datetime "created_at", precision: nil, null: false
@@ -90,7 +90,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["host_machine_id"], name: "index_host_access_groups_on_host_machine_id"
   end
 
-  create_table "host_machines", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "host_machines", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -100,7 +100,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["access_key"], name: "index_host_machines_on_access_key"
   end
 
-  create_table "hosts", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "hosts", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "host_pattern"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -113,7 +113,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_id"], name: "index_hosts_on_user_id"
   end
 
-  create_table "ip_addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "ip_addresses", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "address"
     t.string "mac_address"
     t.datetime "created_at", precision: nil, null: false
@@ -124,7 +124,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["mac_address"], name: "index_ip_addresses_on_mac_address"
   end
 
-  create_table "organisations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "organisations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.string "website"
     t.string "domain"
@@ -141,19 +141,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.text "cert_private_key"
   end
 
-  create_table "saml_app_configs", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "saml_app_configs", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "group_id"
     t.string "sso_url"
-    t.json "config"
+    t.text "config", size: :long, collation: "utf8mb4_bin"
     t.integer "organisation_id"
     t.string "app_name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["group_id"], name: "index_saml_app_configs_on_group_id"
     t.index ["organisation_id"], name: "index_saml_app_configs_on_organisation_id"
+    t.check_constraint "json_valid(`config`)", name: "config"
   end
 
-  create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "sessions", charset: "utf8mb4", force: :cascade do |t|
     t.string "session_id", null: false
     t.text "data"
     t.datetime "created_at", precision: nil, null: false
@@ -162,7 +163,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -200,7 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["user_login_id"], name: "index_users_on_user_login_id"
   end
 
-  create_table "versions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "versions", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "item_type"
     t.string "{:null=>false, :limit=>191}"
     t.integer "item_id", null: false
@@ -212,14 +213,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  create_table "vpn_domain_name_servers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpn_domain_name_servers", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "vpn_id"
     t.string "server_address"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "vpn_group_associations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpn_group_associations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "group_id"
     t.integer "vpn_id"
     t.datetime "created_at", precision: nil, null: false
@@ -228,7 +229,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["vpn_id"], name: "fk_rails_9be3690c1d"
   end
 
-  create_table "vpn_group_user_associations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpn_group_user_associations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "user_id"
     t.integer "vpn_id"
     t.integer "group_id"
@@ -239,21 +240,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_001850) do
     t.index ["vpn_id"], name: "fk_rails_dbd29a5c87"
   end
 
-  create_table "vpn_search_domains", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpn_search_domains", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "vpn_id"
     t.string "search_domain"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "vpn_supplemental_match_domains", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpn_supplemental_match_domains", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "vpn_id"
     t.string "supplemental_match_domain"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "vpns", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "vpns", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name"
     t.string "host_name"
     t.datetime "created_at", precision: nil, null: false
