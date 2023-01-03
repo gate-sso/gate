@@ -149,8 +149,8 @@ GEM
       activesupport (>= 5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    httparty (0.20.0)
-      mime-types (~> 3.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -167,9 +167,6 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
-    mime-types (3.4.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
     minitest (5.16.3)
     mock_redis (0.34.0)
@@ -187,6 +184,8 @@ GEM
       net-protocol
     nio4r (2.5.8)
     nokogiri (1.13.8-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.8-x86_64-linux)
       racc (~> 1.4)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
@@ -403,6 +402,7 @@ GEM
 PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   activerecord-session_store
