@@ -6,6 +6,13 @@
 
 ## *MASTER is broken* we are migrating to Rails 7.
 
+## Ubuntu dependencies
+Apart from devtools you need to install the following packages as well.
+```
+    apt-get install libmysqlclient-dev
+    apt-get install libyaml-dev
+```
+
 #### Please note that we are upgrading gate RAILS version, and it will have breaking changes New RAILS 7 version will not be backward compatible and will not have many features We are removing many features, just to support API TOKENS and VPN functionality
 
 #### Please use [RAILS 5 Branch](https://github.com/gate-sso/gate/tree/RAILS_5_RELEASE) for backward compatibilty
