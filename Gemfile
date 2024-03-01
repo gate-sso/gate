@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '7.0.3.1'
+gem 'rails', '7.1.3.2'
 
 gem 'activerecord-session_store'
 gem 'ansi'
@@ -19,6 +19,9 @@ gem 'puma'
 gem 'redis'
 gem 'rotp'
 gem 'rqrcode'
+
+gem 'sassc-rails'
+
 
 #Disabling SAML Feature during upgrade
 # #TODO ENable this feature later
