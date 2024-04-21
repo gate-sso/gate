@@ -1,6 +1,6 @@
-# Gate
+# Gate is now Gate-WireGuard 
 
-##DEPRECATED
+## DEPRECATED
 
 #### Please use [Gate-WireGuard](https://github.com/gate-sso/gate-wireguard)
 
