@@ -1,7 +1,10 @@
 # Gate
 
-![Build Status](https://api.travis-ci.org/gate-sso/gate.svg?branch=master)
-[![Open Source Helpers](https://www.codetriage.com/gate-sso/gate/badges/users.svg)](https://www.codetriage.com/gate-sso/gate)
+##DEPRECATED
+
+#### Please use [Gate-WireGuard](https://github.com/gate-sso/gate-wireguard)
+
+GateWireguard is based on WireGuard VPN Backend, also, it provides better security, faster speeds; it's much easier to install and run.
 
 
 ## *MASTER is broken* we are migrating to Rails 7.
